@@ -1,0 +1,17 @@
+/auto-save-list
+/cnfonts
+/elpa
+/pyim
+/cache
+.projectile
+.DS_Store
+network-security.data
+projectile.cache
+projectile-bookmarks.eld
+recentf
+smex-items
+bookmarks
+\#*
+\~*
+
+use-package/
