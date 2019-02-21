@@ -3,6 +3,7 @@
 /elpa
 /pyim
 /cache
+/eshell
 .projectile
 .DS_Store
 network-security.data
