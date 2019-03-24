@@ -23,8 +23,7 @@
 (use-package 
   evil 
   :ensure t 
-  :config (evil-mode)
-  ;; (setq evil-move-cursor-back nil)
+  :config 
   ;; (defalias 'evil-insert-state 'evil-emacs-state) 
   (setq evil-emacs-state-cursor '("#ffb1ef" bar)) 
   (setq evil-normal-state-cursor '("#55b1ef" box)) 
@@ -33,7 +32,8 @@
   (setq evil-replace-state-cursor '("#c46bbc" hollow-rectangle)) 
   (setq evil-operator-state-cursor '("#c46bbc" hollow)) 
   (add-hook 'evil-insert-state-exit-hook (lambda () 
-                                          (by/switch-to-default-input-method)))
+                                           (by/switch-to-default-input-method))
+            (evil-mode))
   ;; :hook (evil-normal-state-entry . by/switch-to-default-input-method)
   :bind (:map evil-emacs-state-map
               ("<escape>" . evil-normal-state) 

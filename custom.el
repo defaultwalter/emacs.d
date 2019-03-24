@@ -7,10 +7,11 @@
    (quote
     ("b54826e5d9978d59f9e0a169bbd4739dd927eead3ef65f56786621b53c031a7c" default)))
  '(exec-path-from-shell-arguments nil)
+ '(lsp-ui-doc-use-webkit t)
  '(org-plantuml-jar-path "/Users/baiyan/.emacs.d/plantuml.jar")
  '(package-selected-packages
    (quote
-    (expand-region sublimity which-key use-package spaceline smex rainbow-delimiters plantuml-mode hungry-delete highlight-parentheses evil-leader elisp-format doom-themes dashboard counsel-projectile counsel-dash company autopair auto-dim-other-buffers ace-jump-mode))))
+    (highlight-indent-guides expand-region sublimity which-key use-package spaceline smex rainbow-delimiters plantuml-mode hungry-delete highlight-parentheses evil-leader elisp-format doom-themes dashboard counsel-projectile counsel-dash company autopair auto-dim-other-buffers ace-jump-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

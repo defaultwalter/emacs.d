@@ -1,4 +1,5 @@
 (setq-default
+ tab-width 4
  ;; Use space instead tab.
  indent-tabs-mode nil
  ;; Allow delete selection.
@@ -6,7 +7,7 @@
  ;; Smooth scroll.
  scroll-margin 0 scroll-conservatively 10000 truncate-lines nil
  ;; Don't show splash screen.
- ;; inhibit-splash-screen 1
+ inhibit-splash-screen 1
  ;; Clear scratch buffer.
  initial-scratch-message nil
  ;; Disable ring bell.
@@ -74,6 +75,7 @@
 			  mouse-wheel-progressive-speed nil)
 			 ;; Set window transparent.
 			 (setf (frame-parameter nil 'alpha) 98)
+                         (desktop-save-mode 1)
 			 ;; Disable tool bar.
 			 (tool-bar-mode -1)
 			 ;; Disabe scroll bar.

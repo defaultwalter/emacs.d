@@ -16,21 +16,31 @@
   (evil-leader/set-key "m i q" 'er/mark-inside-quotes) 
   (evil-leader/set-key "m o q" 'er/mark-outside-quotes))
 
+(use-package highlight-indent-guides
+  :ensure t
+  :config
+  (setq highlight-indent-guides-method 'character)
+  (add-hook 'prog-mode-hook 'highlight-indent-guides-mode))
 (use-package 
   autopair 
   :ensure t 
   :config (autopair-global-mode))
 
 ;; Modeline
-(use-package 
-  spaceline-config 
-  :ensure spaceline 
-  :config (if window-system 
-              (setq powerline-default-separator 'wave) 
-            (setq powerline-default-separator 'utf-8)) 
-  (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state) 
-  (spaceline-toggle-minor-modes-off) 
-  (spaceline-spacemacs-theme))
+;; (use-package 
+;;   spaceline-config 
+;;   :ensure spaceline 
+;;   :config (if window-system 
+;;               (setq powerline-default-separator 'wave) 
+;;             (setq powerline-default-separator 'utf-8)) 
+;;   (setq spaceline-highlight-face-func 'spaceline-highlight-face-evil-state) 
+;;   ;; (spaceline-toggle-minor-modes-off)
+;;   (spaceline-spacemacs-theme))
+(use-package doom-modeline
+      :ensure t
+      :hook (after-init . doom-modeline-mode)
+      :config (setq doom-modeline-height 25
+               doom-modeline-icon nil))
 ;; Auto complete
 (use-package 
   company 
@@ -44,6 +54,20 @@
          ("TAB" . nil) 
          ("C-p" . company-select-previous)))
 
+(use-package lsp-mode
+  :ensure t
+  :commands lsp
+  :config (require 'lsp-clients)
+  (setq lsp-print-io t))
+(use-package lsp-ui
+  :ensure t
+  :after (lsp-mode)
+  :commands lsp-ui-mode
+  :hook (lsp-mode . lsp-ui-mode))
+(use-package company-lsp
+  :ensure t
+  :after (company lsp-mode)
+  :commands company-lsp)
 (use-package 
   highlight-parentheses 
   :ensure t 
@@ -89,6 +113,7 @@
   :ensure t 
   :config (setq ivy-use-virtual-buffers t) 
   (setq ivy-count-format "(%d/%d) ") 
+  (setq ivy-initial-inputs-alist nil)
   (ivy-mode t))
 (use-package 
   counsel 
@@ -107,16 +132,16 @@
   :ensure t 
   :bind ("C-s" . swiper) 
   :config (evil-leader/set-key "s" 'swiper))
-(use-package 
-  dashboard 
-  :ensure t 
-  :config (setq dashboard-items '((recents  . 5) 
-                                  (projects . 5) 
-                                  (agenda . 5) 
-                                  (bookmarks . 5) 
-                                  (registers . 5))) 
-  (setq dashboard-startup-banner "~/.emacs.d/logo.png") 
-  (dashboard-setup-startup-hook))
+;; (use-package 
+;;   dashboard 
+;;   :ensure t 
+;;   :config (setq dashboard-items '((recents  . 5) 
+;;                                   (projects . 5) 
+;;                                   (agenda . 5) 
+;;                                   (bookmarks . 5) 
+;;                                   (registers . 5))) 
+;;   (setq dashboard-startup-banner "~/.emacs.d/logo.png") 
+;;   (dashboard-setup-startup-hook))
 (use-package 
   flycheck 
   :ensure t 
