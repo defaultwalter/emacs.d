@@ -1,0 +1,2 @@
+* My emacs config
+[[file:./screenshots/emacs.png]]
