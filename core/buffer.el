@@ -12,7 +12,7 @@
 (use-package doom-modeline
   :ensure t
   :hook (after-init . doom-modeline-mode)
-  :config (setq doom-modeline-height 25
+  :config (setq doom-modeline-height 23
                 doom-modeline-icon nil))
 ;; Mark tool
 (use-package
@@ -63,7 +63,7 @@
   :bind (("C-SPC" . company-complete) :map company-active-map ("C-n" . company-select-next)
          ("TAB" . nil)
          ("C-p" . company-select-previous)))
-;; 
+;;
 (use-package
   smex
   :ensure t)
@@ -116,11 +116,23 @@
 (use-package
   projectile
   :ensure t
-  :after evil-leader
-  :commands (projectile-mode)
+  :after (evil-leader)
   :config (projectile-mode)
   (evil-leader/set-key "p" 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+
+(use-package
+  neotree
+  :ensure t
+  :config
+  (setq neo-theme 'ascii)
+  (add-hook 'neotree-mode-hook
+            (lambda ()
+              (setq mode-line-format nil)
+              (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter)
+              (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter)
+              (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
+              (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter))))
 
 ;; macOS
 (use-package

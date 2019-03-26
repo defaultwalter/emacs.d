@@ -8,7 +8,6 @@
   :init (global-flycheck-mode))
 (use-package lsp-mode
   :ensure t
-  :commands lsp
   :config (require 'lsp-clients)
   (setq lsp-print-io t)
   :hook (prog-mode . lsp))

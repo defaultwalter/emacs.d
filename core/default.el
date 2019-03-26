@@ -69,6 +69,8 @@
 
 (defun set-gui-font()
   "Set gui font."
+
+  (set-fontset-font t nil (font-spec :family "Apple Color Emoji") nil 'append)
   (set-face-attribute 'default nil
                       :font (font-spec :name
                                        "-*-Source Code Pro-ultrabold-italic-normal-*-*-*-*-*-m-0-iso10646-1"
@@ -98,7 +100,7 @@
                          ;; Set window placment.
                          ;; (set-face-attribute 'default nil
                          ;;                     :height 120)
-                         ;; (set-frame-width (selected-frame) 160)
+                         (set-frame-width (selected-frame) 120)
                          ;; (set-frame-height (selected-frame) 40)
                          (set-gui-font)
                          ;; Emacs-plus transparent of title bar.

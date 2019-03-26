@@ -3,7 +3,8 @@
 ;;; Code:
 (use-package
   rust-mode
-  :ensure t)
+  :ensure t
+  :after (lsp-ui))
 (use-package
   cargo
   :ensure t
