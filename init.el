@@ -1,6 +1,10 @@
+;;; package -- core
+;;; Commentary:
+;;; Code:
+
 (require 'package)
-(setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/") 
-			 ("melpa" . "http://elpa.emacs-china.org/melpa/")))
+(setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
+                         ("melpa" . "http://elpa.emacs-china.org/melpa/")))
 
 (package-initialize)
 ;;
@@ -17,3 +21,5 @@
 (require 'mode)
 
 (load-file (expand-file-name "custom.el" user-emacs-directory))
+(provide 'init)
+;;; init.el ends here

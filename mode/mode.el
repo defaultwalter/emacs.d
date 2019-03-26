@@ -1,5 +1,9 @@
+;;; package -- mode
+;;; Commentary:
+;;; Code:
 (require 'org-config)
 (require 'plantuml-config)
+(require 'program-config)
 (require 'rust-config)
-(require 'shell-config)
 (provide 'mode)
+;;; mode.el ends here
