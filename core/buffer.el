@@ -13,7 +13,8 @@
   :ensure t
   :hook (after-init . doom-modeline-mode)
   :config (setq doom-modeline-height 23
-                doom-modeline-icon nil))
+                doom-modeline-icon nil
+                doom-modeline-buffer-file-name-style 'file-name))
 ;; Mark tool
 (use-package
   expand-region
@@ -32,7 +33,8 @@
   highlight-indent-guides
   :ensure t
   :config
-  (setq highlight-indent-guides-method 'column)
+  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-character ?\|)
   :hook (prog-mode . highlight-indent-guides-mode))
 
 ;; Auto complete parentheses
@@ -61,7 +63,6 @@
   (setq-default company-dabbrev-downcase nil)
   :config (global-company-mode t)
   :bind (("C-SPC" . company-complete) :map company-active-map ("C-n" . company-select-next)
-         ("TAB" . nil)
          ("C-p" . company-select-previous)))
 ;;
 (use-package
@@ -133,7 +134,6 @@
               (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-enter)
               (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
               (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter))))
-
 ;; macOS
 (use-package
   exec-path-from-shell

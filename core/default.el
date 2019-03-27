@@ -87,11 +87,11 @@
 ;; If started by gui mode.
 (if window-system (progn (setq-default
                           ;; Set window title .
-                          frame-title-format "emacs"
+                          frame-title-format "[%m] %f"
                           ;; Set mouse wheel speed.
                           mouse-wheel-progressive-speed nil)
                          ;; Set window transparent.
-                         (setf (frame-parameter nil 'alpha) 98)
+                         (setf (frame-parameter nil 'alpha) 95)
                          ;; (desktop-save-mode 1)
                          ;; Disable tool bar.
                          (tool-bar-mode -1)

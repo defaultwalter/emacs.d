@@ -17,5 +17,6 @@ bookmarks
 session*
 *.desktop
 .*
+eclipse.jdt.ls
 
 use-package/
