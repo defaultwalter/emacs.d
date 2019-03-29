@@ -4,6 +4,9 @@
 /pyim
 /cache
 /eshell
+/games
+/places
+/transient
 .projectile
 .DS_Store
 network-security.data
@@ -18,7 +21,4 @@ session*
 *.desktop
 .*
 eclipse.jdt.ls
-/games
-/places
-
 use-package/
