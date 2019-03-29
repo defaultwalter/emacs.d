@@ -20,11 +20,9 @@
   (setq evil-replace-state-cursor '("#c46bbc" hollow-rectangle))
   (setq evil-operator-state-cursor '("#c46bbc" hollow))
   (evil-mode 1)
-  (message "Hello")
   :bind (:map evil-emacs-state-map
               ("<escape>" . evil-normal-state)
               ("C-g" . evil-normal-state)))
-
 (use-package
   evil-leader
   :ensure t

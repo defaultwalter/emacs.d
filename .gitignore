@@ -18,5 +18,7 @@ session*
 *.desktop
 .*
 eclipse.jdt.ls
+/games
+/places
 
 use-package/

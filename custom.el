@@ -10,15 +10,16 @@
  '(lsp-ui-doc-position (quote at-point))
  '(lsp-ui-doc-use-webkit t)
  '(lsp-ui-sideline-enable nil)
- '(org-plantuml-jar-path "/Users/baiyan/.emacs.d/plantuml.jar")
+ '(org-plantuml-jar-path "/Users/baiyan/.emacs.d/plantuml.jar" t)
  '(package-selected-packages
    (quote
-    (ivy-yasnippet lsp-java dap-mode sr-speedbar highlight-indent-guides expand-region sublimity which-key use-package spaceline smex rainbow-delimiters plantuml-mode hungry-delete highlight-parentheses evil-leader elisp-format doom-themes dashboard counsel-projectile counsel-dash company autopair auto-dim-other-buffers ace-jump-mode))))
+    (magit mvn multi-term format-all all-the-icons-ivy all-the-icons-dired shell-here dired dimmer popup-kill-ring ivy-yasnippet lsp-java dap-mode sr-speedbar highlight-indent-guides expand-region sublimity which-key use-package spaceline smex rainbow-delimiters plantuml-mode hungry-delete highlight-parentheses evil-leader elisp-format doom-themes dashboard counsel-projectile counsel-dash company autopair auto-dim-other-buffers ace-jump-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(all-the-icons-dired-dir-face ((t (\` (:foreground (\, (face-background (quote default))))))))
  '(lsp-face-highlight-read ((t (:background "#4f5664" :foreground "#ffffff" :weight bold))))
  '(lsp-face-highlight-textual ((t (:background "#4f5664" :foreground "#ffffff" :weight bold))))
  '(lsp-face-highlight-write ((t (:background "#4f5664" :foreground "#ffffff" :weight bold))))
