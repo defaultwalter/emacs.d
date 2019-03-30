@@ -11,6 +11,6 @@
 (use-package
   lsp-java-treemacs
   :after (treemacs))
-(add-hook 'java-mode 'flycheck-mode)
+(add-hook 'java-mode-hook 'flycheck-mode)
 (provide 'java-config)
 ;;; java-config.el ends here

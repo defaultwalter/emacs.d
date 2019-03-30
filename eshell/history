@@ -1,6 +1,0 @@
-(+ 1 2)
-ls
-exit
-ls
-ls
-mvn --help

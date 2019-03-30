@@ -34,7 +34,8 @@
                                                                      :weight 'normal
                                                                      :slant 'normal
                                                                      :size 18))))
-(set-gui-font)
+(if window-system (set-gui-font))
+
 (setf (frame-parameter nil 'alpha) 99)
 ;; (set-frame-width (selected-frame) 120)
 ;; (set-frame-height (selected-frame) 40)

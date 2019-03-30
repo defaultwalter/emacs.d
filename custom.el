@@ -5,7 +5,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yasnippet-snippets which-key use-package telephone-line sublimity sr-speedbar spaceline smex shell-here rainbow-delimiters racer popup-kill-ring plantuml-mode neotree mvn multi-term minimap magit lsp-ui lsp-java ivy-yasnippet hungry-delete highlight-parentheses highlight-indent-guides format-all flycheck-rust expand-region exec-path-from-shell evil-smartparens evil-leader elisp-format doom-themes doom-modeline disable-mouse dimmer dashboard dap-mode counsel-projectile counsel-dash company-lsp cargo autopair auto-package-update auto-dim-other-buffers all-the-icons-ivy all-the-icons-dired ace-jump-mode))))
+    (lsp-java flycheck-rust cargo rust-mode ivy-yasnippet company-lsp dap-mode lsp-ui lsp-mode flycheck plantuml-mode exec-path-from-shell format-all highlight-parentheses rainbow-delimiters autopair highlight-indent-guides expand-region hungry-delete which-key ace-jump-mode yasnippet-snippets yasnippet company doom-modeline doom-themes hydra smex magit use-package transient git-commit evil-leader counsel-projectile auto-package-update))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

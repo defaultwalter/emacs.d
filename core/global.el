@@ -71,7 +71,33 @@
 ;; ==============================================
 ;; Better Enhancement
 ;; ==============================================
-
+;; Auto complete
+(use-package
+  company
+  :defer 1
+  :ensure t
+  :init
+  ;; Don't convert to downcase.
+  (setq-default company-dabbrev-downcase nil)
+  :config (global-company-mode t)
+  (defun company-mode/backend-with-yas (backend)
+    (if (and (listp backend) (member 'company-yasnippet backend))
+        backend
+      (append (if (consp backend) backend (list backend))
+              '(:with company-yasnippet))))
+  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+  :bind (("C-SPC" . company-complete)
+         :map company-active-map ("C-n" . company-select-next)
+         ("C-p" . company-select-previous)))
+(use-package
+  yasnippet
+  :ensure t
+  :config (yas-reload-all)
+  :hook (prog-mode . yas-minor-mode))
+(use-package
+  yasnippet-snippets
+  :ensure t
+  :after (yasnippet))
 (use-package
   ace-jump-mode
   :ensure t
@@ -97,22 +123,6 @@
   :ensure t
   :defer 1
   :config (global-hungry-delete-mode))
-;; Mark tool
-(use-package
-  expand-region
-  :ensure t
-  :after evil-leader
-  :config (evil-leader/set-key "m r" 'er/expand-region)
-  (evil-leader/set-key "m f" 'er/mark-defun)
-  (evil-leader/set-key "m a" 'mark-page)
-  (evil-leader/set-key "m s" 'er/mark-symbol)
-  (evil-leader/set-key "m u" 'er/mark-url)
-  (evil-leader/set-key "m c" 'er/mark-comment)
-  (evil-leader/set-key "m w" 'er/mark-word)
-  (evil-leader/set-key "m p i" 'er/mark-inside-pairs)
-  (evil-leader/set-key "m p o" 'er/mark-outside-pairs)
-  (evil-leader/set-key "m q i" 'er/mark-inside-quotes)
-  (evil-leader/set-key "m q o" 'er/mark-outside-quotes))
 
 ;; Highlight indent
 (use-package
@@ -125,7 +135,6 @@
   (setq highlight-indent-guides-delay 0)
   (setq highlight-indent-guides-auto-character-face-perc 7)
   :hook (prog-mode . highlight-indent-guides-mode))
-
 ;; Auto complete parentheses
 (use-package
   autopair
@@ -141,18 +150,6 @@
   highlight-parentheses
   :ensure t
   :hook (prog-mode . highlight-parentheses-mode))
-;; Auto complete
-(use-package
-  company
-  :defer 1
-  :ensure t
-  :init
-  ;; Don't convert to downcase.
-  (setq-default company-dabbrev-downcase nil)
-  :config (global-company-mode t)
-  :bind (("C-SPC" . company-complete) :map company-active-map ("C-n" . company-select-next)
-         ("C-p" . company-select-previous)))
-
 (use-package
   format-all
   :ensure t
