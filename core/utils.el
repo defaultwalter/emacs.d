@@ -1,6 +1,13 @@
 ;;; package -- util
 ;;; Commentary:
 ;;; Code:
+;; Not show hidden files.
+(defun by/find-file()
+  "Find file."
+  (interactive)
+  (let ((counsel-find-file-ignore-regexp "^\\..*"))
+    (counsel-find-file)))
+
 (defun install-package (name &optional refresh)
   "Install package by NAME and REFRESH."
   (when refresh (progn (message "Refresh contents")

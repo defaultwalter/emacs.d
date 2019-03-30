@@ -36,7 +36,7 @@
                                                                      :size 18))))
 (set-gui-font)
 (setf (frame-parameter nil 'alpha) 99)
-(set-frame-width (selected-frame) 120)
+;; (set-frame-width (selected-frame) 120)
 ;; (set-frame-height (selected-frame) 40)
 ;; Emacs-plus transparent of title bar.
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
@@ -64,6 +64,7 @@
 ;; ==============================================
 ;; Behaviour Config
 ;; ==============================================
+(desktop-save-mode t)
 ;; Remove useless whitespace before saving a file
 (add-hook 'before-save-hook 'whitespace-cleanup)
 (add-hook 'before-save-hook (lambda() (delete-trailing-whitespace)))
@@ -109,7 +110,7 @@
 ;; keep the point out of the minibuffer
 (setq-default minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt face minibuffer-prompt))
 ;; Tab Width
-(setq-default tab-width 4)
+(setq-default tab-width 2)
 ;; Use space instead tab.
 (setq-default indent-tabs-mode nil)
 ;; Allow delete selection.

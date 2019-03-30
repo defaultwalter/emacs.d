@@ -52,6 +52,9 @@
 ;; Theme
 ;; ==============================================
 (use-package
+  hydra
+  :ensure t)
+(use-package
   doom-themes
   :ensure t
   :config (load-theme 'doom-one t))
@@ -68,7 +71,7 @@
 ;; ==============================================
 ;; Better Enhancement
 ;; ==============================================
-;; Ace jump
+
 (use-package
   ace-jump-mode
   :ensure t

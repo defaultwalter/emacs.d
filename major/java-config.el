@@ -1,4 +1,4 @@
-;;; package -- org-config
+;;; package -- java-config
 ;;; Commentary:
 ;;; Code:
 (use-package
