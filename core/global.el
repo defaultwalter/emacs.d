@@ -61,6 +61,7 @@
 ;; Modeline theme
 (use-package doom-modeline
   :ensure t
+  :init (doom-modeline-init)
   :hook (after-init . doom-modeline-mode)
   :config (setq doom-modeline-height 25
                 doom-modeline-bar-width 3
@@ -154,6 +155,11 @@
   format-all
   :ensure t
   :config (add-hook 'prog-mode-hook 'format-all-mode))
+(use-package
+  multi-term
+  :ensure t
+  :config (setq multi-term-dedicated-select-after-open-p t)
+  :bind ("C-`" . multi-term-dedicated-toggle))
 
 ;; macOS
 (use-package

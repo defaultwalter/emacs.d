@@ -2,8 +2,14 @@
 ;;; Commentary:
 ;;; Code:
 (use-package
-  flycheck
+  flymake
   :ensure t)
+(use-package
+  flymake-diagnostic-at-point
+  :ensure t
+  :after flymake
+  :config
+  (add-hook 'flymake-mode-hook #'flymake-diagnostic-at-point-mode))
 (use-package
   lsp-mode
   :ensure t
@@ -18,6 +24,7 @@
   :custom (lsp-ui-doc-position (quote at-point))
   (lsp-ui-doc-use-webkit t)
   (lsp-ui-sideline-enable nil)
+  (lsp-ui-doc-enable nil)
   :hook (lsp-mode . lsp-ui-mode))
 (use-package
   dap-mode
