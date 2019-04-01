@@ -72,6 +72,11 @@
 ;; ==============================================
 ;; Better Enhancement
 ;; ==============================================
+(use-package
+  windresize
+  :ensure t)
+(when (fboundp 'winner-mode)
+  (winner-mode 1))
 ;; Auto complete
 (use-package
   company
@@ -80,19 +85,14 @@
   :init
   ;; Don't convert to downcase.
   (setq-default company-dabbrev-downcase nil)
-  :config (global-company-mode t)
-  (defun company-mode/backend-with-yas (backend)
-    (if (and (listp backend) (member 'company-yasnippet backend))
-        backend
-      (append (if (consp backend) backend (list backend))
-              '(:with company-yasnippet))))
-  (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+  :config (global-company-mode nil)
   :bind (("C-SPC" . company-complete)
          :map company-active-map ("C-n" . company-select-next)
          ("C-p" . company-select-previous)))
 (use-package
   yasnippet
   :ensure t
+  :after (company)
   :config (yas-reload-all)
   :hook (prog-mode . yas-minor-mode))
 (use-package

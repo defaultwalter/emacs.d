@@ -41,9 +41,10 @@
 (use-package
   ivy-yasnippet
   :ensure t
-  :after (yasnippet evil-leader))
+  :after (yasnippet)
+  :bind ("C-." . ivy-yasnippet))
 (add-hook 'prog-mode-hook 'hs-minor-mode)
 (add-hook 'prog-mode-hook 'linum-mode)
-
+(global-prettify-symbols-mode)
 (provide 'program-config)
 ;;; program-config.el ends here
