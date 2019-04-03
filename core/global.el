@@ -80,7 +80,6 @@
 ;; Auto complete
 (use-package
   company
-  :defer 1
   :ensure t
   :init
   ;; Don't convert to downcase.
@@ -90,10 +89,20 @@
          :map company-active-map ("C-n" . company-select-next)
          ("C-p" . company-select-previous)))
 (use-package
+  company-statistics
+  :ensure t
+  :after company
+  :config (company-statistics-mode))
+
+(use-package
   yasnippet
   :ensure t
-  :after (company)
   :config (yas-reload-all)
+  (add-hook 'prog-mode-hook (lambda ()
+                              (setq company-backends
+                                    '((company-yasnippet company-lsp) company-dabbrev-code
+                                      company-dabbrev
+                                      company-files))))
   :hook (prog-mode . yas-minor-mode))
 (use-package
   yasnippet-snippets
