@@ -1,6 +1,9 @@
 ;;; package -- org-config
 ;;; Commentary:
 ;;; Code:
+(use-package org
+  :ensure org-plus-contrib
+  :config (require 'ox-freemind))
 (setq-default org-agenda-files '("~/Documents/GTD"))
 (add-hook 'org-mode-hook (lambda ()
                            (set-face-attribute 'org-table nil
@@ -16,10 +19,7 @@
                                (org-indent-mode))
                            (setq truncate-lines nil)))
 (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
-;; (require 'ob-shell)
-;; (require 'ob-plantuml)
-;; (require 'ob-java)
-(require 'ob-python)
+(use-package ob-python)
 (use-package ob-shell)
 (use-package ob-plantuml)
 (use-package ob-java)

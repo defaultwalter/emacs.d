@@ -65,6 +65,9 @@
 ;; ==============================================
 ;; Behaviour Config
 ;; ==============================================
+
+(setq scroll-step 1
+      scroll-conservatively  10000)
 (desktop-save-mode t)
 ;; Remove useless whitespace before saving a file
 (add-hook 'before-save-hook 'whitespace-cleanup)
