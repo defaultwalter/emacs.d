@@ -26,6 +26,7 @@
   :ensure t
   :config (evil-leader/set-key "g" 'magit-status))
 
+
 ;; ==============================================
 ;; Ivy Counsel Swiper
 ;; ==============================================
@@ -61,7 +62,17 @@
 (use-package
   doom-themes
   :ensure t
-  :config (load-theme 'doom-one t))
+  :config
+  (if window-system
+      (load-theme 'doom-one t)
+    (progn
+      (load-theme 'doom-tomorrow-night t)
+      (defun on-frame-open (frame)
+        (if (not (display-graphic-p frame))
+            (set-face-background 'default "unspecified-bg" frame)))
+      (on-frame-open (selected-frame))
+      (add-hook 'after-make-frame-functions 'on-frame-open)))
+  )
 ;; Modeline theme
 (use-package doom-modeline
   :ensure t
@@ -76,6 +87,7 @@
 ;; ==============================================
 ;; Better Enhancement
 ;; ==============================================
+
 (use-package
   windresize
   :ensure t)

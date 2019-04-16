@@ -14,7 +14,7 @@
 (scroll-bar-mode -1)
 (tool-bar-mode   -1)
 (tooltip-mode    -1)
-;; (menu-bar-mode   -1)
+(if window-system (menu-bar-mode 1) (menu-bar-mode -1))
 
 ;; Set window title .
 (setq-default frame-title-format "[%m] %f")
@@ -196,7 +196,7 @@
   (add-hook 'dired-mode-hook (lambda () (local-set-key (kbd "<mouse-2>") #'dired-find-alternate-file)))
   (add-hook 'dired-mode-hook (lambda () (local-set-key (kbd "RET") #'dired-find-alternate-file)))
   (add-hook 'dired-mode-hook (lambda () (define-key dired-mode-map (kbd "^")
-                                          (lambda () (interactive) (find-alternate-file "..")))
+                                     (lambda () (interactive) (find-alternate-file "..")))
                                (dired-hide-details-mode t))))
 
 

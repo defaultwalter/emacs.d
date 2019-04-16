@@ -14,8 +14,15 @@
   (setq evil-replace-state-cursor '("#c46bbc" hollow-rectangle))
   (setq evil-operator-state-cursor '("#c46bbc" hollow))
   (evil-mode 1)
-  :bind (:map evil-insert-state-map
-              ("C-g" . evil-normal-state)))
+  :bind (:map evil-insert-state-map  ("C-g" . evil-normal-state)))
+(unless (display-graphic-p)
+  (use-package
+    evil-terminal-cursor-changer
+    :ensure t
+    :after evil
+    :config
+    (evil-terminal-cursor-changer-activate))
+  )
 (use-package
   evil-leader
   :ensure t

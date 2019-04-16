@@ -5,6 +5,7 @@
   :ensure org-plus-contrib
   :config (require 'ox-freemind))
 (setq-default org-agenda-files '("~/Documents/GTD"))
+(setq-default org-confirm-babel-evaluate nil)
 (add-hook 'org-mode-hook (lambda ()
                            (set-face-attribute 'org-table nil
                                                :font (font-spec :name

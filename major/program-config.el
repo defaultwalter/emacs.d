@@ -21,10 +21,10 @@
   :ensure t
   :after (lsp-mode lsp-ui)
   :commands lsp-ui-mode
-  :custom (lsp-ui-doc-position (quote at-point))
+  :custom (lsp-ui-doc-position (quote top))
   (lsp-ui-doc-use-webkit t)
   (lsp-ui-sideline-enable nil)
-  (lsp-ui-doc-enable nil)
+  (lsp-ui-doc-enable t)
   :hook (lsp-mode . lsp-ui-mode))
 (use-package
   dap-mode
