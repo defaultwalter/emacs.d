@@ -8,5 +8,6 @@
 (require 'java-config)
 (require 'python-config)
 (require 'graphviz-config)
+(require 'web-config)
 (provide 'major)
 ;;; mode.el ends here

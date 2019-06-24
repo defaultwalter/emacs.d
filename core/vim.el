@@ -26,27 +26,8 @@
 (use-package
   evil-leader
   :ensure t
-  :after hydra
   ;; :commands (evil-leader/set-leader)
   :config (evil-leader/set-leader "SPC")
-  (defhydra hydra-frame-window (:color red :hint nil)
-    "
-^Frame^                        ^^Frame Size^^
-_s_plit
-_vs_plit                        ^ ^  _k_  ^ ^
-_d_elete                        _h_ _TAB_ _l_
-delete _o_ther                  ^ ^  _j_  ^ ^
-"
-    ("s" evil-window-split)
-    ("vs" evil-window-vsplit)
-    ("d" evil-window-delete  :exit t)
-    ("o" delete-other-windows :exit t)
-    ("TAB" other-window)
-    ("h" shrink-window-horizontally)
-    ("k" shrink-window)
-    ("j" enlarge-window)
-    ("l" enlarge-window-horizontally)
-    ("q" nil "quit"))
   (evil-leader/set-key "SPC" 'counsel-M-x)
   (evil-leader/set-key "f f" 'by/find-file)
   (evil-leader/set-key "f a" 'find-file)

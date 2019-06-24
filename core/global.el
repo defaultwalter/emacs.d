@@ -1,12 +1,12 @@
 ;;; package -- global
 ;;; Commentary:
 ;;; Code:
-(use-package auto-package-update
-  :config
-  (setq auto-package-update-delete-old-versions t)
-  (setq auto-package-update-hide-results t)
-  (auto-package-update-maybe))
-;; ==============================================
+;; (use-package auto-package-update
+;;   :config
+;;   (setq auto-package-update-delete-old-versions t)
+;;   (setq auto-package-update-hide-results t)
+;;   (auto-package-update-maybe))
+;; ;; ==============================================
 ;; Project
 ;; ==============================================
 (use-package
@@ -57,9 +57,6 @@
 ;; Theme
 ;; ==============================================
 (use-package
-  hydra
-  :ensure t)
-(use-package
   doom-themes
   :ensure t
   :config
@@ -78,7 +75,7 @@
   :ensure t
   :init (doom-modeline-init)
   :hook (after-init . doom-modeline-mode)
-  :config (setq doom-modeline-height 25
+  :config (setq doom-modeline-height 20
                 doom-modeline-bar-width 3
                 doom-modeline-icon nil
                 doom-modeline-enable-word-count 10
@@ -176,10 +173,6 @@
   highlight-parentheses
   :ensure t
   :hook (prog-mode . highlight-parentheses-mode))
-(use-package
-  format-all
-  :ensure t
-  :config (add-hook 'prog-mode-hook 'format-all-mode))
 (use-package
   multi-term
   :ensure t

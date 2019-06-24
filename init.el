@@ -2,9 +2,11 @@
 ;;; Commentary:
 ;;; Code:
 (require 'package)
+
+
 (setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
                          ("melpa" . "http://elpa.emacs-china.org/melpa/")
-                         ("org" . "https://orgmode.org/elpa/")))
+                         ("org" . "http://elpa.emacs-china.org/org/")))
 
 (package-initialize)
 
