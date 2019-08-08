@@ -1,26 +1,22 @@
 ;;; package -- global
 ;;; Commentary:
 ;;; Code:
-;; (use-package auto-package-update
-;;   :config
-;;   (setq auto-package-update-delete-old-versions t)
-;;   (setq auto-package-update-hide-results t)
-;;   (auto-package-update-maybe))
 ;; ;; ==============================================
 ;; Project
 ;; ==============================================
+(use-package
+  projectile
+  :ensure t
+  :bind-keymap
+  ("C-c p" . projectile-command-map)
+  :config (projectile-mode)
+  (when (package-installed-p 'evil-leader)
+    (evil-leader/set-key "p" 'projectile-command-map)))
 (use-package
   counsel-projectile
   :ensure t
   :after (projectile)
   :config (counsel-projectile-mode t))
-(use-package
-  projectile
-  :ensure t
-  :after (evil-leader)
-  :config (projectile-mode)
-  (evil-leader/set-key "p" 'projectile-command-map)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 (use-package
   magit
   :ensure t
@@ -75,14 +71,16 @@
   :ensure t
   :init (doom-modeline-init)
   :hook (after-init . doom-modeline-mode)
-  :config (setq doom-modeline-height 20
+  :config (setq doom-modeline-height 2
                 doom-modeline-bar-width 3
                 doom-modeline-icon nil
                 doom-modeline-enable-word-count 10
-                doom-modeline-buffer-file-name-style 'file-name))
+                doom-modeline-buffer-file-name-style 'file-name)
+(set-face-attribute 'mode-line nil :height 180)
+(set-face-attribute 'mode-line-inactive nil :height 180))
 
 ;; ==============================================
-;; Better Enhancement
+;; Default Enhancement
 ;; ==============================================
 
 (use-package
