@@ -1,0 +1,22 @@
+;;; package -- rust-config
+;;; Commentary:
+;;; Code:
+(use-package
+  rust-mode
+  :ensure t
+  :hook (rust-mode .
+                   (lambda ()
+                     (lsp)
+                     (dap-mode 1)
+                     (dap-ui-mode 1)))
+  :config (eval-after-load "evil-leader" (progn (evil-leader/set-key-for-mode 'rust-mode "d"
+                                                  'lsp-ui-doc-glance))))
+(use-package
+  cargo
+  :ensure t
+  :after rust-mode
+  :hook (rust-mode . cargo-minor-mode))
+
+;; (add-hook 'rust-mode-hook #'lsp)
+(provide 'lang/rust)
+;;; rust-config.el ends here
