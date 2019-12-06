@@ -14,5 +14,5 @@
    'org-babel-load-languages
    '((dot . t))))
 
-(provide 'graphviz-config)
+(provide 'lang/graphviz)
 ;;; graphivz-config.el ends here

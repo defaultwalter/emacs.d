@@ -4,22 +4,27 @@
 (require 'package)
 
 
-(setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
-                         ("melpa" . "http://elpa.emacs-china.org/melpa/")
-                         ("org" . "http://elpa.emacs-china.org/org/")))
+(setq package-archives '
+    (
+        ("gnu"   . "http://elpa.emacs-china.org/gnu/")
+        ("melpa" . "http://elpa.emacs-china.org/melpa/")
+        ("org" . "http://elpa.emacs-china.org/org/")))
 
 (package-initialize)
 
-(load-file  (expand-file-name "core/utils.el" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "core" user-emacs-directory))
-(add-to-list 'load-path (expand-file-name "major" user-emacs-directory))
+(load-file
+    (expand-file-name "custom.el" user-emacs-directory))
+(setq custom-file
+    (expand-file-name "custom.el" user-emacs-directory))
 
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(add-to-list 'load-path
+    (expand-file-name "lisp" user-emacs-directory))
 
-(install-package 'use-package)
+(load (concat user-emacs-directory "lisp/core")
+      nil 'nomessage)
 
-(require 'core)
-(require 'major)
-(load-file (expand-file-name "custom.el" user-emacs-directory))
+(require 'global)
+(require 'lang)
+;; (require 'wm)
 (provide 'init)
 ;;; init.el ends here

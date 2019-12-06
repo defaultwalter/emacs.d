@@ -10,7 +10,7 @@
                        ;; (add-hook 'org-mode-hook (lambda ()
                        ;;                            (plantuml-set-exec-mode "jar")))
   (setq plantuml-server-url "http://localhost:30000")
-  :custom (org-plantuml-jar-path "/Users/baiyan/.emacs.d/plantuml.jar")
+  :custom (org-plantuml-jar-path (expand-file-name "plantuml.jar" user-emacs-directory))
   )
-(provide 'plantuml-config)
+(provide 'lang/plantuml)
 ;;; plantuml-config.el ends here

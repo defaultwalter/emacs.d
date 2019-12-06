@@ -23,17 +23,18 @@
 
 (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
 
-(use-package ob-python)
-(use-package ob-shell)
-(use-package ob-plantuml)
-(use-package ob-java)
-(use-package ob-js)
-(use-package ob-python)
-(use-package ob-latex)
+
+(require 'ob-python)
+(require 'ob-shell)
+(require 'ob-plantuml)
+(require 'ob-java)
+(require 'ob-js)
+(require 'ob-python)
+(require 'ob-latex)
 
 (setq org-latex-compiler "xelatex")
 (if (eq system-type 'darwin)
     (progn (setenv "PATH" (concat "/Library/TeX/texbin" (getenv "PATH")))
 (setq exec-path (append '("/Library/TeX/texbin") exec-path))))
-(provide 'org-config)
+(provide 'lang/org)
 ;;; org-config.el ends here
