@@ -222,5 +222,44 @@
   :ensure t
   :hook (prog-mode . highlight-parentheses-mode))
 
-
+(use-package neotree
+  :config
+  (setq neo-create-file-auto-open nil
+        neo-auto-indent-point nil
+        neo-autorefresh nil
+        neo-mode-line-type 'none
+        neo-window-width 24
+        neo-show-updir-line nil
+        neo-theme 'nerd ; fallback
+        neo-banner-message nil
+        neo-confirm-create-file #'off-p
+        neo-confirm-create-directory #'off-p
+        neo-show-hidden-files nil
+        neo-keymap-style 'concise
+        neo-show-hidden-files t
+        neo-hidden-regexp-list
+        '(;; vcs folders
+          "^\\.\\(?:git\\|hg\\|svn\\)$"
+          ;; compiled files
+          "\\.\\(?:pyc\\|o\\|elc\\|lock\\|css.map\\|class\\)$"
+          ;; generated files, caches or local pkgs
+          "^\\(?:node_modules\\|vendor\\|.\\(project\\|cask\\|yardoc\\|sass-cache\\)\\)$"
+          ;; org-mode folders
+          "^\\.\\(?:sync\\|export\\|attach\\)$"
+          ;; temp files
+          "~$"
+          "^#.*#$"))
+(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+    (add-hook 'neotree-mode-hook
+              (lambda ()
+                (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-enter)
+                (define-key evil-normal-state-local-map (kbd "SPC") 'neotree-quick-look)
+                (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
+                (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)
+                (define-key evil-normal-state-local-map (kbd "g") 'neotree-refresh)
+                (define-key evil-normal-state-local-map (kbd "n") 'neotree-next-line)
+                (define-key evil-normal-state-local-map (kbd "p") 'neotree-previous-line)
+                (define-key evil-normal-state-local-map (kbd "A") 'neotree-stretch-toggle)
+                (define-key evil-normal-state-local-map (kbd "H") 'neotree-hidden-file-toggle)))
+  )
 (provide 'global)
