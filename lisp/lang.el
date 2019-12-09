@@ -8,8 +8,7 @@
 (use-package
   lsp-mode
   :ensure t
-  :init
-  (setq lsp-prefer-flymake nil)
+  :init (setq lsp-prefer-flymake nil)
   :config (require 'lsp-clients)
   (setq lsp-print-io t))
 (use-package
@@ -21,8 +20,8 @@
   (lsp-ui-doc-use-webkit -1)
   (lsp-ui-sideline-enable t)
   (lsp-ui-doc-enable nil)
-  :hook (lsp-mode . lsp-ui-mode)
-  )
+  (lsp-ui-doc-border "gray12")
+  :hook (lsp-mode . lsp-ui-mode))
 (use-package
   dap-mode
   :ensure t)
@@ -35,8 +34,10 @@
   :init
   ;; Don't convert to downcase.
   (setq-default company-dabbrev-downcase nil)
-  :config (global-company-mode nil)
-  :bind (("C-SPC" . company-complete) :map company-active-map ("C-n" . company-select-next)
+  :config (global-company-mode t)
+  :bind (("C-." . company-complete)
+         ;;
+         :map company-active-map ("C-n" . company-select-next)
          ("C-p" . company-select-previous)))
 (use-package
   company-statistics

@@ -1,65 +1,76 @@
-(use-package
-  use-package-ensure-system-package
-  :ensure t)
-
 ;; ==============================================
 ;; Evil mode
 ;; ==============================================
 (use-package
   evil
-  :config (setq evil-emacs-state-cursor '("#ffb1ef" bar))
+  :ensure t
+  :init
+  ;;
+  (setq evil-emacs-state-cursor '("#ffb1ef" bar))
   (setq evil-normal-state-cursor '("#55b1ef" box))
   (setq evil-visual-state-cursor '("orange" box))
   (setq evil-insert-state-cursor '("#c46bbc" bar))
   (setq evil-replace-state-cursor '("#c46bbc" hollow-rectangle))
   (setq evil-operator-state-cursor '("#c46bbc" hollow))
-  (evil-mode 1)
-  :bind (:map evil-insert-state-map
-              ("C-g" . evil-normal-state)))
+  :config (evil-mode 1))
+(use-package
+  evil-leader
+  :ensure t
+  :after evil
+  :config
+  ;;
+  (evil-leader/set-leader "SPC")
+  (evil-leader/set-key
+    ;;
+    "w" #'evil-window-map)
+  (global-evil-leader-mode))
+
 (use-package
   evil-terminal-cursor-changer
+  :ensure t
   :unless (display-graphic-p)
   :after evil
   :config (evil-terminal-cursor-changer-activate))
-(use-package
-  evil-leader
-  :after evil
-  :config (evil-leader/set-leader "SPC")
-  (evil-leader/set-key "w" #'evil-window-map)
-  (evil-leader/set-key "h" #'evil-first-non-blank)
-  (evil-leader/set-key "l" #'evil-end-of-line)
-  (global-evil-leader-mode))
-
 
 
 ;; ==============================================
 ;; Ivy Counsel Swiper
 ;; ==============================================
 (use-package
-  smex)
+  smex
+  :ensure t)
+
 (use-package
   ivy
-  :config (setq ivy-use-virtual-buffers t)
-  (setq ivy-count-format "(%d/%d) ")
-  (setq ivy-initial-inputs-alist nil)
-  (eval-after-load "evil-leader" (progn (evil-leader/set-key "SPC" #'counsel-M-x)
-                                        (evil-leader/set-key "f f" #'find-file)
-                                        (evil-leader/set-key "b b" #'switch-to-buffer)
-                                        (evil-leader/set-key "b k" #'kill-buffer)))
+  :ensure t
+  :custom (ivy-use-virtual-buffers t)
+  (ivy-count-format "(%d/%d) ")
+  (ivy-initial-inputs-alist nil)
+  :config ;;
+  (evil-leader/set-key "SPC" #'counsel-M-x "f f" #'find-file "f r" #'ivy-recentf "b b"
+    #'switch-to-buffer "b k" #'kill-buffer)
   (ivy-mode t))
+
 (use-package
   counsel
-  :bind ("M-x" . counsel-M-x)
+  :ensure t
+  :bind
+  ;;
+  ("M-x" . counsel-M-x)
   ("C-x C-f" . counsel-find-file)
   ("C-h v" . counsel-describe-variable)
   ("C-h f" . counsel-describe-function)
-  ("C-h k" . counsel-describe-function)
-  :config (eval-after-load "evil-leader" (progn (evil-leader/set-key "? f"
-                                                  #'counsel-describe--function)
-                                                (evil-leader/set-key "? v"
-                                                  #'counsel-describe--variable)
-                                                (evil-leader/set-key "? k"
-                                                  #'counsel-describe--key))))
+  ("C-h k" . describe-key)
+  :config (evil-leader/set-key
+            ;;
+            "? f" #'counsel-describe-function
+            ;;
+            "? v" #'counsel-describe-variable
+            ;;
+            "? k" #'describe-key
+            ;;
+            "? b" #'counsel-descbinds))
+
 (use-package
   swiper
   :ensure t
@@ -71,18 +82,23 @@
 (use-package
   projectile
   :ensure t
+  :defer 1
   :bind-keymap ("C-c p" . projectile-command-map)
-  :config (projectile-mode)
-  (eval-after-load "evil-leader" (progn (evil-leader/set-key "p" 'projectile-command-map))))
+  :config
+  ;;
+  (evil-leader/set-key "p" 'projectile-command-map)
+  (projectile-mode +1))
+
 (use-package
   counsel-projectile
   :ensure t
   :after projectile
   :config (counsel-projectile-mode t))
+
 (use-package
   magit
   :ensure t
-  :config (eval-after-load "evil-leader" (progn  (evil-leader/set-key "g" 'magit-status))))
+  :config (evil-leader/set-key "g" 'magit-status))
 
 
 ;; ==============================================
@@ -91,8 +107,7 @@
 (use-package
   dired
   :ensure nil
-  :config
-
+  :init
   ;; Always delete and copy recursively
   (setq dired-recursive-deletes 'always)
   (setq dired-recursive-copies 'always)
@@ -106,7 +121,7 @@
 
   ;; Move files to trash when deleting
   (setq delete-by-moving-to-trash t)
-
+  :config
   ;; Reuse same dired buffer, so doesn't create new buffer each time
   (put 'dired-find-alternate-file 'disabled nil)
   (add-hook 'dired-mode-hook
@@ -133,10 +148,10 @@
   doom-themes
   :when (display-graphic-p)
   :ensure t
-  :config (load-theme 'doom-tomorrow-night t)
-  (defun on-frame-open (frame)
-    (if (not (display-graphic-p frame))
-        (set-face-background 'default "unspecified-bg" frame)))
+  :init (load-theme 'doom-tomorrow-night t)
+  :config (defun on-frame-open (frame)
+            (if (not (display-graphic-p frame))
+                (set-face-background 'default "unspecified-bg" frame)))
   (on-frame-open (selected-frame))
   (add-hook 'after-make-frame-functions 'on-frame-open))
 ;; Modeline theme
@@ -144,19 +159,14 @@
   doom-modeline
   :ensure t
   :init (doom-modeline-init)
+  (setq doom-modeline-height 25 doom-modeline-bar-width 3 doom-modeline-icon nil
+        doom-modeline-enable-word-count 10 doom-modeline-icon (display-graphic-p)
+        doom-modeline-buffer-file-name-style 'file-name)
   :hook (after-init . doom-modeline-mode)
-  :config (setq doom-modeline-height 25 doom-modeline-bar-width 3 doom-modeline-icon nil
-                doom-modeline-enable-word-count 10 doom-modeline-icon (display-graphic-p)
-                doom-modeline-buffer-file-name-style 'file-name)
-  (set-face-attribute 'mode-line nil
-                      :background nil)
+  :config (set-face-attribute 'mode-line nil
+                              :background nil)
   (set-face-attribute 'mode-line-inactive nil
                       :background nil))
-
-;; ==============================================
-;; Default Enhancement
-;; ==============================================
-
 
 ;; ==============================================
 ;; Default Enhancement
@@ -174,15 +184,18 @@
   ace-jump-mode
   :ensure t
   :after evil-leader
-  :config (evil-leader/set-key "j" 'ace-jump-mode))
+  :config (evil-leader/set-key "j j" 'ace-jump-mode
+            "j l" 'ace-jump-line-mode
+            "j c" 'ace-jump-char-mode
+            "j w" 'ace-jump-word-mode))
 
 (use-package
   which-key
   :ensure t
   :defer 1
-  :config (setq which-key-idle-delay 0.01)
+  :init (setq which-key-idle-delay 1.0)
   (setq which-key-idle-secondary-delay 0)
-  (which-key-mode t))
+  :config (which-key-mode t))
 
 (use-package
   undo-tree
@@ -200,7 +213,7 @@
 (use-package
   highlight-indent-guides
   :ensure t
-  :config (setq highlight-indent-guides-method 'character)
+  :init (setq highlight-indent-guides-method 'character)
   ;; (setq highlight-indent-guides-character ?\|)
   (setq highlight-indent-guides-responsive 'top)
   (setq highlight-indent-guides-delay 0)
@@ -222,5 +235,29 @@
   :ensure t
   :hook (prog-mode . highlight-parentheses-mode))
 
-
+(use-package
+  neotree
+  :ensure t
+  :init (setq neo-create-file-auto-open nil neo-auto-indent-point nil neo-autorefresh nil
+              neo-mode-line-type 'none neo-window-width 24 neo-show-updir-line nil neo-theme 'nerd
+                                        ; fallback
+              neo-banner-message nil neo-confirm-create-file #'off-p neo-confirm-create-directory
+              #'off-p neo-show-hidden-files nil neo-keymap-style 'concise neo-show-hidden-files t)
+  (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+  :config (add-hook 'neotree-mode-hook
+                    (lambda ()
+                      (define-key evil-normal-state-local-map (kbd "j") 'neotree-next-line)
+                      (define-key evil-normal-state-local-map (kbd "k") 'neotree-previous-line)
+                      (define-key evil-normal-state-local-map (kbd "h") 'neotree-select-up-node)
+                      (define-key evil-normal-state-local-map (kbd "l") 'neotree-quick-look)
+                      (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
+                      (define-key evil-normal-state-local-map (kbd "r") 'neotree-rename-node)
+                      (define-key evil-normal-state-local-map (kbd "d") 'neotree-delete-node)
+                      (define-key evil-normal-state-local-map (kbd "c") 'neotree-copy-node)
+                      (define-key evil-normal-state-local-map (kbd "y")
+                        'neotree-copy-filepath-to-yank-ring)
+                      (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)
+                      (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-change-root)
+                      (define-key evil-normal-state-local-map (kbd "DEL")
+                        'neotree-hidden-file-toggle))))
 (provide 'global)

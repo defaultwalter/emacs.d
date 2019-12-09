@@ -2,7 +2,7 @@
 (require 'core/default)
 
 (install-package 'use-package)
-(require 'use-package-ensure)
-(setq use-package-always-ensure t)
-(setq use-package-compute-statistics t)
+
+(setq use-package-compute-statistics t
+      use-package-verbose t)
 (provide 'core)

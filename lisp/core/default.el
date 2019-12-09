@@ -21,8 +21,8 @@
 (setq-default frame-title-format "[%m] %f")
 
 (when window-system (set-gui-font)
-      (set-frame-parameter nil 'alpha 90)
-     
+      (set-frame-parameter nil 'alpha 99)
+
       ;; When buffer is closed, saves the cursor location
       (save-place-mode 1)
 
