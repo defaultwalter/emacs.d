@@ -5,6 +5,7 @@
 (setq-default org-agenda-files '("~/Documents/GTD"))
 (use-package org
   :ensure org-plus-contrib
+  :defer t
   :config (require 'ox-freemind))
 (setq-default org-confirm-babel-evaluate nil)
 (add-hook 'org-mode-hook (lambda ()

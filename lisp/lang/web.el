@@ -3,6 +3,7 @@
 ;;; Code:
 (use-package
   web-mode
-  :ensure t)
+  :ensure t
+  :defer t)
 (provide 'web-config)
 ;;; web-config.el ends here

@@ -4,6 +4,7 @@
 (use-package
   rust-mode
   :ensure t
+  :defer t
   :hook (rust-mode .
                    (lambda ()
                      (lsp)
@@ -14,6 +15,7 @@
 (use-package
   cargo
   :ensure t
+  :defer t
   :after rust-mode
   :hook (rust-mode . cargo-minor-mode))
 ;; (add-hook 'rust-mode-hook #'lsp)

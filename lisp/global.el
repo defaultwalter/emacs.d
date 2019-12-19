@@ -1,9 +1,37 @@
 ;; ==============================================
+;; Theme
+;; ==============================================
+(use-package
+  doom-themes
+  :when (display-graphic-p)
+  :ensure t
+  :init (load-theme 'doom-one t)
+  :config (defun on-frame-open (frame)
+            (if (not (display-graphic-p frame))
+                (set-face-background 'default "unspecified-bg" frame)))
+  (on-frame-open (selected-frame))
+  (add-hook 'after-make-frame-functions 'on-frame-open))
+;; Modeline theme
+(use-package
+  doom-modeline
+  :ensure t
+  :init (doom-modeline-init)
+  (setq doom-modeline-height 25 doom-modeline-bar-width 3 doom-modeline-icon nil
+        doom-modeline-enable-word-count 10 doom-modeline-icon (display-graphic-p)
+        doom-modeline-buffer-file-name-style 'file-name)
+  :hook (after-init . doom-modeline-mode)
+  :config (set-face-attribute 'mode-line nil
+                              :background nil)
+  (set-face-attribute 'mode-line-inactive nil
+                      :background nil))
+
+;; ==============================================
 ;; Evil mode
 ;; ==============================================
 (use-package
   evil
   :ensure t
+  :custom (evil-want-minibuffer t)
   :init
   ;;
   (setq evil-emacs-state-cursor '("#ffb1ef" bar))
@@ -38,22 +66,26 @@
 ;; ==============================================
 (use-package
   smex
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (use-package
   ivy
   :ensure t
+  :defer t
   :custom (ivy-use-virtual-buffers t)
   (ivy-count-format "(%d/%d) ")
   (ivy-initial-inputs-alist nil)
-  :config ;;
+  :init ;;
   (evil-leader/set-key "SPC" #'counsel-M-x "f f" #'find-file "f r" #'ivy-recentf "b b"
     #'switch-to-buffer "b k" #'kill-buffer)
+  :config
   (ivy-mode t))
 
 (use-package
   counsel
   :ensure t
+  :defer t
   :bind
   ;;
   ("M-x" . counsel-M-x)
@@ -74,6 +106,7 @@
 (use-package
   swiper
   :ensure t
+  :defer t
   :bind ("C-s" . swiper))
 
 
@@ -82,23 +115,26 @@
 (use-package
   projectile
   :ensure t
-  :defer 1
+  :defer nil
   :bind-keymap ("C-c p" . projectile-command-map)
+  :init
+  (evil-leader/set-key "p" 'projectile-command-map)
   :config
   ;;
-  (evil-leader/set-key "p" 'projectile-command-map)
-  (projectile-mode +1))
+  (projectile-mode +1)
+  (counsel-projectile-mode t))
 
 (use-package
   counsel-projectile
   :ensure t
-  :after projectile
+  :after (counsel projectile)
   :config (counsel-projectile-mode t))
 
 (use-package
   magit
   :ensure t
-  :config (evil-leader/set-key "g" 'magit-status))
+  :defer t
+  :init (evil-leader/set-key "g" 'magit-status))
 
 
 ;; ==============================================
@@ -141,32 +177,6 @@
 
 
 
-;; ==============================================
-;; Theme
-;; ==============================================
-(use-package
-  doom-themes
-  :when (display-graphic-p)
-  :ensure t
-  :init (load-theme 'doom-tomorrow-night t)
-  :config (defun on-frame-open (frame)
-            (if (not (display-graphic-p frame))
-                (set-face-background 'default "unspecified-bg" frame)))
-  (on-frame-open (selected-frame))
-  (add-hook 'after-make-frame-functions 'on-frame-open))
-;; Modeline theme
-(use-package
-  doom-modeline
-  :ensure t
-  :init (doom-modeline-init)
-  (setq doom-modeline-height 25 doom-modeline-bar-width 3 doom-modeline-icon nil
-        doom-modeline-enable-word-count 10 doom-modeline-icon (display-graphic-p)
-        doom-modeline-buffer-file-name-style 'file-name)
-  :hook (after-init . doom-modeline-mode)
-  :config (set-face-attribute 'mode-line nil
-                              :background nil)
-  (set-face-attribute 'mode-line-inactive nil
-                      :background nil))
 
 ;; ==============================================
 ;; Default Enhancement
@@ -174,17 +184,15 @@
 
 (use-package
   windresize
-  :ensure t)
-(when (fboundp 'winner-mode)
-  (winner-mode 1))
-
-
+  :ensure t
+  :defer t)
 
 (use-package
   ace-jump-mode
   :ensure t
   :after evil-leader
-  :config (evil-leader/set-key "j j" 'ace-jump-mode
+  :defer t
+  :init (evil-leader/set-key "j j" 'ace-jump-mode
             "j l" 'ace-jump-line-mode
             "j c" 'ace-jump-char-mode
             "j w" 'ace-jump-word-mode))
@@ -192,27 +200,23 @@
 (use-package
   which-key
   :ensure t
-  :defer 1
   :init (setq which-key-idle-delay 1.0)
   (setq which-key-idle-secondary-delay 0)
   :config (which-key-mode t))
 
-(use-package
-  undo-tree
-  :ensure t
-  :config (global-undo-tree-mode))
 
 ;; Better delete
 (use-package
   hungry-delete
   :ensure t
-  :defer 1
-  :config (global-hungry-delete-mode))
+  :defer t
+  :hook (prog-mode . hungry-delete-mode))
 
 ;; Highlight indent
 (use-package
   highlight-indent-guides
   :ensure t
+  :defer t
   :init (setq highlight-indent-guides-method 'character)
   ;; (setq highlight-indent-guides-character ?\|)
   (setq highlight-indent-guides-responsive 'top)
@@ -223,21 +227,25 @@
 (use-package
   autopair
   :ensure t
-  :config (autopair-global-mode))
+  :defer t
+  :hook (prog-mode . autopair-global-mode))
 ;; Rainbow parentheses
 (use-package
   rainbow-delimiters
   :ensure t
+  :defer t
   :hook (prog-mode . rainbow-delimiters-mode))
 ;; Highlight parentheses
 (use-package
   highlight-parentheses
   :ensure t
+  :defer t
   :hook (prog-mode . highlight-parentheses-mode))
 
 (use-package
   neotree
   :ensure t
+  :defer t
   :init (setq neo-create-file-auto-open nil neo-auto-indent-point nil neo-autorefresh nil
               neo-mode-line-type 'none neo-window-width 24 neo-show-updir-line nil neo-theme 'nerd
                                         ; fallback

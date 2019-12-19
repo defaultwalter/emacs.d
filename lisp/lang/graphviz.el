@@ -4,6 +4,7 @@
 (use-package
   graphviz-dot-mode
   :ensure t
+  :defer t
   :config (add-to-list 'auto-mode-alist '("\\.dot\\'" . graphviz-dot-mode))
   (setq-default graphviz-dot-indent-width 4)
   (add-hook 'org-mode-hook

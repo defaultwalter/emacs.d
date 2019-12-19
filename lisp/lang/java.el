@@ -9,6 +9,7 @@
 (use-package
   lsp-java
   :ensure t
+  :defer t
   :hook (java-mode .
                    (lambda ()
                      (lsp)

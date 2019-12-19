@@ -4,6 +4,7 @@
 (use-package
   plantuml-mode
   :ensure t
+  :defer t
   :config (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
                        ;; (setq-default plantuml-default-exec-mode 'jar)
                        ;; (setq plantuml-jar-path "/Users/baiyan/.emacs.d/plantuml.jar")

@@ -3,17 +3,20 @@
 ;;; Code:
 (use-package
   flycheck
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (use-package
   lsp-mode
   :ensure t
+  :defer t
   :init (setq lsp-prefer-flymake nil)
   :config (require 'lsp-clients)
   (setq lsp-print-io t))
 (use-package
   lsp-ui
   :ensure t
+  :defer t
   :after lsp-mode
   :commands lsp-ui-mode
   :custom (lsp-ui-doc-position (quote at-point))
@@ -24,7 +27,8 @@
   :hook (lsp-mode . lsp-ui-mode))
 (use-package
   dap-mode
-  :ensure t)
+  :ensure t
+  :defer t)
 
 
 ;; Auto complete
