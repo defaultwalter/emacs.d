@@ -3,15 +3,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("e47c0abe03e0484ddadf2ae57d32b0f29f0b2ddfe7ec810bd6d558765d9a6a6c" default)))
- '(ivy-count-format "(%d/%d) ")
- '(ivy-initial-inputs-alist nil)
- '(ivy-use-virtual-buffers t)
  '(package-selected-packages
    (quote
-    (org-plus-contrib plantuml-mode graphviz-dot-mode lsp-java cargo rust-mode company-lsp company-statistics company dap-mode lsp-ui lsp-mode flycheck neotree highlight-parentheses rainbow-delimiters autopair highlight-indent-guides hungry-delete which-key ace-jump-mode windresize doom-modeline doom-themes magit counsel-projectile projectile counsel ivy smex evil-terminal-cursor-changer evil-leader evil use-package))))
+    (disable-mouse windresize which-key use-package smex rainbow-delimiters plantuml-mode org-plus-contrib neotree magit lsp-ui lsp-java hungry-delete highlight-parentheses highlight-indent-guides graphviz-dot-mode fzf flycheck evil-terminal-cursor-changer evil-surround evil-leader doom-themes doom-modeline dap-mode counsel-projectile company-statistics company-lsp cnfonts cargo autopair ace-jump-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

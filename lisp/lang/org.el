@@ -9,12 +9,6 @@
   :config (require 'ox-freemind))
 (setq-default org-confirm-babel-evaluate nil)
 (add-hook 'org-mode-hook (lambda ()
-                           (set-face-attribute 'org-table nil
-                                               :font (font-spec :name
-                                                                "-*-Source Code Pro-ultrabold-italic-normal-*-*-*-*-*-m-0-iso10646-1"
-                                                                :weight 'normal
-                                                                :slant 'normal
-                                                                :size 15))
                            (if (fboundp 'org-display-inline-images)
                                (org-display-inline-images t t))
 

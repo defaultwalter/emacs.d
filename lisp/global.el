@@ -6,7 +6,12 @@
   :when (display-graphic-p)
   :ensure t
   :init (load-theme 'doom-one t)
-  :config (defun on-frame-open (frame)
+  :config
+
+  (set-face-attribute 'fringe nil
+                    :foreground "#fc5c59"
+                    :background (face-background 'default))
+  (defun on-frame-open (frame)
             (if (not (display-graphic-p frame))
                 (set-face-background 'default "unspecified-bg" frame)))
   (on-frame-open (selected-frame))
@@ -18,20 +23,28 @@
   :init (doom-modeline-init)
   (setq doom-modeline-height 25 doom-modeline-bar-width 3 doom-modeline-icon nil
         doom-modeline-enable-word-count 10 doom-modeline-icon (display-graphic-p)
-        doom-modeline-buffer-file-name-style 'file-name)
+        doom-modeline-buffer-file-name-style 'file-name
+        doom-modeline-modal-icon nil)
   :hook (after-init . doom-modeline-mode)
-  :config (set-face-attribute 'mode-line nil
-                              :background nil)
-  (set-face-attribute 'mode-line-inactive nil
-                      :background nil))
-
+  :config
+  ;; (set-face-attribute 'mode-line nil
+  ;;                             :background nil)
+  ;; (set-face-attribute 'mode-line-inactive nil
+  ;;                     :background nil)
+  )
+(use-package cnfonts
+  :ensure t
+  :init (setq cnfonts-profiles '("default" "min" "max"))
+  (setq cnfonts-use-system-type t)
+  :config
+  (cnfonts-enable))
 ;; ==============================================
 ;; Evil mode
 ;; ==============================================
 (use-package
   evil
   :ensure t
-  :custom (evil-want-minibuffer t)
+  :custom (evil-want-minibuffer nil)
   :init
   ;;
   (setq evil-emacs-state-cursor '("#ffb1ef" bar))
@@ -41,6 +54,10 @@
   (setq evil-replace-state-cursor '("#c46bbc" hollow-rectangle))
   (setq evil-operator-state-cursor '("#c46bbc" hollow))
   :config (evil-mode 1))
+;; (use-package evil-surround
+;;   :ensure t
+;;   :config
+;;   (global-evil-surroundy-mode 1))
 (use-package
   evil-leader
   :ensure t
@@ -77,9 +94,14 @@
   (ivy-count-format "(%d/%d) ")
   (ivy-initial-inputs-alist nil)
   :init ;;
-  (evil-leader/set-key "SPC" #'counsel-M-x "f f" #'find-file "f r" #'ivy-recentf "b b"
-    #'switch-to-buffer "b k" #'kill-buffer)
+  (evil-leader/set-key "SPC" #'counsel-M-x
+    "f f" #'find-file
+    "f r" #'ivy-recentf
+    "b b" #'switch-to-buffer
+    "b k" #'kill-buffer)
   :config
+  ;; Remove M-x prefix
+  (setq-default ivy-initial-inputs-alist nil)
   (ivy-mode t))
 
 (use-package
@@ -89,7 +111,7 @@
   :bind
   ;;
   ("M-x" . counsel-M-x)
-  ("C-x C-f" . counsel-find-file)
+  ("C-x c-f" . counsel-find-file)
   ("C-h v" . counsel-describe-variable)
   ("C-h f" . counsel-describe-function)
   ("C-h k" . describe-key)
@@ -109,7 +131,9 @@
   :defer t
   :bind ("C-s" . swiper))
 
-
+(use-package ace-jump-mode
+  :ensure t
+  :defer t)
 ;; Project
 ;; ==============================================
 (use-package
@@ -138,7 +162,7 @@
 
 
 ;; ==============================================
-;; Dired file manager
+;; File manager
 ;; ==============================================
 (use-package
   dired
@@ -176,6 +200,32 @@
 
 
 
+(use-package
+  neotree
+  :ensure t
+  :defer t
+  :init (setq neo-create-file-auto-open nil neo-auto-indent-point nil neo-autorefresh nil
+              neo-mode-line-type 'none neo-window-width 24 neo-show-updir-line nil neo-theme 'nerd
+                                        ; fallback
+              neo-banner-message nil neo-confirm-create-file #'off-p neo-confirm-create-directory
+              #'off-p neo-show-hidden-files nil neo-keymap-style 'concise neo-show-hidden-files t)
+  (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+  :config (add-hook 'neotree-mode-hook
+                    (lambda ()
+                      (define-key evil-normal-state-local-map (kbd "j") 'neotree-next-line)
+                      (define-key evil-normal-state-local-map (kbd "k") 'neotree-previous-line)
+                      (define-key evil-normal-state-local-map (kbd "h") 'neotree-select-up-node)
+                      (define-key evil-normal-state-local-map (kbd "l") 'neotree-quick-look)
+                      (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
+                      (define-key evil-normal-state-local-map (kbd "r") 'neotree-rename-node)
+                      (define-key evil-normal-state-local-map (kbd "d") 'neotree-delete-node)
+                      (define-key evil-normal-state-local-map (kbd "c") 'neotree-copy-node)
+                      (define-key evil-normal-state-local-map (kbd "y")
+                        'neotree-copy-filepath-to-yank-ring)
+                      (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)
+                      (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-change-root)
+                      (define-key evil-normal-state-local-map (kbd "DEL")
+                        'neotree-hidden-file-toggle))))
 
 
 ;; ==============================================
@@ -200,7 +250,7 @@
 (use-package
   which-key
   :ensure t
-  :init (setq which-key-idle-delay 1.0)
+  :init (setq which-key-idle-delay 0)
   (setq which-key-idle-secondary-delay 0)
   :config (which-key-mode t))
 
@@ -242,30 +292,4 @@
   :defer t
   :hook (prog-mode . highlight-parentheses-mode))
 
-(use-package
-  neotree
-  :ensure t
-  :defer t
-  :init (setq neo-create-file-auto-open nil neo-auto-indent-point nil neo-autorefresh nil
-              neo-mode-line-type 'none neo-window-width 24 neo-show-updir-line nil neo-theme 'nerd
-                                        ; fallback
-              neo-banner-message nil neo-confirm-create-file #'off-p neo-confirm-create-directory
-              #'off-p neo-show-hidden-files nil neo-keymap-style 'concise neo-show-hidden-files t)
-  (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-  :config (add-hook 'neotree-mode-hook
-                    (lambda ()
-                      (define-key evil-normal-state-local-map (kbd "j") 'neotree-next-line)
-                      (define-key evil-normal-state-local-map (kbd "k") 'neotree-previous-line)
-                      (define-key evil-normal-state-local-map (kbd "h") 'neotree-select-up-node)
-                      (define-key evil-normal-state-local-map (kbd "l") 'neotree-quick-look)
-                      (define-key evil-normal-state-local-map (kbd "q") 'neotree-hide)
-                      (define-key evil-normal-state-local-map (kbd "r") 'neotree-rename-node)
-                      (define-key evil-normal-state-local-map (kbd "d") 'neotree-delete-node)
-                      (define-key evil-normal-state-local-map (kbd "c") 'neotree-copy-node)
-                      (define-key evil-normal-state-local-map (kbd "y")
-                        'neotree-copy-filepath-to-yank-ring)
-                      (define-key evil-normal-state-local-map (kbd "RET") 'neotree-enter)
-                      (define-key evil-normal-state-local-map (kbd "TAB") 'neotree-change-root)
-                      (define-key evil-normal-state-local-map (kbd "DEL")
-                        'neotree-hidden-file-toggle))))
 (provide 'global)

@@ -20,22 +20,48 @@
 
 (setq-default frame-title-format "[%m] %f")
 
-(when window-system (set-gui-font)
-      (set-frame-parameter nil 'alpha 99)
+(when window-system  (set-frame-parameter nil 'alpha 99)
 
       ;; When buffer is closed, saves the cursor location
       (save-place-mode 1)
 
       ;; Custom fringe
-      (define-fringe-bitmap 'right-curly-arrow [#b00011111 #b00000001 #b00000001 #b00100001
-                                                           #b01100001 #b11111111 #b01100000
-                                                           #b00100000])
-      (define-fringe-bitmap 'left-curly-arrow [#b11111000 #b10000000 #b10000000 #b10000100
-                                                          #b10000110 #b11111111 #b00000110
-                                                          #b00000100])
-      (set-face-attribute 'fringe nil
-                          :foreground "#fc5c59"
-                          :background (face-background 'default))
+      (define-fringe-bitmap 'right-curly-arrow [#b00000000
+                                                #b00000000
+                                                #b00000000
+                                                #b00000000
+                                                #b00000000
+                                                #b00000000
+                                                #b00000000
+                                                #b00000000
+                                                #b00000000
+                                                #b00000000
+                                                ;;
+                                                #b00000000
+                                                #b00000000
+                                                #b00000000
+                                                #b00101010
+                                                #b00000000
+                                                #b00000010
+                                                #b00000000
+                                                #b00000010
+                                                #b00000000
+                                                #b00000010
+                                                #b00000000
+                                                #b00010010
+                                                #b00100000
+                                                #b01111110
+                                                #b00000000
+                                                #b00000000])
+      ;; 111111111111111111111111111111111111111111111111111111111111111111111111111111111111111
+      (define-fringe-bitmap 'left-curly-arrow [#b00000000
+                                               #b00000000
+                                               #b00000000
+                                               #b00000000
+                                               #b00000000
+                                               #b00000000
+                                               #b00000000
+                                               #b00000000])
       ;; (message "%s" system-type)
       (when (eq system-type 'darwin)
         ;; Emacs-plus transparent of title bar.
@@ -55,7 +81,11 @@
  ;; Turn Off Cursor Alarms
  ring-bell-function 'ignore
  ;; Show Keystrokes in Progress Instantly
- echo-keystrokes 0.1 version-control t vc-make-backup-files t)
+ echo-keystrokes 0.1
+ version-control t
+ vc-make-backup-files t
+ scroll-step 1
+ scroll-conservatively 10000)
 
 
 (setq-default
