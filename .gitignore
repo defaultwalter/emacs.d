@@ -8,6 +8,7 @@
 /places
 /transient
 /backups
+/workspace
 
 .projectile
 .DS_Store

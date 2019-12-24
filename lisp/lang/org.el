@@ -2,7 +2,7 @@
 ;;; Commentary:
 ;;; Code:
 
-(setq-default org-agenda-files '("~/Documents/GTD"))
+(setq-default org-agenda-files '("~/Nutstore Files/GTD"))
 (use-package org
   :ensure org-plus-contrib
   :defer t

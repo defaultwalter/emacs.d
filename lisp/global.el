@@ -54,10 +54,11 @@
   (setq evil-replace-state-cursor '("#c46bbc" hollow-rectangle))
   (setq evil-operator-state-cursor '("#c46bbc" hollow))
   :config (evil-mode 1))
-;; (use-package evil-surround
+;; (use-package evil-collection
+;;   :after evil
 ;;   :ensure t
 ;;   :config
-;;   (global-evil-surroundy-mode 1))
+;;   (evil-collection-init))
 (use-package
   evil-leader
   :ensure t
@@ -134,6 +135,10 @@
 (use-package ace-jump-mode
   :ensure t
   :defer t)
+(use-package command-log-mode
+  :ensure t
+  :config
+  (global-command-log-mode))
 ;; Project
 ;; ==============================================
 (use-package
