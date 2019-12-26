@@ -24,5 +24,4 @@ session*
 *.desktop
 .*
 eclipse.jdt.ls
-use-package/
 company-statistics-cache.el
