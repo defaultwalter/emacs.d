@@ -5,5 +5,5 @@
           (lambda () (setq prettify-symbols-alist
                       '(("lambda" . #x3bb)))))
 
-(provide 'lang/elisp)
+(provide 'major-mode/elisp)
 ;;; java-config.el ends here

@@ -4,28 +4,28 @@
 (require 'package)
 
 
-(setq package-archives '
-    (
-        ("gnu"   . "http://elpa.emacs-china.org/gnu/")
-        ("melpa" . "http://elpa.emacs-china.org/melpa/")
-        ("org" . "http://elpa.emacs-china.org/org/")))
+(setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
+                         ("melpa" . "http://elpa.emacs-china.org/melpa/")
+                         ("org" . "http://elpa.emacs-china.org/org/")))
 
 (package-initialize)
+(eval-when-compile
+  (add-to-list 'load-path (expand-file-name "use-package" user-emacs-directory))
+  (setq
+   ;; Enable package statistics
+   use-package-compute-statistics t
+   ;; Not show load message in message buffer
+   use-package-verbose nil)
+  (require 'use-package))
+;; Use `user.el` to save custom config
+(setq custom-file (expand-file-name "user.el" user-emacs-directory))
+;; Load custom config
+(load-file (expand-file-name "user.el" user-emacs-directory))
+;; Set config path
+(add-to-list 'load-path (expand-file-name "w" user-emacs-directory))
 
-(load-file
-    (expand-file-name "custom.el" user-emacs-directory))
-(setq custom-file
-    (expand-file-name "custom.el" user-emacs-directory))
-
-(add-to-list 'load-path
-    (expand-file-name "lisp" user-emacs-directory))
-
-(load (concat user-emacs-directory "lisp/core")
-      nil 'nomessage)
-
-(require 'global)
-(require 'lang)
-;; (require 'wm)
+(require 'core)
+(require 'major-mode)
 
 
 

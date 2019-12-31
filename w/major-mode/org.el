@@ -31,5 +31,5 @@
 (if (eq system-type 'darwin)
     (progn (setenv "PATH" (concat "/Library/TeX/texbin" (getenv "PATH")))
 (setq exec-path (append '("/Library/TeX/texbin") exec-path))))
-(provide 'lang/org)
+(provide 'major-mode/org)
 ;;; org-config.el ends here

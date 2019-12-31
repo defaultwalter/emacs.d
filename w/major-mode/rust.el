@@ -19,5 +19,5 @@
   :after rust-mode
   :hook (rust-mode . cargo-minor-mode))
 ;; (add-hook 'rust-mode-hook #'lsp)
-(provide 'lang/rust)
+(provide 'major-mode/rust)
 ;;; rust-config.el ends here

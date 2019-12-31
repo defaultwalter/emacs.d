@@ -13,5 +13,5 @@
   (setq plantuml-server-url "http://localhost:30000")
   :custom (org-plantuml-jar-path (expand-file-name "plantuml.jar" user-emacs-directory))
   )
-(provide 'lang/plantuml)
+(provide 'major-mode/plantuml)
 ;;; plantuml-config.el ends here

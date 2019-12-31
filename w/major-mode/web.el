@@ -5,5 +5,5 @@
   web-mode
   :ensure t
   :defer t)
-(provide 'web-config)
+(provide 'major-mode/web)
 ;;; web-config.el ends here

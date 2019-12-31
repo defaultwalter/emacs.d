@@ -23,5 +23,5 @@
 ;; (use-package
 ;;   lsp-java-treemacs
 ;;   :after (treemacs))
-(provide 'lang/java)
+(provide 'major-mode/java)
 ;;; java-config.el ends here

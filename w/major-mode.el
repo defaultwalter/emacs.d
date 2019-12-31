@@ -61,13 +61,13 @@
 (add-hook 'prog-mode-hook 'linum-mode)
 (global-prettify-symbols-mode)
 
-(require 'lang/rust)
-(require 'lang/python)
-(require 'lang/java)
-(require 'lang/elisp)
-(require 'lang/graphviz)
-(require 'lang/plantuml)
-(require 'lang/org)
+(require 'major-mode/rust)
+(require 'major-mode/python)
+(require 'major-mode/java)
+(require 'major-mode/elisp)
+(require 'major-mode/graphviz)
+(require 'major-mode/plantuml)
+(require 'major-mode/org)
 
-(provide 'lang)
+(provide 'major-mode)
 ;;; program-config.el ends here

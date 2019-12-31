@@ -5,5 +5,5 @@
 ;;   dap-python
 ;;   :after (lsp-mode dap-mode))
 
-(provide 'lang/python)
+(provide 'major-mode/python)
 ;;; python-config.el ends here
