@@ -2,9 +2,10 @@
   projectile
   :ensure t
   :defer nil
-  :bind-keymap ("C-c p" . projectile-command-map)
   :init
-  (evil-leader/set-key "p" 'projectile-command-map)
+  (bind-to-map help-map "k" 'describe-key "key-help")
+  (defalias 'project 'projectile-command-map)
+  (evil-leader/set-key "p" 'project)
   :config
   ;;
   (projectile-mode +1)
@@ -20,6 +21,8 @@
   magit
   :ensure t
   :defer t
-  :init (evil-leader/set-key "g" 'magit-status))
+  :init
+(bind-to-map project-map "g" 'magit-status "git")
+)
 
 (provide 'core/project)

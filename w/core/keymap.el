@@ -1,0 +1,83 @@
+(defun bind-to-map (map key command &optional name)
+  (if (commandp command)
+       (if name (progn
+                   (setq key-name (intern (concat "@" name)))
+                   (defalias key-name command)
+                   (define-key map key key-name))
+         (define-key map key command))
+     (message "bind-to-map:`%s` is not a command." command)))
+
+(setq application-map (make-sparse-keymap))
+(define-prefix-command 'application-map 'application-map "Application")
+
+(setq buffer-map (make-sparse-keymap))
+(define-prefix-command 'buffer-map 'buffer-map "Buffer")
+(bind-to-map buffer-map "c" 'kill-current-buffer "close-buffer")
+(bind-to-map buffer-map "b" 'switch-to-buffer "switch-buffer")
+(bind-to-map buffer-map "k" 'kill-buffer "close-selected-buffer")
+(bind-to-map buffer-map "w" 'kill-buffer-and-window "close-buffer-and-window")
+(bind-to-map buffer-map "s" 'save-buffer "save-buffer")
+(bind-to-map buffer-map "S" 'save-some-buffers "save-all-buffer-interactive")
+(bind-to-map buffer-map "p" 'switch-to-prev-buffer "previous-buffer")
+(bind-to-map buffer-map "n" 'switch-to-next-buffer "next-buffer")
+(bind-to-map buffer-map "m" 'view-echo-area-messages "message-buffer")
+
+(setq comment-map (make-sparse-keymap))
+(define-prefix-command 'comment-map 'comment-map "Comment")
+(bind-to-map comment-map "c" 'comment-line "(un)comment")
+(bind-to-map comment-map "r" 'comment-or-uncomment-region "(un)comment-region")
+
+(setq debug-map (make-sparse-keymap))
+(define-prefix-command 'debug-map 'debug-map "Debug")
+
+(setq error-map (make-sparse-keymap))
+(define-prefix-command 'error-map 'error-map "Error")
+
+(setq file-map (make-sparse-keymap))
+(define-prefix-command 'file-map 'file-map "File")
+(bind-to-map file-map "o" 'find-file "open-file")
+(bind-to-map file-map "r" 'recentf-open-files "recent-file")
+
+(setq help-map (make-sparse-keymap))
+(define-prefix-command 'help-map 'help-map "Help")
+(bind-to-map help-map (kbd "<return>") 'view-order-manuals "manuals")
+(bind-to-map help-map "f" 'describe-function "function-help")
+(bind-to-map help-map "v" 'describe-variable "variable-help")
+(bind-to-map help-map "k" 'describe-key "key-help")
+(bind-to-map help-map "c" 'describe-coding-system "coding-system")
+(bind-to-map help-map "m" 'describe-mode "mode-help")
+(bind-to-map help-map "p" 'describe-package "package-help")
+(bind-to-map help-map "w" 'where-is "where-is")
+(bind-to-map help-map "s" 'describe-symbol "symbol-help")
+(bind-to-map help-map "?" 'about-emacs "about")
+
+(setq insert-map (make-sparse-keymap))
+(define-prefix-command 'insert-map 'insert-map "Insert")
+
+(setq jump-map (make-sparse-keymap))
+(define-prefix-command 'jump-map 'jump-map "jump")
+
+;; (setq mode-map (make-sparse-keymap))
+;; (define-prefix-command 'mode-map 'mode-map "mode")
+
+(setq project-map (make-sparse-keymap))
+(define-prefix-command 'project-map 'project-map "Project")
+
+(setq search-map (make-sparse-keymap))
+(define-prefix-command 'search-map 'search-map "Search")
+(bind-to-map search-map "f" 'isearch-forward "search-forward")
+(bind-to-map search-map "b" 'isearch-backward "search-backward")
+
+(setq window-map (make-sparse-keymap))
+(define-prefix-command 'window-map 'window-map "Window")
+(bind-to-map window-map "c" 'delete-window "close-window")
+(bind-to-map window-map "C" 'delete-other-windows "close-other-window")
+(bind-to-map window-map "o" 'other-window "switch-window")
+(bind-to-map window-map "m" 'maximize-window "maximize-window")
+(bind-to-map window-map "n" 'minimize-window "minimize-window")
+(bind-to-map window-map "b" 'balance-windows "balance-window")
+(bind-to-map window-map "s" 'split-window-horizontally "split-window-horizontally")
+(bind-to-map window-map "v" 'split-window-vertically "split-window-vertically")
+(bind-to-map window-map "w" 'kill-buffer-and-window "close-window-and-buffer")
+
+(provide 'core/keymap)

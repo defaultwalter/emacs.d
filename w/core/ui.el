@@ -42,17 +42,16 @@
 
 (use-package
   doom-themes
-  :when (display-graphic-p)
+  ;; :when (display-graphic-p)
   :ensure t
   :init (load-theme 'doom-one t)
   :config
-
   (set-face-attribute 'fringe nil
-                    :foreground "#fc5c59"
-                    :background (face-background 'default))
+                      :foreground "#fc5c59"
+                      :background (face-background 'default))
   (defun on-frame-open (frame)
-            (if (not (display-graphic-p frame))
-                (set-face-background 'default "unspecified-bg" frame)))
+    (if (not (display-graphic-p frame))
+        (set-face-background 'default "unspecified-bg" frame)))
   (on-frame-open (selected-frame))
   (add-hook 'after-make-frame-functions 'on-frame-open))
 ;; Modeline theme
@@ -62,8 +61,7 @@
   :init (doom-modeline-init)
   (setq doom-modeline-height 25 doom-modeline-bar-width 3 doom-modeline-icon nil
         doom-modeline-enable-word-count 10 doom-modeline-icon (display-graphic-p)
-        doom-modeline-buffer-file-name-style 'file-name
-        doom-modeline-modal-icon nil)
+        doom-modeline-buffer-file-name-style 'file-name doom-modeline-modal-icon nil)
   :hook (after-init . doom-modeline-mode)
   :config
   ;; (set-face-attribute 'mode-line nil
@@ -71,12 +69,12 @@
   ;; (set-face-attribute 'mode-line-inactive nil
   ;;                     :background nil)
   )
-(use-package cnfonts
+(use-package
+  cnfonts
   :ensure t
   :init (setq cnfonts-profiles '("default" "min" "max"))
   (setq cnfonts-use-system-type t)
-  :config
-  (cnfonts-enable))
+  :config (cnfonts-enable))
 
 
 (use-package

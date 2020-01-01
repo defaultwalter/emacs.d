@@ -1,4 +1,3 @@
-
 (use-package
   evil
   :ensure t
@@ -11,7 +10,12 @@
   (setq evil-insert-state-cursor '("#c46bbc" bar))
   (setq evil-replace-state-cursor '("#c46bbc" hollow-rectangle))
   (setq evil-operator-state-cursor '("#c46bbc" hollow))
-  :config (evil-mode 1))
+
+  (bind-to-map window-map "h" 'evil-window-left "switch-to-left-window")
+  (bind-to-map window-map "j" 'evil-window-down "switch-to-down-window")
+  (bind-to-map window-map "k" 'evil-window-up "switch-to-up-window")
+  (bind-to-map window-map "l" 'evil-window-right "switch-to-right-window")
+  :config (evil-mode t))
 ;; (use-package evil-collection
 ;;   :after evil
 ;;   :ensure t
@@ -21,13 +25,26 @@
   evil-leader
   :ensure t
   :after evil
+  :init (setq evil-leader/in-all-states t)
   :config
   ;;
+  (evil-leader/set-key "a" 'application-map)
+  (evil-leader/set-key "b" 'buffer-map)
+  (evil-leader/set-key "c" 'comment-map)
+  (evil-leader/set-key "d" 'debug-map)
+  (evil-leader/set-key "e" 'error-map)
+  (evil-leader/set-key "f" 'file-map)
+  (evil-leader/set-key "j" 'jump-map)
+  (evil-leader/set-key "h" 'help-map)
+  (evil-leader/set-key "i" 'insert-map)
+  (evil-leader/set-key "p" 'project-map)
+  (evil-leader/set-key "s" 'search-map)
+  (evil-leader/set-key "w" 'window-map)
   (evil-leader/set-leader "SPC")
-  (evil-leader/set-key
-    ;;
-    "w" #'evil-window-map)
-  (global-evil-leader-mode))
+  (global-evil-leader-mode t)
+  ;; 这里有个BUG，需要重新开启 evil-mode 否则在 *Messages* buffer 中，evil-leader 无效。
+  ;; https://github.com/cofi/evil-leader/issues/10
+  (evil-mode t))
 
 (use-package
   evil-terminal-cursor-changer
@@ -51,66 +68,56 @@
   (ivy-count-format "(%d/%d) ")
   (ivy-initial-inputs-alist nil)
   :init ;;
-  (evil-leader/set-key "SPC" #'counsel-M-x
-    "f f" #'find-file
-    "f r" #'ivy-recentf
-    "b b" #'switch-to-buffer
-    "b k" #'kill-buffer)
   :config
   ;; Remove M-x prefix
   (setq-default ivy-initial-inputs-alist nil)
   (ivy-mode t))
-
+;; 在 M-x 和帮助中显示文档
+(use-package
+  ivy-rich
+  :ensure t
+  :init
+  :config (ivy-rich-mode +1)
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 (use-package
   counsel
   :ensure t
   :defer t
+  :init (defalias 'command-list 'counsel-M-x)
+  (evil-leader/set-key "SPC" #'command-list)
+
   :bind
-  ;;
-  ("M-x" . counsel-M-x)
-  ("C-x c-f" . counsel-find-file)
-  ("C-h v" . counsel-describe-variable)
-  ("C-h f" . counsel-describe-function)
-  ("C-h k" . describe-key)
-  :config (evil-leader/set-key
-            ;;
-            "? f" #'counsel-describe-function
-            ;;
-            "? v" #'counsel-describe-variable
-            ;;
-            "? k" #'describe-key
-            ;;
-            "? b" #'counsel-descbinds))
+  :config )
 
 (use-package
   swiper
   :ensure t
   :defer t
+  :init (bind-to-map search-map "s" 'swiper "search")
+  (bind-to-map search-map "a" 'swiper-all "search-all-buffers")
   :bind ("C-s" . swiper))
 
-(use-package ace-jump-mode
+(use-package
+  command-log-mode
   :ensure t
-  :defer t)
-(use-package command-log-mode
-  :ensure t
-  :config
-  (global-command-log-mode))
+  :config (global-command-log-mode))
 
 (use-package
   ace-jump-mode
   :ensure t
   :after evil-leader
   :defer t
-  :init (evil-leader/set-key "j j" 'ace-jump-mode
-            "j l" 'ace-jump-line-mode
-            "j c" 'ace-jump-char-mode
-            "j w" 'ace-jump-word-mode))
+  :init (bind-to-map jump-map "j" 'ace-jump-mode "jump-to")
+  (bind-to-map jump-map "l" 'ace-jump-line-mode "jump-to-line")
+  (bind-to-map jump-map "c" 'ace-jump-mode "jump-to-char")
+  (bind-to-map jump-map "w" 'ace-jump-mode "jump-to-word"))
 
 (use-package
   which-key
   :ensure t
   :init (setq which-key-idle-delay 0)
   (setq which-key-idle-secondary-delay 0)
+  (setq which-key-sort-order 'which-key-description-order)
   :config (which-key-mode t))
 
 
@@ -150,5 +157,4 @@
   :ensure t
   :defer t
   :hook (prog-mode . highlight-parentheses-mode))
-
 (provide 'core/global)
