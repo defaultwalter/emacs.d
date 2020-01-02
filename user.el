@@ -13,7 +13,7 @@
  '(org-plantuml-jar-path "/Users/baiyan/.emacs.d/plantuml.jar")
  '(package-selected-packages
    (quote
-    (ivy-rich helm elisp-format command-log-mode evil-collection disable-mouse windresize which-key use-package smex rainbow-delimiters plantuml-mode org-plus-contrib neotree magit lsp-ui lsp-java hungry-delete highlight-parentheses highlight-indent-guides graphviz-dot-mode fzf flycheck evil-terminal-cursor-changer evil-surround evil-leader doom-themes doom-modeline dap-mode counsel-projectile company-statistics company-lsp cnfonts cargo autopair ace-jump-mode))))
+    (evil-magit evil-org lsp-treemacs exec-path-from-shell dashboard indent-guide indent-guides company-box beacon buffer-move company-quickhelp treemacs-magit treemacs-icons-dired treemacs-projectile treemacs-evil use-package-ensure-system-package rust-mode company lsp-mode evil ivy-rich helm elisp-format command-log-mode evil-collection disable-mouse windresize which-key use-package smex rainbow-delimiters plantuml-mode org-plus-contrib neotree magit lsp-ui lsp-java hungry-delete highlight-parentheses highlight-indent-guides graphviz-dot-mode fzf flycheck evil-terminal-cursor-changer evil-surround evil-leader doom-themes doom-modeline dap-mode counsel-projectile company-statistics company-lsp cnfonts cargo autopair ace-jump-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

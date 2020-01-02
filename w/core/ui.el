@@ -45,10 +45,9 @@
   ;; :when (display-graphic-p)
   :ensure t
   :init (load-theme 'doom-one t)
-  :config
-  (set-face-attribute 'fringe nil
-                      :foreground "#fc5c59"
-                      :background (face-background 'default))
+  :config (set-face-attribute 'fringe nil
+                              :foreground "#fc5c59"
+                              :background (face-background 'default))
   (defun on-frame-open (frame)
     (if (not (display-graphic-p frame))
         (set-face-background 'default "unspecified-bg" frame)))
@@ -63,12 +62,7 @@
         doom-modeline-enable-word-count 10 doom-modeline-icon (display-graphic-p)
         doom-modeline-buffer-file-name-style 'file-name doom-modeline-modal-icon nil)
   :hook (after-init . doom-modeline-mode)
-  :config
-  ;; (set-face-attribute 'mode-line nil
-  ;;                             :background nil)
-  ;; (set-face-attribute 'mode-line-inactive nil
-  ;;                     :background nil)
-  )
+  :config)
 (use-package
   cnfonts
   :ensure t
@@ -76,10 +70,34 @@
   (setq cnfonts-use-system-type t)
   :config (cnfonts-enable))
 
-
+;; 跳转后 显示光标位置
 (use-package
-  windresize
+  beacon
   :ensure t
-  :defer t)
+  :config (beacon-mode t))
 
+;; Rainbow parentheses
+(use-package
+  rainbow-delimiters
+  :ensure t
+  :defer t
+  :hook (prog-mode . rainbow-delimiters-mode))
+
+;; Highlight parentheses
+(use-package
+  highlight-parentheses
+  :ensure t
+  :defer t
+  :hook (prog-mode . highlight-parentheses-mode))
+;; Highlight indent
+(use-package
+  highlight-indent-guides
+  :ensure t
+  :defer t
+  :init (setq highlight-indent-guides-method 'fill)
+  (setq highlight-indent-guides-auto-odd-face-perc 15)
+  (setq highlight-indent-guides-auto-even-face-perc 15)
+  (setq highlight-indent-guides-auto-character-face-perc 20)
+  (setq highlight-indent-guides-auto-enabled nil)
+  :hook (prog-mode . highlight-indent-guides-mode))
 (provide 'core/ui)

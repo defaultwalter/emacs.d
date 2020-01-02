@@ -1,11 +1,11 @@
 (defun bind-to-map (map key command &optional name)
   (if (commandp command)
-       (if name (progn
-                   (setq key-name (intern (concat "@" name)))
-                   (defalias key-name command)
-                   (define-key map key key-name))
-         (define-key map key command))
-     (message "bind-to-map:`%s` is not a command." command)))
+      (if name (progn
+                 (setq key-name (intern (concat "@" name)))
+                 (defalias key-name command)
+                 (define-key map key key-name))
+        (define-key map key command))
+    (message "bind-to-map:`%s` is not a command." command)))
 
 (setq application-map (make-sparse-keymap))
 (define-prefix-command 'application-map 'application-map "Application")
@@ -36,6 +36,7 @@
 (setq file-map (make-sparse-keymap))
 (define-prefix-command 'file-map 'file-map "File")
 (bind-to-map file-map "o" 'find-file "open-file")
+(bind-to-map file-map "f" 'find-file "open-file")
 (bind-to-map file-map "r" 'recentf-open-files "recent-file")
 
 (setq help-map (make-sparse-keymap))
@@ -57,9 +58,6 @@
 (setq jump-map (make-sparse-keymap))
 (define-prefix-command 'jump-map 'jump-map "jump")
 
-;; (setq mode-map (make-sparse-keymap))
-;; (define-prefix-command 'mode-map 'mode-map "mode")
-
 (setq project-map (make-sparse-keymap))
 (define-prefix-command 'project-map 'project-map "Project")
 
@@ -71,8 +69,7 @@
 (setq window-map (make-sparse-keymap))
 (define-prefix-command 'window-map 'window-map "Window")
 (bind-to-map window-map "c" 'delete-window "close-window")
-(bind-to-map window-map "C" 'delete-other-windows "close-other-window")
-(bind-to-map window-map "o" 'other-window "switch-window")
+(bind-to-map window-map "o" 'delete-other-windows "close-other-window")
 (bind-to-map window-map "m" 'maximize-window "maximize-window")
 (bind-to-map window-map "n" 'minimize-window "minimize-window")
 (bind-to-map window-map "b" 'balance-windows "balance-window")

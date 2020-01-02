@@ -4,13 +4,15 @@
 (use-package
   flycheck
   :ensure t
-  :defer t)
+  :defer t
+  :hook (lsp-mode . flycheck-mode))
 
 (use-package
   lsp-mode
   :ensure t
   :defer t
-  :init (setq lsp-prefer-flymake nil)
+  :init ;; (setq lsp-prefer-flymake nil)
+
   :config (require 'lsp-clients)
   (setq lsp-print-io t))
 (use-package
@@ -38,11 +40,18 @@
   :init
   ;; Don't convert to downcase.
   (setq-default company-dabbrev-downcase nil)
-  :config (global-company-mode t)
-  :bind (("C-." . company-complete)
+  (add-hook 'after-init-hook 'global-company-mode)
+  :bind (("TAB" . company-indent-or-complete-common)
          ;;
          :map company-active-map ("C-n" . company-select-next)
          ("C-p" . company-select-previous)))
+
+(use-package
+  company-box
+  :ensure t
+  :defer t
+  :hook (company-mode . company-box-mode))
+
 (use-package
   company-statistics
   :ensure t

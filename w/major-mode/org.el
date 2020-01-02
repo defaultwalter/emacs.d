@@ -7,6 +7,16 @@
   :ensure org-plus-contrib
   :defer t
   :config (require 'ox-freemind))
+(use-package evil-org
+  :ensure t
+  :after org
+  :config
+  (add-hook 'org-mode-hook 'evil-org-mode)
+  (add-hook 'evil-org-mode-hook
+            (lambda ()
+              (evil-org-set-key-theme)))
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
 (setq-default org-confirm-babel-evaluate nil)
 (add-hook 'org-mode-hook (lambda ()
                            (if (fboundp 'org-display-inline-images)

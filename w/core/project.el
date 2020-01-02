@@ -2,8 +2,7 @@
   projectile
   :ensure t
   :defer nil
-  :init
-  (bind-to-map help-map "k" 'describe-key "key-help")
+  :init (bind-to-map help-map "k" 'describe-key "key-help")
   (defalias 'project 'projectile-command-map)
   (evil-leader/set-key "p" 'project)
   :config
@@ -22,7 +21,18 @@
   :ensure t
   :defer t
   :init
-(bind-to-map project-map "g" 'magit-status "git")
-)
+  (bind-to-map project-map "g" 'magit-status "git"))
+(use-package evil-magit
+  :ensure t
+  :init (setq evil-magit-state 'normal))
+(use-package
+  treemacs-projectile
+  :after (treemacs projectile)
+  :ensure t)
+
+(use-package
+  treemacs-magit
+  :after (treemacs magit)
+  :ensure t)
 
 (provide 'core/project)

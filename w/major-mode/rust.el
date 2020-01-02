@@ -7,11 +7,10 @@
   :defer t
   :hook (rust-mode .
                    (lambda ()
-                     (lsp)
+                     (lsp-deferred)
                      (dap-mode 1)
                      (dap-ui-mode 1)))
-  :config (evil-leader/set-key-for-mode 'rust-mode "d"
-                                                  'lsp-ui-doc-glance))
+  :config )
 (use-package
   cargo
   :ensure t

@@ -10,7 +10,6 @@
   (setq evil-insert-state-cursor '("#c46bbc" bar))
   (setq evil-replace-state-cursor '("#c46bbc" hollow-rectangle))
   (setq evil-operator-state-cursor '("#c46bbc" hollow))
-
   (bind-to-map window-map "h" 'evil-window-left "switch-to-left-window")
   (bind-to-map window-map "j" 'evil-window-down "switch-to-down-window")
   (bind-to-map window-map "k" 'evil-window-up "switch-to-up-window")
@@ -85,6 +84,7 @@
   :defer t
   :init (defalias 'command-list 'counsel-M-x)
   (evil-leader/set-key "SPC" #'command-list)
+  (bind-to-map 'file-map "r" 'counsel-recentf)
 
   :bind
   :config )
@@ -101,7 +101,17 @@
   command-log-mode
   :ensure t
   :config (global-command-log-mode))
-
+;; 交换Window buffer
+(use-package
+  buffer-move
+  :ensure t
+  :defer t
+  :init (bind-to-map window-map "H" 'buf-move-left "window-move-left")
+  (bind-to-map window-map "J" 'buf-move-down "window-move-down")
+  (bind-to-map window-map "K" 'buf-move-up "window-move-up")
+  (bind-to-map window-map "L" 'buf-move-right "window-move-right")
+  (setq buffer-move-stay-after-swap t)
+  (setq buffer-move-behavior 'move))
 (use-package
   ace-jump-mode
   :ensure t
@@ -118,7 +128,21 @@
   :init (setq which-key-idle-delay 0)
   (setq which-key-idle-secondary-delay 0)
   (setq which-key-sort-order 'which-key-description-order)
-  :config (which-key-mode t))
+  :config (which-key-declare-prefixes "SPC SPC" "command")
+  (which-key-declare-prefixes "SPC a" "application")
+  (which-key-declare-prefixes "SPC b" "buffer")
+  (which-key-declare-prefixes "SPC c" "comment")
+  (which-key-declare-prefixes "SPC e" "error")
+  (which-key-declare-prefixes "SPC d" "debug")
+  (which-key-declare-prefixes "SPC f" "file")
+  (which-key-declare-prefixes "SPC j" "jump")
+  (which-key-declare-prefixes "SPC h" "help")
+  (which-key-declare-prefixes "SPC i" "insert")
+  (which-key-declare-prefixes "SPC m" "major mode")
+  (which-key-declare-prefixes "SPC p" "project")
+  (which-key-declare-prefixes "SPC s" "search")
+  (which-key-declare-prefixes "SPC w" "window")
+  (which-key-mode t))
 
 
 ;; Better delete
@@ -128,33 +152,17 @@
   :defer t
   :hook (prog-mode . hungry-delete-mode))
 
-;; Highlight indent
-(use-package
-  highlight-indent-guides
-  :ensure t
-  :defer t
-  :init (setq highlight-indent-guides-method 'character)
-  ;; (setq highlight-indent-guides-character ?\|)
-  (setq highlight-indent-guides-responsive 'top)
-  (setq highlight-indent-guides-delay 0)
-  (setq highlight-indent-guides-auto-character-face-perc 7)
-  :hook (prog-mode . highlight-indent-guides-mode))
 ;; Auto complete parentheses
 (use-package
   autopair
   :ensure t
   :defer t
   :hook (prog-mode . autopair-global-mode))
-;; Rainbow parentheses
+
 (use-package
-  rainbow-delimiters
+  windresize
   :ensure t
   :defer t
-  :hook (prog-mode . rainbow-delimiters-mode))
-;; Highlight parentheses
-(use-package
-  highlight-parentheses
-  :ensure t
-  :defer t
-  :hook (prog-mode . highlight-parentheses-mode))
+  :init (bind-to-map window-map "r" 'windresize "resize-window"))
+
 (provide 'core/global)
