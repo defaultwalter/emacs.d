@@ -52,6 +52,8 @@
  ;; 设置鼠标滚动速度
  mouse-wheel-progressive-speed nil)
 
+(desktop-save-mode 1)
+
 ;; 当 buffer 关闭后，保存光标位置
 (save-place-mode 1)
 ;; 插入时替换选区
@@ -126,6 +128,8 @@
   (add-hook 'emacs-startup-hook 'revert-gc))
 ;; Garbage collect when Emacs is not in focus.
 (add-hook 'focus-out-hook #'garbage-collect)
+
+
 
 (provide 'core/default)
 ;;; default.el ends here

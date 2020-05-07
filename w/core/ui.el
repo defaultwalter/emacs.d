@@ -10,6 +10,7 @@
 ;; set frame title
 (setq-default frame-title-format "[%m] %f")
 
+(setq linum-format "%4d |")
 (setq-default
  ;; 不显示启动屏幕
  inhibit-splash-screen 1
@@ -40,6 +41,18 @@
     (add-to-list 'default-frame-alist '(ns-appearance . dark))))
 
 
+(defun my/set-font ()
+  ;;
+  (set-face-attribute 'default nil
+                      :font (format   "%s:pixelsize=%d" "Sarasa Mono SC" 18))
+  ;; chinese font
+  (dolist (charset '(kana han symbol cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font) charset (font-spec :family "Sarasa Mono SC"))))
+(if (display-graphic-p)
+    (my/set-font))
+(if (daemonp)
+    (my/set-font))
+
 (use-package
   doom-themes
   ;; :when (display-graphic-p)
@@ -58,17 +71,16 @@
   doom-modeline
   :ensure t
   :init (doom-modeline-init)
-  (setq doom-modeline-height 25 doom-modeline-bar-width 3 doom-modeline-icon nil
-        doom-modeline-enable-word-count 10 doom-modeline-icon (display-graphic-p)
-        doom-modeline-buffer-file-name-style 'file-name doom-modeline-modal-icon nil)
+  (setq doom-modeline-height 20 doom-modeline-bar-width 3 doom-modeline-icon nil
+        doom-modeline-enable-word-count 10
+        ;; doom-modeline-icon (display-graphic-p)
+        doom-modeline-buffer-file-name-style 'relative-to-project doom-modeline-modal-icon nil)
+  ;; (set-face-attribute 'mode-line nil
+  ;;                     :background "#2f3239")
+  ;; (set-face-attribute 'mode-line-inactive nil
+  ;;                     :background nil)
   :hook (after-init . doom-modeline-mode)
   :config)
-(use-package
-  cnfonts
-  :ensure t
-  :init (setq cnfonts-profiles '("default" "min" "max"))
-  (setq cnfonts-use-system-type t)
-  :config (cnfonts-enable))
 
 ;; 跳转后 显示光标位置
 (use-package
