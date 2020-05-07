@@ -1,3 +1,5 @@
-* My emacs config
-[[file:./screenshots/emacs.png]]
-[[file:./screenshots/org-mode.png]]
+[[file:screenshots/01.png][Image]]
+* Install
+#+BEGIN_SRC shell
+git clone --recursive {repo} ~/.emacs.d
+#+END_SRC
