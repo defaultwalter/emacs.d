@@ -10,7 +10,7 @@
 ;; set frame title
 (setq-default frame-title-format "[%m] %f")
 
-(setq linum-format "%4d |")
+(setq linum-format "%4d|")
 (setq-default
  ;; 不显示启动屏幕
  inhibit-splash-screen 1
@@ -50,9 +50,13 @@
     (set-fontset-font (frame-parameter nil 'font) charset (font-spec :family "Sarasa Mono SC"))))
 (if (display-graphic-p)
     (my/set-font))
+;; (if (daemonp)
+;;     (my/set-font))
+(defun my/set-frame (frame)
+  (select-frame frame)
+  (my/set-font))
 (if (daemonp)
-    (my/set-font))
-
+    (add-hook 'after-make-frame-functions #'my/set-frame))
 (use-package
   doom-themes
   ;; :when (display-graphic-p)

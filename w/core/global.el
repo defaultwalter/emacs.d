@@ -1,4 +1,8 @@
 (use-package
+  fcitx
+  :ensure t
+  :config (fcitx-default-setup))
+(use-package
   evil
   :ensure t
   :custom (evil-want-minibuffer nil)

@@ -9,13 +9,10 @@
                          ("org" . "http://elpa.emacs-china.org/org/")))
 
 (package-initialize)
-(eval-when-compile (add-to-list 'load-path (expand-file-name "use-package" user-emacs-directory))
-                   (setq
-                    ;; Enable package statistics
-                    use-package-compute-statistics t
-                    ;; Not show load message in message buffer
-                    use-package-verbose nil)
-                   (require 'use-package))
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(require 'use-package)
 (use-package
   exec-path-from-shell
   :ensure t
