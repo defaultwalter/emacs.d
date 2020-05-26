@@ -12,6 +12,7 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
+(setq use-package-compute-statistics t)
 (require 'use-package)
 (use-package
   exec-path-from-shell
@@ -29,8 +30,6 @@
 
 (require 'core)
 (require 'major-mode)
-
-
 
 (provide 'init)
 ;;; init.el ends here

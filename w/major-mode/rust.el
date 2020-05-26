@@ -10,7 +10,7 @@
                      (lsp-deferred)
                      (dap-mode 1)
                      (dap-ui-mode 1)))
-  :config )
+  :init (w/leader-set-key-for-mode 'rust-mode "f" "format" 'lsp-format-buffer @content-map))
 (use-package
   cargo
   :ensure t

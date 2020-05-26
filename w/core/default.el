@@ -52,7 +52,7 @@
  ;; 设置鼠标滚动速度
  mouse-wheel-progressive-speed nil)
 
-(desktop-save-mode 1)
+;; (desktop-save-mode 1)
 
 ;; 当 buffer 关闭后，保存光标位置
 (save-place-mode 1)

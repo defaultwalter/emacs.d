@@ -7,7 +7,8 @@
   org
   :ensure org-plus-contrib
   :defer t
-  :config (require 'ox-freemind))
+  :config (require 'ox-freemind)
+  (require 'org-tempo))
 
 
 ;; (use-package

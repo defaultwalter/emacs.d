@@ -30,7 +30,7 @@
   :ensure t
   :defer t
   :init
-  (bind-to-map file-map "t" 'treemacs "file-tree")
+  (w/leader-set-key "f" "file-explorer" 'treemacs @view-map)
   :config (progn
             (setq treemacs-collapse-dirs                 (if treemacs-python-executable 3 0)
                   treemacs-deferred-git-apply-delay      0.5 treemacs-directory-name-transformer
