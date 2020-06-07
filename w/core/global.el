@@ -60,21 +60,21 @@
   counsel                               ;基于ivy的命令文件补全工具
   :ensure t
   :defer t
-  :init (w/bind-to-map file-map "f"
+  :init (w/create-leader-key "f"
+                             (lambda()
+                               (interactive)
+                               (let ((counsel-find-file-ignore-regexp "^\\."))
+                                 (counsel-find-file)))
+                             "find-file" file-map-prefix)
+  (w/create-leader-key "a" 'counsel-find-file "find-all-file" file-map-prefix)
+  (w/create-leader-key "r" 'counsel-recentf "recent-file" file-map-prefix)
+  (w/create-leader-key "b"
                        (lambda()
                          (interactive)
-                         (let ((counsel-find-file-ignore-regexp "^\\."))
-                           (counsel-find-file)))
-                       "find-file")
-  (w/bind-to-map file-map "a" counsel-find-file "find-all-file")
-  (w/bind-to-map file-map "a" counsel-recentf "recent-file")
-  (w/bind-to-map buffer-map "b"
-                 (lambda()
-                   (interactive)
-                   (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
-                     (counsel-switch-buffer)))
-                 "switch-buffer")
-  (w/bind-to-map buffer-map "a" counsel-switch-buffer "switch-all-buffer")
+                         (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
+                           (counsel-switch-buffer)))
+                       "switch-buffer" buffer-map-prefix)
+  (w/create-leader-key "a" 'counsel-switch-buffer "switch-all-buffer" buffer-map-prefix)
   :config (defalias 'command 'counsel-M-x)
   (evil-leader/set-key "SPC" 'command))
 
@@ -82,8 +82,8 @@
   swiper                                ;基于ivy的增量搜索工具
   :ensure t
   :defer t
-  :init (w/bind-to-map content-map "s" swiper "isearch")
-  (w/bind-to-map content-map "S" swiper-all "search-in-buffers")
+  :init (w/create-leader-key "s" 'swiper "isearch" content-map-prefix)
+  (w/create-leader-key "S" 'swiper-all "search-in-buffers" content-map-prefix)
   :bind ("C-S-s" . swiper-all)
   ("C-s" . swiper))
 
@@ -96,10 +96,10 @@
   buffer-move                           ; 交换两个window的buffer
   :ensure t
   :defer t
-  :init (w/bind-to-map buffer-map "h" buf-move-left "buffer-move-to-left-window")
-  (w/bind-to-map buffer-map "j" buf-move-down "buffer-move-to-down-window")
-  (w/bind-to-map buffer-map "k" buf-move-up "buffer-move-to-up-window")
-  (w/bind-to-map buffer-map "l" buf-move-right "buffer-move-to-right-window")
+  :init (w/create-leader-key "h" 'buf-move-left "buffer-move-to-left-window" buffer-map-prefix)
+  (w/create-leader-key "j" 'buf-move-down "buffer-move-to-down-window" buffer-map-prefix)
+  (w/create-leader-key "k" 'buf-move-up "buffer-move-to-up-window" buffer-map-prefix)
+  (w/create-leader-key "l" 'buf-move-right "buffer-move-to-right-window" buffer-map-prefix)
   (setq buffer-move-stay-after-swap t)
   (setq buffer-move-behavior 'move))
 
@@ -107,7 +107,7 @@
   windresize                            ;调整window大小
   :ensure t
   :defer t
-  :init (w/bind-to-map window-map "r" windresize "resize-window"))
+  :init (w/create-leader-key "r" 'windresize "resize-window" window-map-prefix))
 
 
 ;; (use-package
@@ -136,26 +136,31 @@
   counsel-projectile                    ;projectile 使用 counsel前端
   :ensure t
   :after (counsel projectile)
-  :init (w/bind-to-map project-map "p" counsel-projectile-switch-project "switch-project")
-  (w/bind-to-map project-map "f" counsel-projectile-find-file "find-project-file")
-  (w/bind-to-map project-map "d" counsel-projectile-find-dir "find-project-dir")
-  (w/bind-to-map project-map "s" counsel-projectile-grep "search-in-project")
-  (w/bind-to-map project-map "S" counsel-projectile-git-grep "search-in-project-by-git")
-  (w/bind-to-map project-map "c" projectile-kill-buffers "close-project")
-  (w/bind-to-map project-map "i" projectile-project-info "project-info")
-  (w/bind-to-map project-map "R" projectile-clear-known-projects "clear-project-cache")
+  :init (w/create-leader-key "p" 'counsel-projectile-switch-project "switch-project"
+                             project-map-prefix)
+  (w/create-leader-key "f" 'counsel-projectile-find-file "find-project-file" project-map-prefix)
+  (w/create-leader-key "d" 'counsel-projectile-find-dir "find-project-dir" project-map-prefix)
+  (w/create-leader-key "s" 'counsel-projectile-grep "search-in-project" project-map-prefix)
+  (w/create-leader-key "S" 'counsel-projectile-git-grep "search-in-project-by-git"
+                       project-map-prefix)
+  (w/create-leader-key "c" 'projectile-kill-buffers "close-project" project-map-prefix)
+  (w/create-leader-key "i" 'projectile-project-info "project-info" project-map-prefix)
+  (w/create-leader-key "R" 'projectile-clear-known-projects "clear-project-cache"
+                       project-map-prefix)
   :config (counsel-projectile-mode t))
 
 (use-package
   magit                                 ;git 插件
   :ensure t
   :defer t
-  :init (w/bind-to-map project-map "g" magit-status "git"))
+  :init (w/create-leader-key "g" 'magit-status "git" project-map-prefix))
 
 (use-package
   evil-magit                            ;magit使用evil按键绑定
   :ensure t
   :init (setq evil-magit-state 'normal))
+
+
 
 ;;;; ==============================================
 ;;;; 编辑增强
@@ -200,22 +205,14 @@
   :ensure t
   :after evil
   :init (setq evil-leader/in-all-states t)
+  (evil-leader/set-leader "SPC")
   :config
   ;;
-  (evil-leader/set-leader "SPC")
-  (evil-leader/set-key "f" 'file-map)
-  (evil-leader/set-key "b" 'buffer-map)
-  (evil-leader/set-key "w" 'window-map)
-  (evil-leader/set-key "c" 'content-map)
-  (evil-leader/set-key "g" 'goto-map)
-  (evil-leader/set-key "p" 'project-map)
-  (evil-leader/set-key "m" 'major-map)
-  (evil-leader/set-key "h" 'help-map)
   (global-evil-leader-mode t)
-  (w/bind-to-map window-map "h" evil-window-left "focus-left-window")
-  (w/bind-to-map window-map "j" evil-window-down "focus-down-window")
-  (w/bind-to-map window-map "k" evil-window-up "focus-up-window")
-  (w/bind-to-map window-map "l" evil-window-right "focus-right-window")
+  (w/create-leader-key "h" 'evil-window-left "focus-left-window" window-map-prefix)
+  (w/create-leader-key "j" 'evil-window-down "focus-down-window" window-map-prefix)
+  (w/create-leader-key "k" 'evil-window-up "focus-up-window" window-map-prefix)
+  (w/create-leader-key "l" 'evil-window-right "focus-right-window" window-map-prefix)
   ;; 这里有个BUG，需要重新开启 evil-mode 否则在 *Messages* buffer 中，evil-leader 无效。
   ;; https://github.com/cofi/evil-leader/issues/10
   (evil-mode t))
@@ -231,15 +228,15 @@
   smart-comment                         ;注释插件
   :ensure t
   :bind ("C-/" . smart-comment)
-  :init (w/bind-to-map content-map "c" smart-comment "comment"))
+  :init (w/create-leader-key "c" 'smart-comment "comment" content-map-prefix))
 
 (use-package
   ace-jump-mode                         ; 根据字符在文档中跳转
   :ensure t
   :defer t
-  :init (w/bind-to-map goto-map "j" ace-jump-char-mode "jump-to-char")
-  (w/bind-to-map goto-map "l" ace-jump-line-mode "jump-to-line")
-  (w/bind-to-map goto-map "w" ace-jump-word-mode "jump-to-word"))
+  :init (w/create-leader-key "j" 'ace-jump-char-mode "jump-to-char" goto-map-prefix)
+  (w/create-leader-key "l" 'ace-jump-line-mode "jump-to-line" goto-map-prefix)
+  (w/create-leader-key "w" 'ace-jump-word-mode "jump-to-word" goto-map-prefix))
 
 
 (use-package

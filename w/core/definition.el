@@ -64,9 +64,43 @@
 ;;      (define-prefix-command ',map-name ',map-name ,name)
 ;;      ))
 
-(defmacro w/create-keymap (map-name name)
+(defmacro w/create-keymap (map-name name &optional parent)
   `(progn
      (setq ,map-name (make-sparse-keymap))
-     (define-prefix-command ',map-name ',map-name ,name)))
+     (define-prefix-command ',map-name ',map-name ,name)
+     (when ,parent (set-keymap-parent ,map-name ,parent))
+     (lambda ()
+       (which-key-show-keymap ',map-name))))
+
+(defmacro w/create-leader-keymap (key map-name name &optional parent leader-key)
+  `(let ((current-key (if ,parent (concat ,parent " " ,key) ,key) )
+         (key-map (make-sparse-keymap))
+         (leader-key  (when (eq ,leader-key nil) "SPC")))
+     (define-prefix-command ',map-name 'key-map ,name)
+     (evil-leader/set-key current-key key-map)
+     (which-key-add-key-based-replacements (concat leader-key " " current-key) ,name)
+     current-key))
+
+(defmacro w/create-leader-key (key command name &optional parent leader-key)
+  `(let ((current-key (if ,parent (concat ,parent " " ,key) ,key) )
+         (leader-key  (when (eq ,leader-key nil) "SPC")))
+     (evil-leader/set-key current-key ,command)
+     (which-key-add-key-based-replacements (concat leader-key " " current-key) ,name)))
+
+(defmacro w/create-leader-keymap-for-mode (mode key map-name name &optional parent leader-key)
+  `(let ((current-key (if ,parent (concat ,parent " " ,key) ,key) )
+         (key-map (make-sparse-keymap))
+         (leader-key  (when (eq ,leader-key nil) "SPC")))
+     (define-prefix-command ',map-name 'key-map ,name)
+     (evil-leader/set-key-for-mode mode current-key key-map)
+     (which-key-add-major-mode-key-based-replacements mode (concat leader-key " "
+                                                                   current-key) ,name) current-key))
+
+(defmacro w/create-leader-key-for-mode (mode key command name &optional parent leader-key)
+  `(let ((current-key (if ,parent (concat ,parent " " ,key) ,key) )
+         (leader-key  (when (eq ,leader-key nil) "SPC")))
+     (evil-leader/set-key-for-mode mode current-key ,command)
+     (which-key-add-major-mode-key-based-replacements mode (concat leader-key " "
+                                                                   current-key) ,name)))
 
 (provide 'core/definition)
