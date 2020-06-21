@@ -4,11 +4,11 @@
 
 
 ;; Auto complete parentheses
-(use-package
-  autopair
-  :ensure t
-  :defer t
-  :hook (prog-mode . autopair-mode))
+;; (use-package
+;;   autopair
+;;   :ensure t
+;;   :defer t
+;;   :hook (prog-mode . autopair-mode))
 
 (use-package
   flycheck
@@ -17,8 +17,8 @@
   :hook (lsp-mode . flycheck-mode))
 
 (defun w/bind-lsp-map-for-mode (mode)
-  (w/create-leader-key-for-mode mode "f" 'lsp-format-buffer "format" content-map-prefix)
-  (w/create-leader-key-for-mode mode "r" 'lsp-rename "rename" content-map-prefix)
+  (w/create-leader-key-for-mode mode "f" 'lsp-format-buffer "format" major-map-prefix)
+  (w/create-leader-key-for-mode mode "r" 'lsp-rename "rename" major-map-prefix)
   (w/create-leader-key-for-mode mode "d" 'lsp-ui-peek-find-definitions "peek-definitions"
                                 goto-map-prefix)
   (w/create-leader-key-for-mode mode "r" 'lsp-ui-peek-find-references "peek-references"
@@ -84,7 +84,7 @@
   ;; Don't convert to downcase.
   (setq-default company-dabbrev-downcase nil)
   (add-hook 'after-init-hook 'global-company-mode)
-  :bind (("C-<tab>" . company-indent-or-complete-common)
+  :bind (("C-<tab>" . company-complete-common)
          ;;
          :map company-active-map        ;
          ("C-n" . company-select-next)
@@ -101,7 +101,15 @@
          ("C-n" . company-select-next)
          ("C-p" . company-select-previous)
          ("<tab>" . company-complete-selection)
-         ("<return>" . company-complete-selection)      ))
+         ("<return>" . company-complete-selection)      )
+  :custom                               ;
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0.1)
+  ;; (company-show-numbers t)
+  :config (setq company-backends '((company-files ; files & directory
+                                    company-keywords ; keywords
+                                    company-capf company-yasnippet)
+                                   (company-abbrev company-dabbrev))))
 (use-package
   company-box
   :ensure t
@@ -113,6 +121,8 @@
   company-statistics
   :ensure t
   :after company
+  :custom                               ;
+  (company-statistics-file (expand-file-name "company-statistics-cache.el" misc-file-directory))
   :config (company-statistics-mode))
 (use-package
   company-lsp
@@ -121,9 +131,21 @@
   :commands company-lsp
   :config (push 'company-lsp company-backends))
 
-(add-hook 'prog-mode-hook 'hs-minor-mode)
-(add-hook 'prog-mode-hook 'linum-mode)
+(use-package
+  yasnippet
+  :ensure t
+  :hook (prog-mode . yas-minor-mode)
+  :config                               ;
+  (yas-reload-all))
+(use-package
+  yasnippet-snippets
+  :ensure t
+  :after yasnippet)
 
-(global-prettify-symbols-mode)
+(add-hook 'prog-mode-hook
+          (lambda ()
+            ( hs-minor-mode t)
+            (linum-mode t)
+            (prettify-symbols-mode t)))
 
 (provide 'major-mode/programming)

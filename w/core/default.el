@@ -13,23 +13,21 @@
 ;;;; 基础设置
 ;;;; ==============================================
 
-
-(when (display-graphic-p)
-  (scroll-bar-mode -1)
-  (tool-bar-mode -1)
-  (menu-bar-mode -1)
-  (tooltip-mode -1)
-  (set-frame-parameter nil 'internal-border-width 10) ; 设置窗口边距
-  (set-frame-parameter nil 'alpha 99)                 ;设置窗口透明度
-  (w/set-font)                                        ;设置字体
+(when environment/gui
+  ;; (tooltip-mode -1)
+  ;; (set-frame-parameter nil 'internal-border-width 10) ; 设置窗口边距
+  (set-frame-parameter nil 'alpha 99)   ;设置窗口透明度
+  (w/set-font)                          ;设置字体
   (w/set-wrap-fringe)                   ;设置自动换行标识
   )
+;; {{{
 (setq shift-select-mode nil                     ; 禁止双击 shift 选择
       load-prefer-newer t                       ; 加载最新的文件
       ring-bell-function 'ignore                ; 关闭光标警告
       echo-keystrokes 0.1                       ; 显示未完成的按键命令
       scroll-step 1 scroll-conservatively 10000 ; 滚动时保持光标位置
       )
+;; }}}
 
 
 (setq-default tab-width 4                      ; Tab Width
@@ -50,12 +48,15 @@
               )
 
 ;; (desktop-save-mode 1)                 ;自动保存环境
+
 (save-place-mode 1)                   ; 当 buffer 关闭后，保存光标位置
-(delete-selection-mode 1)             ; 插入时替换选区
-(global-auto-revert-mode t)           ; 开启自动恢复
-(auto-compression-mode t)             ; 压缩文件支持
-(recentf-mode t)                      ; 开启最近访问的文件
-(global-hl-line-mode t)               ; 高亮当前的行
+(setq save-place-file (expand-file-name "places" misc-file-directory))
+(delete-selection-mode 1)               ; 插入时替换选区
+(global-auto-revert-mode t)             ; 开启自动恢复
+(auto-compression-mode t)               ; 压缩文件支持
+(recentf-mode t)                        ; 开启最近访问的文件
+(setq recentf-save-file (expand-file-name "recentf" misc-file-directory))
+(global-hl-line-mode t)                 ; 高亮当前的行
 
 ;; 保存文件时移除空格
 (add-hook 'before-save-hook
@@ -64,36 +65,31 @@
             (delete-trailing-whitespace)))
 (fset 'yes-or-no-p 'y-or-n-p)           ; 用 y/n 代替 yes/no
 
+(electric-pair-mode t)
+(electric-quote-mode t)
 ;; 换行时自动排版
 (global-set-key (kbd "RET") 'newline-and-indent)
 
-;; Unset file name handler alist.
-(eval-and-compile
-  (defun reset-file-name-handler-alist ()
-    (setq file-name-handler-alist orig-file-name-handler-alist))
-  (defvar orig-file-name-handler-alist file-name-handler-alist)
-  (setq file-name-handler-alist nil)
-  (add-hook 'emacs-startup-hook 'reset-file-name-handler-alist))
 (setq exec-path-from-shell-check-startup-files nil)
 
 
 ;;;; ==============================================
 ;;;; 备份
 ;;;; ==============================================
-(make-directory "~/.emacs.d/autosaves" t)
-(make-directory "~/.emacs.d/backups" t)
-(setq
- ;; 启动备份版本控制
- version-control t
- ;; 创建版本控制备份文件
- vc-make-backup-files t
- ;; 删除旧的版本
- delete-old-versions -1
- ;; 设置备份目录
- backup-directory-alist '(("." . "~/.emacs.d/backups/"))
- ;; 设置自动保存文件名
- auto-save-file-name-transforms  '((".*" "~/.emacs.d/autosaves/\\1" t)))
+(defconst backup-file-directory (expand-file-name "backup" misc-file-directory))
+(make-directory backup-file-directory t)
 
+;; 启动备份版本控制
+(setq version-control t)
+;; 创建版本控制备份文件
+(setq vc-make-backup-files t)
+;; 删除旧的版本
+(setq delete-old-versions -1)
+;; 设置备份目录
+(setq backup-directory-alist `(("." . ,backup-file-directory)))
+;; 设置自动保存文件名
+(setq auto-save-file-name-transforms  `((".*" ,backup-file-directory t)))
+(setq auto-save-list-file-prefix backup-file-directory)
 
 ;; ==============================================
 ;; 字符
@@ -131,27 +127,13 @@
             (local-set-key (kbd "RET") #'dired-find-alternate-file)
             (local-set-key (kbd "<mouse-2>") #'dired-find-alternate-file)))
 
+;; 自动关闭minibuffer
+(add-hook 'mouse-leave-buffer-hook
+          (lambda()
+            (when (and (>= (recursion-depth) 1)
+                       (active-minibuffer-window))
+              (abort-recursive-edit))))
 
-
-
-;; ==============================================
-;; 垃圾回收
-;; ==============================================
-;; Avoid garbage collection during startup.
-(eval-and-compile
-  (defun revert-gc ()
-    (setq gc-cons-threshold 16777216 gc-cons-percentage 0.1))
-  (setq gc-cons-threshold 402653184 gc-cons-percentage 0.6)
-  (add-hook 'emacs-startup-hook 'revert-gc))
-;; Garbage collect when Emacs is not in focus.
-(add-hook 'focus-out-hook #'garbage-collect)
-
-
-;; if system is macOS
-(when (eq system-type 'darwin)
-  ;; Emacs-plus transparent of title bar.
-  (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
-  (add-to-list 'default-frame-alist '(ns-appearance . dark)))
 
 (provide 'core/default)
 ;;; default.el ends here
