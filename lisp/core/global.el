@@ -1,3 +1,9 @@
+(use-package
+  exec-path-from-shell
+  :if (memq window-system '(ns mac))
+  :ensure t
+  :config (exec-path-from-shell-initialize))
+
 ;;;; ==============================================
 ;;;; 主题外观
 ;;;; ==============================================
@@ -7,10 +13,10 @@
   :ensure t
   :if (display-graphic-p))
 
-
 (use-package
   doom-modeline
   :ensure t
+  :defer t
   :init (doom-modeline-init)
   (setq doom-modeline-height 20 doom-modeline-bar-width 3 doom-modeline-icon nil
         doom-modeline-enable-word-count 10
@@ -18,16 +24,14 @@
         doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
         doom-modeline-buffer-file-name-style 'relative-to-project doom-modeline-modal-icon nil)
   :hook (after-init . doom-modeline-mode)
-  :config
-  )
+  :config)
 (use-package
   doom-themes
   ;; :when (display-graphic-p)
   :ensure t
   :init (load-theme 'doom-Iosvkem t)
   ;; :init (load-theme 'doom-one t)
-  :config
-  (set-face-attribute 'fringe nil
+  :config (set-face-attribute 'fringe nil
                               :foreground "#fc5c59"
                               :background (face-background 'default)))
 
@@ -60,9 +64,11 @@
   :defer t
   :init                                 ;
   (setq smex-save-file (expand-file-name "smex-items" misc-file-directory)))
+
 (use-package
   ivy-rich                              ; 在 M-x 和帮助中显示文档
   :ensure t
+  :defer 1
   :init
   :config (ivy-rich-mode +1)
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
@@ -71,21 +77,18 @@
   counsel                               ;基于ivy的命令文件补全工具
   :ensure t
   :defer t
-  :init (w/create-leader-key "f"
-                             (lambda()
-                               (interactive)
-                               (let ((counsel-find-file-ignore-regexp "^\\."))
-                                 (counsel-find-file)))
-                             "find-file" file-map-prefix)
+  :init (w/create-leader-key "f" (lambda()
+                                   (interactive)
+                                   (let ((counsel-find-file-ignore-regexp "^\\."))
+                                     (counsel-find-file))) "find-file" file-map-prefix)
   (w/create-leader-key "a" 'counsel-find-file "find-all-file" file-map-prefix)
   (w/create-leader-key "r" 'counsel-recentf "recent-file" file-map-prefix)
-  (w/create-leader-key "b"
-                       (lambda()
-                         (interactive)
-                         (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
-                           (counsel-switch-buffer)))
-                       "switch-buffer" buffer-map-prefix)
+  (w/create-leader-key "b" (lambda()
+                             (interactive)
+                             (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
+                               (counsel-switch-buffer))) "switch-buffer" buffer-map-prefix)
   (w/create-leader-key "a" 'counsel-switch-buffer "switch-all-buffer" buffer-map-prefix)
+  :bind (("M-x" . counsel-M-x))
   :config (defalias 'command 'counsel-M-x)
   (evil-leader/set-key "SPC" 'command))
 
@@ -101,6 +104,7 @@
 (use-package
   command-log-mode                      ; 记录历史命令
   :ensure t
+  :defer t
   :config (global-command-log-mode))
 
 (use-package
@@ -128,14 +132,14 @@
 
   ;; (projectile-indexing-method 'native)
   (projectile-sort-order 'access-time)
-  :config (projectile-mode +1)
-  (counsel-projectile-mode t))
+  (projectile-find-dir-includes-top-level t)
+  :config (projectile-mode +1))
 
 (use-package
   counsel-projectile                    ;projectile 使用 counsel前端
   :ensure t
   :after (counsel projectile)
-  :custom;
+  :custom                               ;
   (counsel-projectile-sort-files t)
   (counsel-projectile-sort-directories t)
   (counsel-projectile-sort-buffers t)
@@ -164,6 +168,12 @@
 ;;   :ensure t
 ;;   :init (setq evil-magit-state 'normal))
 
+(use-package
+  multi-term
+  :ensure t
+  :defer t
+  :custom (multi-term-dedicated-select-after-open-p t) ;打开后光标定位到 Terminal Window
+  :init (w/create-leader-key "t" 'multi-term-dedicated-toggle "toggle-terminal" window-map-prefix))
 
 
 
@@ -178,13 +188,13 @@
   smart-comment                         ;注释插件
   :ensure t
   :bind ("C-/" . smart-comment)
-  :init (w/create-leader-key "c" 'smart-comment "comment" major-map-prefix))
+  :init (w/create-leader-key "c" 'smart-comment "comment" content-map-prefix))
 
 (use-package
   ace-jump-mode                         ; 根据字符在文档中跳转
   :ensure t
   :defer t
-  :init (w/create-leader-key "j" 'ace-jump-char-mode "jump-to-char" goto-map-prefix)
+  :init (w/create-leader-key "c" 'ace-jump-char-mode "jump-to-char" goto-map-prefix)
   (w/create-leader-key "l" 'ace-jump-line-mode "jump-to-line" goto-map-prefix)
   (w/create-leader-key "w" 'ace-jump-word-mode "jump-to-word" goto-map-prefix))
 
@@ -236,12 +246,14 @@
   format-all                            ;格式化代码，支持多种格式
   :ensure t
   :defer t
-  :init (w/create-leader-key "f" 'format-all-buffer "format" major-map-prefix))
+  :init (w/create-leader-key "f" 'format-all-buffer "format" content-map-prefix))
 
 (use-package
-  auto-sudoedit                             ;自动请求sudo权限
-  :if (or environment/linux environment/mac)
+  auto-sudoedit                         ;自动请求sudo权限
+  :if (or environment/linux
+          environment/mac)
   :ensure t
-  :init (auto-sudoedit-mode 1))
+  :defer 5
+  :config (auto-sudoedit-mode 1))
 
 (provide 'core/global)

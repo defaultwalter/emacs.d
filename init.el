@@ -6,6 +6,7 @@
   ;; Emacs版本低于27时，手动加载‘early-init.el’
   (load-file (expand-file-name "early-init.el" user-emacs-directory)))
 
+
 (require 'package)
 (setq package-user-dir (expand-file-name "packages" user-emacs-directory))
 (setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
@@ -19,25 +20,22 @@
   (package-install 'use-package))
 
 (require 'use-package)
+
 (setq use-package-compute-statistics t)
 
 (use-package
   use-package-ensure-system-package
-  :ensure t)
-
-(use-package
-  exec-path-from-shell
   :ensure t
-  :config (exec-path-from-shell-initialize))
+  :defer t)
 
-;; Use `user.el` to save custom config
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-;; Load custom config
-(when (file-exists-p custom-file)
-  (load-file custom-file))
+(use-package benchmark-init
+  :ensure t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 ;; Set config path
-(add-to-list 'load-path (expand-file-name "w" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
 
 (require 'core)
 (require 'major-mode)

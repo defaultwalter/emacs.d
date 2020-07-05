@@ -5,11 +5,8 @@
   rust-mode
   :ensure t
   :defer t
-  :hook (rust-mode .
-                   (lambda ()
-                     (lsp-deferred)))
-  :init (w/bind-lsp-map-for-mode 'rust-mode)
-  )
+  :hook (rust-mode . lsp-deferred)
+  :init (w/bind-lsp-map-for-mode 'rust-mode))
 (use-package
   cargo
   :ensure t

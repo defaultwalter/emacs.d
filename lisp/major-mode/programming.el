@@ -17,8 +17,9 @@
   :hook (lsp-mode . flycheck-mode))
 
 (defun w/bind-lsp-map-for-mode (mode)
-  (w/create-leader-key-for-mode mode "f" 'lsp-format-buffer "format" major-map-prefix)
-  (w/create-leader-key-for-mode mode "r" 'lsp-rename "rename" major-map-prefix)
+  (w/create-leader-key-for-mode mode "f" 'lsp-format-buffer "format" content-map-prefix)
+  (w/create-leader-key-for-mode mode "r" 'lsp-rename "rename" content-map-prefix)
+  (w/create-leader-key-for-mode mode "h" 'lsp-ui-doc-glance "show-document" view-map-prefix)
   (w/create-leader-key-for-mode mode "d" 'lsp-ui-peek-find-definitions "peek-definitions"
                                 goto-map-prefix)
   (w/create-leader-key-for-mode mode "r" 'lsp-ui-peek-find-references "peek-references"
@@ -54,19 +55,21 @@
   lsp-mode
   :ensure t
   :defer t
-  :init ;; (setq lsp-prefer-flymake nil)
+  :hook ((lsp-mode . lsp-enable-which-key-integration))
+  :init ;;
+  (setq lsp-prefer-capf t)
+  (setq lsp-keymap-prefix "C-l")
   :config (require 'lsp-clients)
   (setq lsp-print-io t))
 (use-package
   lsp-ui
   :ensure t
-  :defer t
   :after lsp-mode
   :commands lsp-ui-mode
   :custom (lsp-ui-doc-position (quote at-point))
-  (lsp-ui-doc-use-webkit nil)
+  (lsp-ui-doc-use-webkit t)
   (lsp-ui-sideline-enable t)
-  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-enable nil)
   (lsp-ui-doc-border "orange")
   :hook (lsp-mode . lsp-ui-mode))
 
@@ -76,14 +79,15 @@
   :defer t
   :config (require 'dap-python)
   (require 'dap-java))
+
 ;; Auto complete
 (use-package
   company
   :ensure t
-  :init
-  ;; Don't convert to downcase.
+  :defer t
+  :hook (prog-mode . company-mode)
+  :init ;; Don't convert to downcase.
   (setq-default company-dabbrev-downcase nil)
-  (add-hook 'after-init-hook 'global-company-mode)
   :bind (("C-<tab>" . company-complete-common)
          ;;
          :map company-active-map        ;
@@ -91,50 +95,61 @@
          ("C-p" . company-select-previous)
          ("C-s" . company-filter-candidates)
          ("<tab>" . company-complete-selection)
-         ("<return>" . company-complete-selection)
-         :map company-filter-map        ;
+         ("TAB" . company-complete-selection)
+         ("<return>" . company-complete-selection) ; 终端下无效
+         ("RET" . company-complete-selection)      ; 终端下生效
+         :map company-filter-map                   ;
          ("C-n" . company-select-next)
          ("C-p" . company-select-previous)
          ("<tab>" . company-complete-selection)
-         ("<return>" . company-complete-selection)
-         :map company-search-map        ;
+         ("TAB" . company-complete-selection)
+         ("<return>" . company-complete-selection) ; 终端下无效
+         ("RET" . company-complete-selection)      ; 终端下生效
+         :map company-search-map                   ;
          ("C-n" . company-select-next)
          ("C-p" . company-select-previous)
          ("<tab>" . company-complete-selection)
-         ("<return>" . company-complete-selection)      )
+         ("TAB" . company-complete-selection)
+         ("<return>" . company-complete-selection) ; 终端下无效
+         ("RET" . company-complete-selection)      ; 终端下生效
+         )
   :custom                               ;
   (company-minimum-prefix-length 1)
-  (company-idle-delay 0.1)
-  ;; (company-show-numbers t)
-  :config (setq company-backends '((company-files ; files & directory
-                                    company-keywords ; keywords
-                                    company-capf company-yasnippet)
-                                   (company-abbrev company-dabbrev))))
+  (company-idle-delay 0.0)
+  :config                                    ;
+  (setq company-backends '((company-files    ; files & directory
+                            company-keywords ; keywords
+                            company-capf company-yasnippet)
+                           (company-abbrev company-dabbrev)))
+  (setq company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend)))
+
 (use-package
   company-box
   :ensure t
-  :defer t
   :hook (company-mode . company-box-mode)
-  :config )
+  :init                                 ;
+  (setq company-box-show-single-candidate t)
+  :config)
 
 (use-package
   company-statistics
   :ensure t
   :after company
+  :hook (company-mode . company-statistics-mode)
   :custom                               ;
-  (company-statistics-file (expand-file-name "company-statistics-cache.el" misc-file-directory))
-  :config (company-statistics-mode))
-(use-package
-  company-lsp
-  :ensure t
-  :after (company lsp-mode)
-  :commands company-lsp
-  :config (push 'company-lsp company-backends))
+  (company-statistics-file (expand-file-name "company-statistics-cache.el" misc-file-directory)))
+;; 根据文档推荐使用company-capf
+;; (use-package
+;;   company-lsp
+;;   :ensure t
+;;   :after (company lsp-mode)
+;;   :commands company-lsp
+;;   :config (push 'company-lsp company-backends))
 
 (use-package
   yasnippet
   :ensure t
-  :hook (prog-mode . yas-minor-mode)
+  :hook (company-mode . yas-minor-mode)
   :config                               ;
   (yas-reload-all))
 (use-package
@@ -142,10 +157,12 @@
   :ensure t
   :after yasnippet)
 
-(add-hook 'prog-mode-hook
-          (lambda ()
-            ( hs-minor-mode t)
-            (linum-mode t)
-            (prettify-symbols-mode t)))
+(add-hook 'prog-mode-hook (lambda ()
+                            (hs-minor-mode t)
+                            (linum-mode t)
+                            ;; (prettify-symbols-mode t)
+                            ;; lsp-mode 会自动配置company-mode
+                            ;; (company-mode t)
+                            ))
 
 (provide 'major-mode/programming)

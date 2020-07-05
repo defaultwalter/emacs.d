@@ -10,6 +10,7 @@
 (require 'major-mode/graphviz)
 (require 'major-mode/plantuml)
 (require 'major-mode/org)
+(require 'major-mode/yaml)
 
 (provide 'major-mode)
 ;;; program-config.el ends here

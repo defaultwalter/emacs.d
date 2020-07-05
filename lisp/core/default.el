@@ -13,22 +13,26 @@
 ;;;; 基础设置
 ;;;; ==============================================
 
+
+(menu-bar-mode -1)
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 (when environment/gui
   ;; (tooltip-mode -1)
   ;; (set-frame-parameter nil 'internal-border-width 10) ; 设置窗口边距
   (set-frame-parameter nil 'alpha 99)   ;设置窗口透明度
-  (w/set-font)                          ;设置字体
-  (w/set-wrap-fringe)                   ;设置自动换行标识
-  )
-;; {{{
-(setq shift-select-mode nil                     ; 禁止双击 shift 选择
-      load-prefer-newer t                       ; 加载最新的文件
-      ring-bell-function 'ignore                ; 关闭光标警告
-      echo-keystrokes 0.1                       ; 显示未完成的按键命令
-      scroll-step 1 scroll-conservatively 10000 ; 滚动时保持光标位置
-      )
-;; }}}
-
+  (set-font "Sarasa Mono SC" 16)        ;设置字体
+  ;;设置自动换行标识
+  (define-fringe-bitmap 'right-curly-arrow right-arrow-bitmap)
+  (define-fringe-bitmap 'left-curly-arrow left-arrow-bitmap)  )
+(setq shift-select-mode nil             ; 禁止双击 shift 选择
+      load-prefer-newer t               ; 加载最新的文件
+      ring-bell-function 'ignore        ; 关闭光标警告
+      echo-keystrokes 0.1               ; 显示未完成的按键命令
+      scroll-conservatively 10000       ; 滚动时保持光标位置
+      scroll-step 1                     ;滚动行数/列数
+      hscroll-step 1 scroll-margin 5    ;滚动光标边距
+      hscroll-margin 10)
 
 (setq-default tab-width 4                      ; Tab Width
               indent-tabs-mode nil             ; 使用空格代替 Tab
@@ -47,31 +51,29 @@
               frame-title-format "[%m] %f" ; 设置表示格式
               )
 
+;; 设置Emacs每次从进程读取的最大数据量
+(setq read-process-output-max (* 1024 1024))
 ;; (desktop-save-mode 1)                 ;自动保存环境
 
+(setq save-place-file (expand-file-name "palces" misc-file-directory))
 (save-place-mode 1)                   ; 当 buffer 关闭后，保存光标位置
-(setq save-place-file (expand-file-name "places" misc-file-directory))
-(delete-selection-mode 1)               ; 插入时替换选区
-(global-auto-revert-mode t)             ; 开启自动恢复
-(auto-compression-mode t)               ; 压缩文件支持
-(recentf-mode t)                        ; 开启最近访问的文件
+(delete-selection-mode 1)             ; 插入时替换选区
+(global-auto-revert-mode t)           ; 开启自动恢复
+(auto-compression-mode t)             ; 压缩文件支持
 (setq recentf-save-file (expand-file-name "recentf" misc-file-directory))
+(recentf-mode 1)                        ; 开启最近访问的文件
 (global-hl-line-mode t)                 ; 高亮当前的行
 
 ;; 保存文件时移除空格
-(add-hook 'before-save-hook
-          (lambda()
-            (whitespace-cleanup)
-            (delete-trailing-whitespace)))
+(add-hook 'before-save-hook (lambda()
+                              (whitespace-cleanup)
+                              (delete-trailing-whitespace)))
 (fset 'yes-or-no-p 'y-or-n-p)           ; 用 y/n 代替 yes/no
 
 (electric-pair-mode t)
 (electric-quote-mode t)
 ;; 换行时自动排版
 (global-set-key (kbd "RET") 'newline-and-indent)
-
-(setq exec-path-from-shell-check-startup-files nil)
-
 
 ;;;; ==============================================
 ;;;; 备份
@@ -107,10 +109,9 @@
 ;;;; linum mode
 ;;;; ==============================================
 (setq linum-format "%4d ")              ;设置行号格式
-(add-hook 'linum-mode-hook
-          (lambda()
-            (set-face-attribute 'linum nil
-                                :foreground "#6f747a")))
+(add-hook 'linum-mode-hook (lambda()
+                             (set-face-attribute 'linum nil
+                                                 :foreground "#6f747a")))
 
 ;;;; ==============================================
 ;;;; dired mode
@@ -122,18 +123,23 @@
 (setq dired-dwim-target t)                   ;快速复制和移动
 (setq delete-by-moving-to-trash t)           ;删除文件到trash
 (put 'dired-find-alternate-file 'disabled nil) ;重新使用已经存在dired buffer
-(add-hook 'dired-mode-hook
-          (lambda ()
-            (local-set-key (kbd "RET") #'dired-find-alternate-file)
-            (local-set-key (kbd "<mouse-2>") #'dired-find-alternate-file)))
+(with-eval-after-load 'dired
+  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+  (define-key dired-mode-map (kbd "<return>") 'dired-find-alternate-file)
+  (define-key dired-mode-map (kbd "^") (lambda () (interactive) (find-alternate-file ".."))))
 
 ;; 自动关闭minibuffer
-(add-hook 'mouse-leave-buffer-hook
-          (lambda()
-            (when (and (>= (recursion-depth) 1)
-                       (active-minibuffer-window))
-              (abort-recursive-edit))))
+(add-hook 'mouse-leave-buffer-hook (lambda()
+                                     (when (and (>= (recursion-depth) 1)
+                                                (active-minibuffer-window))
+                                       (abort-recursive-edit))))
 
+
+;; Use `user.el` to save custom config
+(setq custom-file (expand-file-name "custom.el" misc-file-directory))
+;; Load custom config
+(when (file-exists-p custom-file)
+  (load-file custom-file))
 
 (provide 'core/default)
 ;;; default.el ends here
