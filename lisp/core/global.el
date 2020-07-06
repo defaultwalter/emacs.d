@@ -158,15 +158,18 @@
   :config (counsel-projectile-mode t))
 
 (use-package
-  magit                                 ;git 插件
+  neotree
   :ensure t
-  :defer t
-  :init (w/create-leader-key "g" 'magit-status "git" project-map-prefix))
-
-;; (use-package
-;;   evil-magit                            ;magit使用evil按键绑定
-;;   :ensure t
-;;   :init (setq evil-magit-state 'normal))
+  :init                                 ;
+  (defun neotree-project ()
+    "Open NeoTree using the project root."
+    (interactive)
+    (let ((project-dir (projectile-project-root))
+          (file-name (buffer-file-name)))
+      (if project-dir (progn (neotree-dir project-dir)
+                             (neotree-find file-name))
+        (neotree-dir "~"))))
+  (w/create-leader-key "f" 'neotree-project "file-tree" window-map-prefix))
 
 (use-package
   multi-term
