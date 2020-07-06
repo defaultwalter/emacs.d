@@ -3,6 +3,12 @@
   :if (memq window-system '(ns mac))
   :ensure t
   :config (exec-path-from-shell-initialize))
+(use-package
+  xclip
+  :ensure t
+  :if environment/terminal
+  :config
+  (xclip-mode 1))
 
 ;;;; ==============================================
 ;;;; 主题外观

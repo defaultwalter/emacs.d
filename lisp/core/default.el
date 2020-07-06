@@ -123,10 +123,12 @@
 (setq dired-dwim-target t)                   ;快速复制和移动
 (setq delete-by-moving-to-trash t)           ;删除文件到trash
 (put 'dired-find-alternate-file 'disabled nil) ;重新使用已经存在dired buffer
-(with-eval-after-load 'dired
-  (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
-  (define-key dired-mode-map (kbd "<return>") 'dired-find-alternate-file)
-  (define-key dired-mode-map (kbd "^") (lambda () (interactive) (find-alternate-file ".."))))
+(with-eval-after-load 'dired (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
+                      (define-key dired-mode-map (kbd "<return>") 'dired-find-alternate-file)
+                      (define-key dired-mode-map (kbd "^")
+                        (lambda ()
+                          (interactive)
+                          (find-alternate-file ".."))))
 
 ;; 自动关闭minibuffer
 (add-hook 'mouse-leave-buffer-hook (lambda()
@@ -140,6 +142,8 @@
 ;; Load custom config
 (when (file-exists-p custom-file)
   (load-file custom-file))
+
+(setq ad-redefinition-action 'accept)
 
 (provide 'core/default)
 ;;; default.el ends here

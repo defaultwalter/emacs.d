@@ -2,6 +2,10 @@
 (defconst environment/gui (display-graphic-p)
   "Are we running on a GUI Emacs?")
 
+
+(defconst environment/terminal (not (display-graphic-p))
+  "Are we running on a Terminal Emacs?")
+
 (defconst environment/windows (eq system-type 'windows-nt)
   "Are we running on a WinTel system?")
 
