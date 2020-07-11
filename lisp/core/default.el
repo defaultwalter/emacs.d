@@ -21,7 +21,9 @@
   ;; (tooltip-mode -1)
   ;; (set-frame-parameter nil 'internal-border-width 10) ; 设置窗口边距
   (set-frame-parameter nil 'alpha 99)   ;设置窗口透明度
-  (set-font "Sarasa Mono SC" 16)        ;设置字体
+  (when environment/mac (set-font "Sarasa Mono SC" 16))
+  (when environment/linux (set-font "Sarasa Mono SC" 20))
+          ;设置字体
   ;;设置自动换行标识
   (define-fringe-bitmap 'right-curly-arrow right-arrow-bitmap)
   (define-fringe-bitmap 'left-curly-arrow left-arrow-bitmap)  )
