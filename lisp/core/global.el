@@ -1,14 +1,13 @@
 (use-package
   exec-path-from-shell
-  :if (memq window-system '(ns mac))
+  ;; :if (memq window-system '(ns mac))
   :ensure t
   :config (exec-path-from-shell-initialize))
 (use-package
   xclip
   :ensure t
   :if environment/terminal
-  :config
-  (xclip-mode 1))
+  :config (xclip-mode 1))
 
 ;;;; ==============================================
 ;;;; 主题外观
@@ -35,7 +34,7 @@
   doom-themes
   ;; :when (display-graphic-p)
   :ensure t
-  :init (load-theme 'doom-Iosvkem t)
+  :init (load-theme 'doom-one t)
   ;; :init (load-theme 'doom-one t)
   :config (set-face-attribute 'fringe nil
                               :foreground "#fc5c59"
@@ -83,10 +82,11 @@
   counsel                               ;基于ivy的命令文件补全工具
   :ensure t
   :defer t
-  :init (w/create-leader-key "f" (lambda()
-                                   (interactive)
-                                   (let ((counsel-find-file-ignore-regexp "^\\."))
-                                     (counsel-find-file))) "find-file" file-map-prefix)
+  :init                                 ;
+  (w/create-leader-key "f" (lambda()
+                             (interactive)
+                             (let ((counsel-find-file-ignore-regexp "^\\."))
+                               (counsel-find-file))) "find-file" file-map-prefix)
   (w/create-leader-key "a" 'counsel-find-file "find-all-file" file-map-prefix)
   (w/create-leader-key "r" 'counsel-recentf "recent-file" file-map-prefix)
   (w/create-leader-key "b" (lambda()
@@ -94,17 +94,20 @@
                              (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
                                (counsel-switch-buffer))) "switch-buffer" buffer-map-prefix)
   (w/create-leader-key "a" 'counsel-switch-buffer "switch-all-buffer" buffer-map-prefix)
+  (defalias 'command 'counsel-M-x)
+  (evil-leader/set-key "SPC" 'command)
   :bind (("M-x" . counsel-M-x))
-  :config (defalias 'command 'counsel-M-x)
-  (evil-leader/set-key "SPC" 'command))
+  :config)
 
 (use-package
   swiper                                ;基于ivy的增量搜索工具
   :ensure t
   :defer t
-  :init (w/create-leader-key "s" 'swiper "isearch" content-map-prefix)
+  :init                                 ;
+  (w/create-leader-key "s" 'swiper "isearch" content-map-prefix)
   (w/create-leader-key "S" 'swiper-all "search-in-buffers" content-map-prefix)
-  :bind ("C-S-s" . swiper-all)
+  :bind                                 ;
+  ("C-S-s" . swiper-all)
   ("C-s" . swiper))
 
 (use-package
@@ -117,7 +120,8 @@
   buffer-move                           ; 交换两个window的buffer
   :ensure t
   :defer t
-  :init (w/create-leader-key "h" 'buf-move-left "buffer-move-to-left-window" buffer-map-prefix)
+  :init                                 ;
+  (w/create-leader-key "h" 'buf-move-left "buffer-move-to-left-window" buffer-map-prefix)
   (w/create-leader-key "j" 'buf-move-down "buffer-move-to-down-window" buffer-map-prefix)
   (w/create-leader-key "k" 'buf-move-up "buffer-move-to-up-window" buffer-map-prefix)
   (w/create-leader-key "l" 'buf-move-right "buffer-move-to-right-window" buffer-map-prefix)
@@ -128,7 +132,8 @@
   windresize                            ;调整window大小
   :ensure t
   :defer t
-  :init (w/create-leader-key "r" 'windresize "resize-window" window-map-prefix))
+  :init                                 ;
+  (w/create-leader-key "r" 'windresize "resize-window" window-map-prefix))
 
 (use-package
   projectile                            ;project 插件

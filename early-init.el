@@ -1,4 +1,8 @@
-(load-file (expand-file-name "definition.el" user-emacs-directory))
+(defmacro collect-time
+    (&rest
+     body)
+  "计算表达式执行所花费的时间"
+  `(let ((time (current-time))) ,@body (float-time (time-since time))))
 
 ;; 移除不需要的GUI元素
 (menu-bar-mode -1)
@@ -32,5 +36,4 @@
                                 ;; 重新设置‘file-name-handler-alist’
                                 (setq file-name-handler-alist file-name-handler-alist-original)
                                 (makunbound 'file-name-handler-alist-original)))
-
 (provide 'early-init)

@@ -21,9 +21,54 @@
   ;; (tooltip-mode -1)
   ;; (set-frame-parameter nil 'internal-border-width 10) ; 设置窗口边距
   (set-frame-parameter nil 'alpha 99)   ;设置窗口透明度
+  (defun set-font (font size)
+    "Set font"
+    (set-face-attribute 'default nil
+                        :font (format   "%s:pixelsize=%d" font size))
+    ;; chinese font
+    (dolist (charset '(kana han symbol cjk-misc bopomofo))
+      (set-fontset-font (frame-parameter nil 'font) charset (font-spec :family font))))
   (when environment/mac (set-font "Sarasa Mono SC" 16))
   (when environment/linux (set-font "Sarasa Mono SC" 20))
-          ;设置字体
+                                        ;设置字体
+
+  (defconst right-arrow-bitmap
+    [#b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00101010                         ;
+     #b00000000                         ;
+     #b00000010                         ;
+     #b00000000                         ;
+     #b00000010                         ;
+     #b00000000                         ;
+     #b00000010                         ;
+     #b00000000                         ;
+     #b00010010                         ;
+     #b00100000                         ;
+     #b01111110                         ;
+     #b00000000                         ;
+     #b00000000])
+
+  (defconst left-arrow-bitmap
+    [#b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000                         ;
+     #b00000000])
   ;;设置自动换行标识
   (define-fringe-bitmap 'right-curly-arrow right-arrow-bitmap)
   (define-fringe-bitmap 'left-curly-arrow left-arrow-bitmap)  )
