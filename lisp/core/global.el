@@ -50,12 +50,6 @@
 ;;;; ==============================================
 
 (use-package
-  fcitx                                 ; 自动切换中英输入法
-  :if (eq system-type 'gnu/linux)
-  :ensure t
-  :config (fcitx-default-setup))
-
-(use-package
   ivy
   :ensure t
   :defer t
