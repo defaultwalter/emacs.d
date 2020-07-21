@@ -36,4 +36,8 @@
                                 ;; 重新设置‘file-name-handler-alist’
                                 (setq file-name-handler-alist file-name-handler-alist-original)
                                 (makunbound 'file-name-handler-alist-original)))
+
+(add-to-list 'default-frame-alist '(font . "Sarasa Mono SC-12"))
+(add-to-list 'default-frame-alist '(width . 140))
+(add-to-list 'default-frame-alist '(height . 35))
 (provide 'early-init)

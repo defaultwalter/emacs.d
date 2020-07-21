@@ -2,6 +2,7 @@
   exec-path-from-shell
   ;; :if (memq window-system '(ns mac))
   :ensure t
+  :custom (exec-path-from-shell-check-startup-files nil)
   :config (exec-path-from-shell-initialize))
 (use-package
   xclip
@@ -23,11 +24,14 @@
   :ensure t
   :defer t
   :init (doom-modeline-init)
-  (setq doom-modeline-height 20 doom-modeline-bar-width 3 doom-modeline-icon nil
-        doom-modeline-enable-word-count 10
-        ;; doom-modeline-icon (display-graphic-p)
-        doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)
-        doom-modeline-buffer-file-name-style 'relative-to-project doom-modeline-modal-icon nil)
+  (setq doom-modeline-height 20   )
+  (setq doom-modeline-bar-width 3)
+  (setq doom-modeline-icon nil)
+  (setq doom-modeline-enable-word-count 10)
+  ;; (setq doom-modeline-icon (display-graphic-p))
+  (setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
+  (setq doom-modeline-buffer-file-name-style 'relative-to-project )
+  (setq doom-modeline-modal-icon nil)
   :hook (after-init . doom-modeline-mode)
   :config)
 (use-package
@@ -187,15 +191,18 @@
   :ensure t
   :defer t
   :custom (multi-term-dedicated-select-after-open-p t) ;打开后光标定位到 Terminal Window
-  :init (w/create-leader-key "t" 'multi-term-dedicated-toggle "toggle-terminal" window-map-prefix))
+  :init (w/create-leader-key "t" 'multi-term-dedicated-toggle "toggle-terminal" window-map-prefix)
+  :bind ("C-`" . multi-term-dedicated-toggle))
 
-
+(use-package
+  diff-hl
+  :ensure t
+  :defer t
+  :config (global-diff-hl-mode))
 
 ;;;; ==============================================
 ;;;; 编辑增强
 ;;;; ==============================================
-
-
 
 
 (use-package
