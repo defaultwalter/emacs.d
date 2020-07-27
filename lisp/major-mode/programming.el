@@ -58,7 +58,9 @@
   :hook ((lsp-mode . lsp-enable-which-key-integration))
   :init ;;
   (setq lsp-prefer-capf t)
+  (setq lsp-enable-snippet t)
   (setq lsp-keymap-prefix "C-l")
+  (setq lsp-semantic-highlighting t)
   :config (require 'lsp-clients)
   (setq lsp-print-io t))
 (use-package
@@ -121,6 +123,9 @@
                             company-keywords ; keywords
                             company-capf company-yasnippet)
                            (company-abbrev company-dabbrev)))
+  ;; (setq company-backends '((company-dabbrev company-files ; files & directory
+  ;;                                           company-keywords ; keywords
+  ;;                                           company-yasnippet) ))
   (setq company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend)))
 
 (use-package
@@ -144,18 +149,19 @@
 ;;   :ensure t
 ;;   :after (company lsp-mode)
 ;;   :commands company-lsp
-;;   :config (push 'company-lsp company-backends))
+;;   :init (push 'company-lsp company-backends))
 
 (use-package
   yasnippet
   :ensure t
+  :defer t
   :hook (company-mode . yas-minor-mode)
   :config                               ;
   (yas-reload-all))
 (use-package
   yasnippet-snippets
   :ensure t
-  :after yasnippet)
+  :config (yas-reload-all))
 
 (add-hook 'prog-mode-hook (lambda ()
                             (hs-minor-mode t)

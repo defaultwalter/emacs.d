@@ -57,8 +57,6 @@
   (ivy-count-format "(%d/%d) ")
   (ivy-initial-inputs-alist nil)
   :config
-  ;; 移除M-x前缀
-  (setq-default ivy-initial-inputs-alist nil)
   (ivy-mode t))
 
 (use-package
@@ -184,7 +182,9 @@
   multi-term
   :ensure t
   :defer t
-  :custom (multi-term-dedicated-select-after-open-p t) ;打开后光标定位到 Terminal Window
+  :custom ;
+  (multi-term-dedicated-select-after-open-p t) ;打开后光标定位到 Terminal Window
+  (multi-term-buffer-name "Terminal")
   :init (w/create-leader-key "t" 'multi-term-dedicated-toggle "toggle-terminal" window-map-prefix)
   :bind ("C-`" . multi-term-dedicated-toggle))
 
