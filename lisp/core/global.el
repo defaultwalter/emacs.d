@@ -56,8 +56,7 @@
   :custom (ivy-use-virtual-buffers nil)
   (ivy-count-format "(%d/%d) ")
   (ivy-initial-inputs-alist nil)
-  :config
-  (ivy-mode t))
+  :config (ivy-mode t))
 
 (use-package
   smex                                  ;将命令按使用频率排序
@@ -176,17 +175,57 @@
       (if project-dir (progn (neotree-dir project-dir)
                              (neotree-find file-name))
         (neotree-dir "~"))))
-  (w/create-leader-key "f" 'neotree-project "file-tree" window-map-prefix))
+  (w/create-leader-key "f" 'neotree-project "file-tree" view-map-prefix))
+
+;; (use-package
+;;   multi-term
+;;   :ensure t
+;;   :defer t
+;;   :custom                                      ;
+;;   (multi-term-dedicated-select-after-open-p t) ;打开后光标定位到 Terminal Window
+;;   (multi-term-buffer-name "Terminal")
+;;   :init (w/create-leader-key "t" 'multi-term-dedicated-toggle "toggle-terminal" window-map-prefix)
+;;   :bind ("C-`" . multi-term-dedicated-toggle))
+
 
 (use-package
-  multi-term
+  multi-vterm
   :ensure t
-  :defer t
-  :custom ;
-  (multi-term-dedicated-select-after-open-p t) ;打开后光标定位到 Terminal Window
-  (multi-term-buffer-name "Terminal")
-  :init (w/create-leader-key "t" 'multi-term-dedicated-toggle "toggle-terminal" window-map-prefix)
-  :bind ("C-`" . multi-term-dedicated-toggle))
+  :init (defun toggle-termianl()
+          (interactive)
+          (let ((project-dir (projectile-project-root)))
+            (if project-dir (multi-vterm-projectile)
+              (multi-vterm-dedicated-toggle))))
+  (w/create-leader-key "t" 'toggle-termianl "toggle-terminal" view-map-prefix)
+  :bind ("C-`" . toggle-termianl)
+  :config (add-hook 'vterm-mode-hook #'evil-insert-state)
+  (define-key vterm-mode-map [return]                      #'vterm-send-return)
+  (setq vterm-keymap-exceptions nil)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-e")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-f")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-a")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-v")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-b")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-w")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-n")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-m")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-p")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-j")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-k")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-r")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-g")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-c")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-SPC")    #'vterm--self-insert)
+  (evil-define-key 'normal vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
+  (evil-define-key 'normal vterm-mode-map (kbd ",c")       #'multi-vterm)
+  (evil-define-key 'normal vterm-mode-map (kbd ",n")       #'multi-vterm-next)
+  (evil-define-key 'normal vterm-mode-map (kbd ",p")       #'multi-vterm-prev)
+  (evil-define-key 'normal vterm-mode-map (kbd "i")        #'evil-insert-resume)
+  (evil-define-key 'normal vterm-mode-map (kbd "o")        #'evil-insert-resume)
+  (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume))
 
 (use-package
   diff-hl
@@ -239,16 +278,6 @@
   (hl-paren-colors '("red"))            ; 设置高亮括号颜色
   :hook (prog-mode . highlight-parentheses-mode))
 
-(use-package
-  highlight-indent-guides               ;高亮缩进
-  :ensure t
-  :defer t
-  :init (setq highlight-indent-guides-method 'fill)
-  (setq highlight-indent-guides-auto-odd-face-perc 15)
-  (setq highlight-indent-guides-auto-even-face-perc 15)
-  (setq highlight-indent-guides-auto-character-face-perc 20)
-  (setq highlight-indent-guides-auto-enabled nil)
-  :hook (prog-mode . highlight-indent-guides-mode))
 
 (use-package
   undo-tree                             ;撤销重做可视化
@@ -268,7 +297,11 @@
   :if (or environment/linux
           environment/mac)
   :ensure t
-  :defer 5
   :config (auto-sudoedit-mode 1))
+
+(use-package
+  memory-usage
+  :ensure t
+  :defer t)
 
 (provide 'core/global)

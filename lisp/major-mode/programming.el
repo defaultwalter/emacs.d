@@ -58,18 +58,19 @@
   :hook ((lsp-mode . lsp-enable-which-key-integration))
   :init ;;
   (setq lsp-prefer-capf t)
-  (setq lsp-enable-snippet t)
+  ;; (setq lsp-enable-snippet t)
   (setq lsp-keymap-prefix "C-l")
-  (setq lsp-semantic-highlighting t)
+  ;; (setq lsp-semantic-highlighting t)
   :config (require 'lsp-clients)
-  (setq lsp-print-io t))
+  ;; (setq lsp-print-io t))
+  )
 (use-package
   lsp-ui
   :ensure t
   :after lsp-mode
   :commands lsp-ui-mode
   :custom (lsp-ui-doc-position (quote at-point))
-  (lsp-ui-doc-use-webkit t)
+  ;; (lsp-ui-doc-use-webkit t)
   (lsp-ui-sideline-enable t)
   (lsp-ui-doc-enable nil)
   (lsp-ui-doc-border "orange")
@@ -118,23 +119,24 @@
   :custom                               ;
   (company-minimum-prefix-length 1)
   (company-idle-delay 0.0)
-  :config                                    ;
-  (setq company-backends '((company-files    ; files & directory
+  :config                               ;
+  (setq company-backends '((company-capf company-yasnippet)
+                           (company-files    ; files & directory
                             company-keywords ; keywords
-                            company-capf company-yasnippet)
+                            )
                            (company-abbrev company-dabbrev)))
   ;; (setq company-backends '((company-dabbrev company-files ; files & directory
   ;;                                           company-keywords ; keywords
   ;;                                           company-yasnippet) ))
   (setq company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend)))
 
-(use-package
-  company-box
-  :ensure t
-  :hook (company-mode . company-box-mode)
-  :init                                 ;
-  (setq company-box-show-single-candidate t)
-  :config)
+;; (use-package
+;;   company-box
+;;   :ensure t
+;;   :hook (company-mode . company-box-mode)
+;;   :init                                 ;
+;;   (setq company-box-show-single-candidate t)
+;;   :config)
 
 (use-package
   company-statistics
@@ -163,6 +165,22 @@
   :ensure t
   :config (yas-reload-all))
 
+(use-package
+  quickrun
+  :ensure t
+  :defer t)
+
+(use-package
+  highlight-indent-guides               ;高亮缩进
+  :ensure t
+  :init                                 ;
+  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-auto-odd-face-perc 1)
+  (setq highlight-indent-guides-auto-even-face-perc 3)
+  (setq highlight-indent-guides-responsive 'top)
+  (setq highlight-indent-guides-auto-character-face-perc 5)
+  :hook (prog-mode . highlight-indent-guides-mode))
+
 (add-hook 'prog-mode-hook (lambda ()
                             (hs-minor-mode t)
                             (linum-mode t)
@@ -170,5 +188,4 @@
                             ;; lsp-mode 会自动配置company-mode
                             ;; (company-mode t)
                             ))
-
 (provide 'major-mode/programming)

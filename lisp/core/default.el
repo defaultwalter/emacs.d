@@ -20,7 +20,7 @@
 (when environment/gui
   ;; (tooltip-mode -1)
   ;; (set-frame-parameter nil 'internal-border-width 10) ; 设置窗口边距
-  (set-frame-parameter nil 'alpha 99)   ;设置窗口透明度
+  (set-frame-parameter nil 'alpha 100)   ;设置窗口透明度
 
   (defconst right-arrow-bitmap
     [#b00000000                         ;
@@ -146,9 +146,6 @@
 ;;;; linum mode
 ;;;; ==============================================
 (setq linum-format "%4d ")              ;设置行号格式
-(add-hook 'linum-mode-hook (lambda()
-                             (set-face-attribute 'linum nil
-                                                 :foreground "#6f747a")))
 
 ;;;; ==============================================
 ;;;; dired mode
