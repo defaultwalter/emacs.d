@@ -26,28 +26,59 @@
   :init (doom-modeline-init)
   (setq doom-modeline-height 20   )
   (setq doom-modeline-bar-width 3)
-  (setq doom-modeline-icon nil)
-  (setq doom-modeline-enable-word-count 10)
-  ;; (setq doom-modeline-icon (display-graphic-p))
+
+  (setq doom-modeline-enable-word-count t);字数统计
   (setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
-  (setq doom-modeline-buffer-file-name-style 'relative-to-project )
-  (setq doom-modeline-modal-icon nil)
-  :hook (after-init . doom-modeline-mode)
-  :config)
+
+  (setq doom-modeline-buffer-file-name-style 'auto)
+  ;; (setq doom-modeline-minor-modes t)
+
+  (setq doom-modeline-icon (display-graphic-p))
+  (setq doom-modeline-major-mode-color-icon nil)
+  (setq doom-modeline-modal-icon t)
+
+  (doom-modeline-mode 1)
+  ;; :hook (after-init . doom-modeline-mode)
+  :config )
 (use-package
   doom-themes
   ;; :when (display-graphic-p)
   :ensure t
   :init (load-theme 'doom-one t)
   ;; :init (load-theme 'doom-one t)
-  :config (set-face-attribute 'fringe nil
-                              :foreground "#fc5c59"
-                              :background (face-background 'default)))
+  :config                               ;
+  (set-face-attribute 'fringe nil
+                      :foreground "#fc5c59")
+  ;; 设置垂直窗口边框(目前发现只在终端有效)
+  (set-face-inverse-video-p 'vertical-border nil)
+  (set-face-background 'vertical-border (face-background 'default))
+  (doom-themes-visual-bell-config)
+  (doom-themes-treemacs-config)
+  (doom-themes-org-config))
 
+(use-package
+  solaire-mode
+  :ensure t
+  :hook                                 ;
+  ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
+  (minibuffer-setup . solaire-mode-in-minibuffer)
+  :config                               ;
+  (solaire-global-mode +1)
+  (solaire-mode-swap-bg))
+(use-package
+  all-the-icons
+  :ensure t
+  :init (setq all-the-icons-scale-factor 0.9))
 
 ;;;; ==============================================
 ;;;; 交互增强
 ;;;; ==============================================
+
+(use-package
+  disable-mouse
+  :ensure t
+  :config                               ;
+  (global-disable-mouse-mode))
 
 (use-package
   ivy
@@ -129,6 +160,11 @@
   :defer t
   :init                                 ;
   (w/create-leader-key "r" 'windresize "resize-window" window-map-prefix))
+(use-package
+  transpose-frame
+  :ensure t
+  :defer t
+  :init (w/create-leader-key "t" 'transpose-frame "transpose-window" window-map-prefix))
 
 (use-package
   projectile                            ;project 插件
@@ -163,20 +199,19 @@
                        project-map-prefix)
   :config (counsel-projectile-mode t))
 
-(use-package
-  neotree
-  :ensure t
-  :init                                 ;
-  (defun neotree-project ()
-    "Open NeoTree using the project root."
-    (interactive)
-    (let ((project-dir (projectile-project-root))
-          (file-name (buffer-file-name)))
-      (if project-dir (progn (neotree-dir project-dir)
-                             (neotree-find file-name))
-        (neotree-dir "~"))))
-  (w/create-leader-key "f" 'neotree-project "file-tree" view-map-prefix))
 
+(use-package
+  treemacs
+  :ensure t
+  :init (w/create-leader-key "f" 'treemacs "file-tree" view-map-prefix))
+(use-package
+  treemacs-evil
+  :ensure t
+  :after (evil treemacs))
+(use-package
+  treemacs-projectile
+  :after(projectile treemacs)
+  :ensure t)
 ;; (use-package
 ;;   multi-term
 ;;   :ensure t
@@ -230,8 +265,8 @@
 (use-package
   diff-hl
   :ensure t
-  :defer t
-  :config (global-diff-hl-mode))
+  :config                               ;
+  (global-diff-hl-mode))
 
 ;;;; ==============================================
 ;;;; 编辑增强

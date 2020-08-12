@@ -46,7 +46,7 @@
 (defun set-font()
   ;; 12-1.7/14-1.75
   (setq face-font-rescale-alist '(("Inconsolata" . 1.0)
-                                  ("Hiragino Sans GB" . 1.7)))
+                                  ("Hiragino Sans GB" . 1.0)))
   (add-to-list 'default-frame-alist '(font . "Inconsolata-12"))
   (add-hook 'emacs-startup-hook (lambda()
                                   (dolist (charset '(kana han symbol cjk-misc bopomofo))
@@ -54,9 +54,10 @@
                                                                                            :family
                                                                                            "Hiragino Sans GB"
                                                                                            :size
-                                                                                           12))))))
+                                                                                           12.0))))))
 
 (set-font)
+;; (add-to-list 'default-frame-alist '(font . "Sarasa Mono SC-12"))
 (add-to-list 'default-frame-alist '(width . 120))
 (add-to-list 'default-frame-alist '(height . 35))
 (provide 'early-init)

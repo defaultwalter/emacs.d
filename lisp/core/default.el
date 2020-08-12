@@ -17,6 +17,7 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(setq mouse-highlight nil)
 (when environment/gui
   ;; (tooltip-mode -1)
   ;; (set-frame-parameter nil 'internal-border-width 10) ; 设置窗口边距
@@ -87,6 +88,8 @@
               use-dialog-box nil           ; 不现实对话框
               frame-title-format "[%m] %f" ; 设置表示格式
               )
+
+
 
 ;; 设置Emacs每次从进程读取的最大数据量
 (setq read-process-output-max (* 1024 1024))
