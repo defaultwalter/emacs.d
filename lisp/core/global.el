@@ -26,17 +26,13 @@
   :init (doom-modeline-init)
   (setq doom-modeline-height 20   )
   (setq doom-modeline-bar-width 3)
-
-  (setq doom-modeline-enable-word-count t);字数统计
+  (setq doom-modeline-enable-word-count t) ;字数统计
   (setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
-
   (setq doom-modeline-buffer-file-name-style 'auto)
   ;; (setq doom-modeline-minor-modes t)
-
   (setq doom-modeline-icon (display-graphic-p))
   (setq doom-modeline-major-mode-color-icon nil)
   (setq doom-modeline-modal-icon t)
-
   (doom-modeline-mode 1)
   ;; :hook (after-init . doom-modeline-mode)
   :config )
@@ -45,7 +41,6 @@
   ;; :when (display-graphic-p)
   :ensure t
   :init (load-theme 'doom-one t)
-  ;; :init (load-theme 'doom-one t)
   :config                               ;
   (set-face-attribute 'fringe nil
                       :foreground "#fc5c59")
@@ -55,6 +50,13 @@
   (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config)
   (doom-themes-org-config))
+
+;; (use-package
+;;   minimal-theme
+;;   ;; :when (display-graphic-p)
+;;   :ensure t
+;;   :config (doom-themes-treemacs-config)
+;;   (load-theme 'minimal-light t))
 
 (use-package
   solaire-mode
@@ -74,11 +76,11 @@
 ;;;; 交互增强
 ;;;; ==============================================
 
-(use-package
-  disable-mouse
-  :ensure t
-  :config                               ;
-  (global-disable-mouse-mode))
+;; (use-package
+;;   disable-mouse
+;;   :ensure t
+;;   :config                               ;
+;;   (global-disable-mouse-mode))
 
 (use-package
   ivy
@@ -171,16 +173,19 @@
   :ensure t
   :custom                               ;
   (projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld" misc-file-directory))
-
+  (projectile-track-known-projects-automatically nil)
   ;; (projectile-indexing-method 'native)
   (projectile-sort-order 'access-time)
   (projectile-find-dir-includes-top-level t)
+  :init (w/create-leader-key "c" 'projectile-kill-buffers "close-project" project-map-prefix)
+  (w/create-leader-key "i" 'projectile-project-info "project-info" project-map-prefix)
+  (w/create-leader-key "R" 'projectile-clear-known-projects "clear-project-cache"
+                       project-map-prefix)
   :config (projectile-mode +1))
 
 (use-package
   counsel-projectile                    ;projectile 使用 counsel前端
   :ensure t
-  :after (counsel projectile)
   :custom                               ;
   (counsel-projectile-sort-files t)
   (counsel-projectile-sort-directories t)
@@ -192,10 +197,6 @@
   (w/create-leader-key "d" 'counsel-projectile-find-dir "find-project-dir" project-map-prefix)
   (w/create-leader-key "s" 'counsel-projectile-grep "search-in-project" project-map-prefix)
   (w/create-leader-key "S" 'counsel-projectile-git-grep "search-in-project-by-git"
-                       project-map-prefix)
-  (w/create-leader-key "c" 'projectile-kill-buffers "close-project" project-map-prefix)
-  (w/create-leader-key "i" 'projectile-project-info "project-info" project-map-prefix)
-  (w/create-leader-key "R" 'projectile-clear-known-projects "clear-project-cache"
                        project-map-prefix)
   :config (counsel-projectile-mode t))
 
@@ -338,5 +339,23 @@
   memory-usage
   :ensure t
   :defer t)
+(use-package
+  rainbow-mode
+  :ensure t
+  :config
+  ;; 默认的会文本属性背景色显示颜色，会与高亮行插件冲突，通过重写这个方法，调换前景与背景色来解决这个问题
+  (defun rainbow-colorize-match (color &optional match)
+    "Return a matched string propertized with a face whose
+background is COLOR. The foreground is computed using
+`rainbow-color-luminance', and is either white or black."
+    (let ((match (or match
+                     0)))
+      (put-text-property (match-beginning match)
+                         (match-end match) 'face
+                         `((:background ,(if (> 0.5 (rainbow-x-color-luminance color))
+                                             (face-foreground 'default)
+                                           (face-background 'default)))
+                           (:foreground ,color))))))
+
 
 (provide 'core/global)

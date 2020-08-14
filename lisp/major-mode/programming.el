@@ -70,7 +70,7 @@
   (setq lsp-enable-folding nil)
   (setq lsp-enable-indentation nil)
   (setq lsp-enable-on-type-formatting nil)
-
+  ;; (setq lsp-log-io t)
   (add-hook 'lsp-completion-mode-hook (lambda ()
                                         (when lsp-completion-mode
                                           (set (make-local-variable 'company-backends)
@@ -107,13 +107,13 @@
          ("TAB" . company-complete-selection)
          ("<return>" . company-complete-selection) ; 终端下无效
          ("RET" . company-complete-selection)      ; 终端下生效
-         :map company-filter-map                   ;
-         ("C-n" . company-select-next)
-         ("C-p" . company-select-previous)
-         ("<tab>" . company-complete-selection)
-         ("TAB" . company-complete-selection)
-         ("<return>" . company-complete-selection) ; 终端下无效
-         ("RET" . company-complete-selection)      ; 终端下生效
+         ;; :map company-filter-map                   ;
+         ;; ("C-n" . company-select-next)
+         ;; ("C-p" . company-select-previous)
+         ;; ("<tab>" . company-complete-selection)
+         ;; ("TAB" . company-complete-selection)
+         ;; ("<return>" . company-complete-selection) ; 终端下无效
+         ;; ("RET" . company-complete-selection)      ; 终端下生效
          :map company-search-map                   ;
          ("C-n" . company-select-next)
          ("C-p" . company-select-previous)
@@ -138,6 +138,7 @@
   :hook (company-mode . company-statistics-mode)
   :custom                               ;
   (company-statistics-file (expand-file-name "company-statistics-cache.el" misc-file-directory)))
+
 ;; (use-package
 ;;   company-box
 ;;   :ensure t
@@ -145,14 +146,6 @@
 ;;   :init                                 ;
 ;;   (setq company-box-show-single-candidate t)
 ;;   :config)
-
-;; 根据文档推荐使用company-capf
-;; (use-package
-;;   company-lsp
-;;   :ensure t
-;;   :after (company lsp-mode)
-;;   :commands company-lsp
-;;   :init (push '(company-lsp company-yasinppet) company-backends))
 
 (use-package
   yasnippet
@@ -166,12 +159,12 @@
   :ensure t
   :config (yas-reload-all))
 
-(use-package
-  dap-mode
-  :ensure t
-  :defer t
-  :config (require 'dap-python)
-  (require 'dap-java))
+;; (use-package
+;;   dap-mode
+;;   :ensure t
+;;   :defer t
+;;   :config (require 'dap-python)
+;;   (require 'dap-java))
 
 (use-package
   quickrun

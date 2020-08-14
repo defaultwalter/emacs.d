@@ -21,8 +21,7 @@
 (when environment/gui
   ;; (tooltip-mode -1)
   ;; (set-frame-parameter nil 'internal-border-width 10) ; 设置窗口边距
-  (set-frame-parameter nil 'alpha 100)   ;设置窗口透明度
-
+  (set-frame-parameter nil 'alpha 100)  ;设置窗口透明度
   (defconst right-arrow-bitmap
     [#b00000000                         ;
      #b00000000                         ;
@@ -50,7 +49,6 @@
      #b01111110                         ;
      #b00000000                         ;
      #b00000000])
-
   (defconst left-arrow-bitmap
     [#b00000000                         ;
      #b00000000                         ;
@@ -98,11 +96,12 @@
 (setq save-place-file (expand-file-name "palces" misc-file-directory))
 (save-place-mode 1)                   ; 当 buffer 关闭后，保存光标位置
 (delete-selection-mode 1)             ; 插入时替换选区
-(global-auto-revert-mode t)           ; 开启自动恢复
+(global-auto-revert-mode t)           ; 开启重新加载被修改的文件
 (auto-compression-mode t)             ; 压缩文件支持
+(global-so-long-mode 1) ; 打开长行文件时可能会导致严重的性能问题，可以自动关闭一些可能会导致这一问题的功能
 (setq recentf-save-file (expand-file-name "recentf" misc-file-directory))
 (recentf-mode 1)                        ; 开启最近访问的文件
-(global-hl-line-mode t)                 ; 高亮当前的行
+;; (global-hl-line-mode t)                 ; 高亮当前的行
 
 ;; 保存文件时移除空格
 (add-hook 'before-save-hook (lambda()
