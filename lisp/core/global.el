@@ -49,6 +49,7 @@
   (set-face-background 'vertical-border (face-background 'default))
   (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config)
+  (doom-themes-neotree-config)
   (doom-themes-org-config))
 
 ;; (use-package
@@ -357,5 +358,11 @@ background is COLOR. The foreground is computed using
                                            (face-background 'default)))
                            (:foreground ,color))))))
 
+(use-package
+  benchmark-init
+  :ensure t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 (provide 'core/global)
