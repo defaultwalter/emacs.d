@@ -85,7 +85,6 @@
              (setq mouse-highlight nil) ; 禁止鼠标悬浮高亮
              (setq-default frame-title-format "[%m] %f") ; 设置窗口标题格式
              (setq-default use-dialog-box nil) ; 不现实对话框
-             (set-frame-font "Sarasa Mono SC-12" t t)
              (set-frame-parameter nil 'alpha 100) ;设置窗口透明度
              ;;设置自动换行标识
              (define-fringe-bitmap 'right-curly-arrow [#b00101010 ;
@@ -139,16 +138,6 @@
                             (lambda ()
                               (interactive)
                               (find-alternate-file ".."))))))
-
-;;;; Custom文件配置
-(section
-  ;; Use `user.el` to save custom config
-  (setq custom-file (expand-file-name "custom.el" misc-file-directory))
-  ;; Load custom config
-  ;; (when (file-exists-p custom-file)
-  ;;   (load-file custom-file))
-  )
-
 
 
 (provide 'core/default)
