@@ -23,12 +23,12 @@
   (setq-default indent-tabs-mode nil)       ; 使用空格代替 Tab
   (setq-default delete-selection-mode t)    ; 允许删除选区
   (setq-default select-enable-clipboard t)  ; 启用系统剪切板
-  (fset 'yes-or-no-p 'y-or-n-p)         ; 用 y/n 代替 yes/no
-  (electric-pair-mode t)                ; 自动输入括号
-  (electric-quote-mode t)               ; 自动输入引号
-  (delete-selection-mode 1)             ; 插入时替换选区
-  (global-auto-revert-mode t)           ; 开启重新加载被修改的文件
-  (auto-compression-mode t)             ; 压缩文件支持
+  (fset 'yes-or-no-p 'y-or-n-p)             ; 用 y/n 代替 yes/no
+  (electric-pair-mode t)                    ; 自动输入括号
+  (electric-quote-mode t)                   ; 自动输入引号
+  (delete-selection-mode 1)                 ; 插入时替换选区
+  (global-auto-revert-mode t)               ; 开启重新加载被修改的文件
+  (auto-compression-mode t)                 ; 压缩文件支持
   (global-so-long-mode 1) ; 打开长行文件时可能会导致严重的性能问题，可以自动关闭一些可能会导致这一问题的功能
   ;; (global-hl-line-mode t)                 ; 高亮当前的行
   ;; (desktop-save-mode 1)                 ;自动保存环境
@@ -49,9 +49,9 @@
     (recentf-mode 1))
 
   ;; 显示行号
-  (section (global-linum-mode 1)
-           (setq linum-format "%4d ")   ;设置行号格式
-           )
+  (section
+    (setq linum-format "%4d ")          ;设置行号格式
+    )
 
   ;; 字符编码
   (section (prefer-coding-system 'utf-8-unix)

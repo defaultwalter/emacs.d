@@ -26,7 +26,8 @@
                              (setq truncate-lines nil)))
   (setq org-image-actual-width '(100 200 300))
   (setq-default org-agenda-files '("~/Nutstore Files/GTD"))
-  (setq-default org-confirm-babel-evaluate nil))
+  (setq-default org-confirm-babel-evaluate nil)
+  (require 'org-tempo))
 
 
 (use-package
