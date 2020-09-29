@@ -7,14 +7,15 @@
 
 ;;;;用户信息
 (section
-(setq user-full-name "walter")
-(setq user-mail-address "ismrwalter@gmail.com"))
+  (setq user-full-name "walter")
+  (setq user-mail-address "ismrwalter@gmail.com"))
 
 ;;;; 基础设置
 (section
-  (setq shift-select-mode nil)              ; 禁止双击 shift 选择
-  (setq load-prefer-newer t)                ; 加载最新的文件
-  (setq ring-bell-function 'ignore)         ; 关闭光标警告
+  (setq shift-select-mode nil)          ; 禁止双击 shift 选择
+  (setq load-prefer-newer t)            ; 加载最新的文件
+  (setq ring-bell-function 'ignore)     ; 关闭光标警告
+  (setq ad-redefinition-action 'accept)
   (setq-default inhibit-splash-screen 1)    ; 不显示启动屏幕
   (setq-default initial-scratch-message "") ; 将 Scratch 的内容设为空
   (setq-default create-lockfiles nil)       ; 不要锁定文件
@@ -22,7 +23,6 @@
   (setq-default indent-tabs-mode nil)       ; 使用空格代替 Tab
   (setq-default delete-selection-mode t)    ; 允许删除选区
   (setq-default select-enable-clipboard t)  ; 启用系统剪切板
-  (setq ad-redefinition-action 'accept)
   (fset 'yes-or-no-p 'y-or-n-p)         ; 用 y/n 代替 yes/no
   (electric-pair-mode t)                ; 自动输入括号
   (electric-quote-mode t)               ; 自动输入引号
@@ -84,7 +84,7 @@
            (when environment/gui
              (setq mouse-highlight nil) ; 禁止鼠标悬浮高亮
              (setq-default frame-title-format "[%m] %f") ; 设置窗口标题格式
-             (setq-default use-dialog-box nil) ; 不现实对话框
+             (setq-default use-dialog-box nil)    ; 不现实对话框
              (set-frame-parameter nil 'alpha 100) ;设置窗口透明度
              ;;设置自动换行标识
              (define-fringe-bitmap 'right-curly-arrow [#b00101010 ;
