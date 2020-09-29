@@ -40,17 +40,25 @@
   doom-themes
   ;; :when (display-graphic-p)
   :ensure t
-  :init (load-theme 'doom-one t)
+  :init
   :config                               ;
+  (load-theme 'doom-one t)
+  ;; Enable flashing mode-line on errors
+  ;; (doom-themes-visual-bell-config)
+
+  ;; Enable custom neotree theme (all-the-icons must be installed!)
+  (doom-themes-neotree-config)
+  ;; or for treemacs users
+  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  (doom-themes-treemacs-config)
+
+  ;; Corrects (and improves) org-mode's native fontification.
+  (doom-themes-org-config)
   (set-face-attribute 'fringe nil
                       :foreground "#fc5c59")
   ;; 设置垂直窗口边框(目前发现只在终端有效)
   (set-face-inverse-video-p 'vertical-border nil)
-  (set-face-background 'vertical-border (face-background 'default))
-  (doom-themes-visual-bell-config)
-  (doom-themes-treemacs-config)
-  (doom-themes-neotree-config)
-  (doom-themes-org-config))
+  (set-face-background 'vertical-border (face-background 'default)))
 
 ;; (use-package
 ;;   minimal-theme
