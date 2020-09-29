@@ -1,6 +1,28 @@
 (defalias 'section 'progn
   "group")
 
+;;;; 用户变量/常量
+(section
+  (defconst misc-file-directory (expand-file-name "misc" user-emacs-directory)
+    "Save automatically generated files.")
+  (defconst bin-file-directory (expand-file-name "bin" user-emacs-directory)
+    "Binary file.")
+  (defconst windows (eq system-type 'windows-nt)
+    "Are we running on a WinTel system?")
+  (defconst linux (eq system-type 'gnu/linux)
+    "Are we running on a GNU/Linux system?")
+  (defconst mac (eq system-type 'darwin)
+    "Are we running on a Mac system?")
+  (defconst root (string-equal "root" (getenv "USER"))
+    "Are you a ROOT user?"))
+
+;;;; 加载特定机器相关的配置
+(section
+  (setq machine-file (expand-file-name "machine.el" user-emacs-directory))
+  ;; Load machine config
+  (when (file-exists-p machine-file)
+    (load-file machine-file)))
+
 ;;;; UI 设置
 (section
   ;; 移除不需要的GUI元素
@@ -8,7 +30,7 @@
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
   ;; 初始化时隐藏 UI
-  (add-to-list 'initial-frame-alist '(visibility . nil))
+  ;; (add-to-list 'initial-frame-alist '(visibility . nil))
   ;; 初始化完成后显示 UI
   (add-hook 'window-setup-hook #'make-frame-visible))
 
@@ -42,20 +64,5 @@
   (setq package-enable-at-startup nil)
   ;; ‘site-run-file’ 包含一些初始值。这个文件会在 ‘~/.emacs’ 之前加载。
   (setq site-run-file nil))
-;; (defun set-font()
-;;   ;; 12-1.7/14-1.75
-;;   (add-to-list 'default-frame-alist '(font . "Sarasa Mono SC-12"))
-;;   ;; (add-hook 'emacs-startup-hook (lambda()
-;;   ;;                                 ;; (add-to-list 'default-frame-alist '(font . "Sarasa Mono SC-12"))
-;;   ;;                                 (message "font %s" (font-family-list))
-;;   ;;                                 (dolist (charset '(kana han symbol cjk-misc bopomofo))
-;;   ;;                                   (set-fontset-font (frame-parameter nil 'font) charset (font-spec
-;;   ;;                                                                                          :family
-;;   ;;                                                                                          "Sarasa Mono SC"
-;;   ;;                                                                                          :size
-;;   ;;                                                                                          12.0)))))
-;;   )
-
-;; (set-font)
 
 (provide 'early-init)

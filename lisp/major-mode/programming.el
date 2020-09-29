@@ -157,6 +157,7 @@
 (use-package
   yasnippet-snippets
   :ensure t
+  :after yasnippet
   :config (yas-reload-all))
 
 ;; (use-package

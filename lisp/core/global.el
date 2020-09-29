@@ -2,6 +2,7 @@
   exec-path-from-shell
   ;; :if (memq window-system '(ns mac))
   :ensure t
+  :defer 10
   :custom (exec-path-from-shell-check-startup-files nil)
   :config (exec-path-from-shell-initialize))
 (use-package
@@ -31,7 +32,7 @@
   (setq doom-modeline-buffer-file-name-style 'auto)
   ;; (setq doom-modeline-minor-modes t)
   (setq doom-modeline-icon (display-graphic-p))
-  (setq doom-modeline-major-mode-color-icon nil)
+  (setq doom-modeline-major-mode-color-icon t)
   (setq doom-modeline-modal-icon t)
   (doom-modeline-mode 1)
   ;; :hook (after-init . doom-modeline-mode)
@@ -47,7 +48,7 @@
   ;; 设置垂直窗口边框(目前发现只在终端有效)
   (set-face-inverse-video-p 'vertical-border nil)
   (set-face-background 'vertical-border (face-background 'default))
-  (doom-themes-visual-bell-config)
+  ;; (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config)
   (doom-themes-neotree-config)
   (doom-themes-org-config))
