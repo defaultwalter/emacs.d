@@ -65,4 +65,6 @@
   ;; ‘site-run-file’ 包含一些初始值。这个文件会在 ‘~/.emacs’ 之前加载。
   (setq site-run-file nil))
 
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 (provide 'early-init)

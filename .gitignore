@@ -11,9 +11,11 @@
 /workspace
 /misc
 /packages
+/request
 
 
 \#*
+\%*
 \~*
 *.desktop
 .*

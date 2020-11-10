@@ -162,11 +162,4 @@
   :config                               ;
   (evil-terminal-cursor-changer-activate))
 
-
-
-
-
-
-
-
 (provide 'core/keymap)

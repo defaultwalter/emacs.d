@@ -16,11 +16,6 @@
 ;;;; ==============================================
 
 (use-package
-  all-the-icons
-  :ensure t
-  :if (display-graphic-p))
-
-(use-package
   doom-modeline
   :ensure t
   :defer t
@@ -42,6 +37,8 @@
   ;; :when (display-graphic-p)
   :ensure t
   :init
+  :hook (server-after-make-frame . (lambda()
+                                     (load-theme 'doom-one t)))
   :config                               ;
   (load-theme 'doom-one t)
   ;; Enable flashing mode-line on errors
@@ -51,8 +48,6 @@
   (doom-themes-neotree-config)
   ;; or for treemacs users
   (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-  (doom-themes-treemacs-config)
-
   ;; Corrects (and improves) org-mode's native fontification.
   (doom-themes-org-config)
   (set-face-attribute 'fringe nil
@@ -81,6 +76,7 @@
   :config                               ;
   (solaire-global-mode +1)
   (solaire-mode-swap-bg))
+
 (use-package
   all-the-icons
   :ensure t
@@ -187,7 +183,7 @@
   :ensure t
   :custom                               ;
   (projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld" misc-file-directory))
-  (projectile-track-known-projects-automatically nil)
+  ;; (projectile-track-known-projects-automatically nil)
   ;; (projectile-indexing-method 'native)
   (projectile-sort-order 'access-time)
   (projectile-find-dir-includes-top-level t)
@@ -335,6 +331,13 @@
   :defer t
   :config (global-undo-tree-mode))
 
+(use-package
+  expand-region                         ;选择区域
+  :ensure t
+  :after evil
+  :config                                 ;
+  (define-key evil-normal-state-map (kbd "<return>") 'er/expand-region)
+  (define-key evil-normal-state-map (kbd "RET") 'er/expand-region))
 
 (use-package
   format-all                            ;格式化代码，支持多种格式
