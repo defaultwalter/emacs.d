@@ -20,7 +20,7 @@
   :ensure t
   :defer t
   :init (doom-modeline-init)
-  (setq doom-modeline-height 20   )
+  (setq doom-modeline-height 20)
   (setq doom-modeline-bar-width 3)
   (setq doom-modeline-enable-word-count t) ;字数统计
   (setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
@@ -332,10 +332,21 @@
   :config (global-undo-tree-mode))
 
 (use-package
+  drag-stuff
+  :ensure t
+  :after evil
+  :config                               ;
+  (drag-stuff-global-mode 1)
+  (define-key evil-visual-state-map (kbd "K") 'drag-stuff-up)
+  (define-key evil-visual-state-map (kbd "J") 'drag-stuff-down)
+  (define-key evil-normal-state-map (kbd "K") 'drag-stuff-up)
+  (define-key evil-normal-state-map (kbd "J") 'drag-stuff-down))
+
+(use-package
   expand-region                         ;选择区域
   :ensure t
   :after evil
-  :config                                 ;
+  :config                               ;
   (define-key evil-normal-state-map (kbd "<return>") 'er/expand-region)
   (define-key evil-normal-state-map (kbd "RET") 'er/expand-region))
 
