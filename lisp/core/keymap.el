@@ -1,22 +1,14 @@
-(use-package
-  which-key
-  :ensure t
-  :defer nil
-  :custom (which-key-enable-extended-define-key t)
-  :init (setq which-key-idle-delay 0.5)
-  (setq which-key-idle-secondary-delay 0)
-  (setq which-key-sort-order 'which-key-key-order)
-  (setq which-key-enable-extended-define-key t)
-  :config (which-key-mode t)
-  (add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("↹" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("⏎" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("⇤" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil))))
+(defmacro m/define-keymap(KEYMAP PREFIX NAME)
+  `(progn
+     (defvar ,KEYMAP (make-sparse-keymap))
+     (define-prefix-command ',KEYMAP ',KEYMAP ,NAME)
+     (put ',KEYMAP 'keymap ,KEYMAP)
+     (put ',KEYMAP 'prefix ,PREFIX)
+     (put ',KEYMAP 'name ,NAME)))
 
-;; evil-collection 需要设置
-(setq evil-want-integration t)
-(setq evil-want-keybinding nil)
-
+(defmacro m/bind-to-keymap(KEYMAP KEY COMMAND &optional NAME)
+  `(progn (define-key ,KEYMAP ,KEY ',COMMAND)
+          (when ,NAME (which-key-add-keymap-based-replacements ,KEYMAP ,KEY '(,NAME . ,COMMAND)))))
 
 (defmacro w/create-leader-keymap (key map-name name &optional parent leader-key)
   `(let ((current-key (if ,parent (concat ,parent " " ,key) ,key) )
@@ -48,13 +40,34 @@
      (which-key-add-major-mode-key-based-replacements ,mode (concat leader-key " " current-key)
        ,name)))
 
+(use-package
+  which-key
+  :ensure t
+  :custom (which-key-enable-extended-define-key t)
+  :init (setq which-key-idle-delay 0.5)
+  (setq which-key-idle-secondary-delay 0)
+  (setq which-key-sort-order 'which-key-key-order)
+  (setq which-key-enable-extended-define-key t)
+  :config (which-key-mode t)
+  (add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("↹" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("⏎" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("⇤" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil))))
 
+
+
+(use-package
+  hydra
+  :ensure t)
 
 (use-package
   evil-leader
   :ensure t
-  :init   ;; (setq evil-leader/in-all-states t)
-  :config ;
+  :init ;; (setq evil-leader/in-all-states t)
+  ;; evil-collection 需要设置
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  :config                               ;
   (evil-leader/set-leader "SPC")
   (global-evil-leader-mode t)
   (setq file-map-prefix (w/create-leader-keymap "f" file-map "file"))
@@ -101,62 +114,115 @@
   (w/create-leader-key "?" 'about-emacs "about" help-map-prefix))
 
 
-(defun switch-to-default-im ()
-  "Switch to default Input Method"
-  (when environment/mac (start-process "issw" nil (expand-file-name "issw" bin-file-directory)
-                                       "com.apple.keylayout.ABC"))
-  (when environment/linux (start-process "fcitx-remote" nil "fcitx-remote" "-c")))
-
 (use-package
   evil
   :ensure t
   :custom                               ;
   (evil-want-minibuffer nil)
   :init                                 ;
-  (setq evil-emacs-state-cursor '("#ffb1ef" bar))
-  (setq evil-normal-state-cursor '("#55b1ef" box))
+  (setq evil-emacs-state-cursor
+        '("#ffb1ef"
+          bar))
+  (setq evil-normal-state-cursor
+        '("#55b1ef"
+          box))
   (setq evil-visual-state-cursor '("orange" box))
-  (setq evil-insert-state-cursor '("#c46bbc" bar))
-  (setq evil-replace-state-cursor '("#c46bbc" hollow-rectangle))
-  (setq evil-operator-state-cursor '("#c46bbc" hollow))
+  (setq evil-insert-state-cursor
+        '("#c46bbc"
+          bar))
+  (setq evil-replace-state-cursor
+        '("#c46bbc"
+          hollow-rectangle))
+  (setq evil-operator-state-cursor
+        '("#c46bbc"
+          hollow))
+  (setq evil-undo-system "undo-tree")
   (setq evil-want-C-i-jump nil)
   (when evil-want-C-i-jump (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward))
   (w/create-leader-key "h" 'evil-window-left "focus-left-window" window-map-prefix)
   (w/create-leader-key "j" 'evil-window-down "focus-down-window" window-map-prefix)
   (w/create-leader-key "k" 'evil-window-up "focus-up-window" window-map-prefix)
   (w/create-leader-key "l" 'evil-window-right "focus-right-window" window-map-prefix)
+  (defun m/switch-to-default-im ()
+    "Switch to default Input Method"
+    (when(eq system-type 'darwin)
+      (start-process "issw" nil (expand-file-name "issw" m/bin-file-directory)
+                     "com.apple.keylayout.ABC"))
+    (when (eq system-type 'gnu/linux)
+      (start-process "fcitx-remote" nil "fcitx-remote" "-c")))
+  (defun m/evil-forward-char()
+    (interactive)
+    (when (< (point)
+             (line-end-position))
+      (forward-char)))
+  (defun m/evil-forward-word-end()
+    (interactive)
+    (evil-forward-word-end)
+    (forward-char))
+  (defun m/evil-forward-WORD-end()
+    (interactive)
+    (evil-forward-WORD-end)
+    (forward-char))
+  (defun m/evil-end-of-line()
+    (interactive)
+    (evil-end-of-line)
+    (forward-char))
+  (defun m/evil-shift-left-visual ()
+    (call-interactively 'evil-shift-left)
+    (evil-normal-state)
+    (evil-visual-restore))
+  (defun m/evil-shift-right-visual ()
+    (call-interactively 'evil-shift-right)
+    (evil-normal-state)
+    (evil-visual-restore))
   :bind                                 ;
   (:map evil-insert-state-map           ;
         ("M-h" . evil-backward-char)
         ("M-j" . evil-next-line)
         ("M-k" . evil-previous-line)
-        ("M-l" . evil-forward-char)
+        ("M-l" . m/evil-forward-char)
         ("M-w" . evil-forward-word-begin)
-        ("M-e" . evil-forward-word-end)
+        ("M-W" . evil-forward-WORD-begin)
+        ("M-e" . m/evil-forward-word-end)
+        ("M-E" . m/evil-forward-WORD-end)
         ("M-b" . evil-backward-word-begin)
         ("M-B" . evil-backward-WORD-begin)
+        ("M-H" . evil-first-non-blank)
+        ("M-L" . m/evil-end-of-line)
+        :map evil-normal-state-map
+        ("H" . evil-first-non-blank)
+        ("L" . evil-end-of-line)
         :map evil-visual-state-map
-        ("(" . electric-pair))
-  :hook (evil-normal-state-entry . switch-to-default-im)
+        ("H" . evil-first-non-blank)
+        ("L" . evil-end-of-line)
+        ("(" . electric-pair)
+        ("<" . m/evil-shift-left-visual)
+        (">" . m/evil-shift-right-visual))
+  :hook (evil-normal-state-entry . m/switch-to-default-im)
   :config                               ;
   (evil-mode t))
 
 (use-package
   evil-collection
-  :after evil
   :ensure t
+  :requires evil
+  :after evil
+  :custom                               ;
+  (evil-collection-company-use-tng nil)
   :config                               ;
   (evil-collection-init))
 
 (use-package
   evil-surround
   :ensure t
+  :requires evil
   :config                               ;
   (global-evil-surround-mode 1))
 
 (use-package
   evil-terminal-cursor-changer
   :ensure t
+  :requires evil
   :unless (display-graphic-p)
   :after evil
   :config                               ;

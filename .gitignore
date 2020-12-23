@@ -12,6 +12,8 @@
 /misc
 /packages
 /request
+/rime
+/url
 
 
 \#*
@@ -33,3 +35,4 @@ session*
 eclipse.jdt.ls
 company-statistics-cache.el
 machine.el
+history

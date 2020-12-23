@@ -2,13 +2,12 @@
   exec-path-from-shell
   ;; :if (memq window-system '(ns mac))
   :ensure t
-  :defer 10
   :custom (exec-path-from-shell-check-startup-files nil)
   :config (exec-path-from-shell-initialize))
 (use-package
   xclip
   :ensure t
-  :if environment/terminal
+  :if (not (display-graphic-p))
   :config (xclip-mode 1))
 
 ;;;; ==============================================
@@ -29,53 +28,37 @@
   (setq doom-modeline-icon (display-graphic-p))
   (setq doom-modeline-major-mode-color-icon t)
   (setq doom-modeline-modal-icon t)
-  (doom-modeline-mode 1)
-  ;; :hook (after-init . doom-modeline-mode)
-  :config )
+  (doom-modeline-mode 1))
+
 (use-package
   doom-themes
-  ;; :when (display-graphic-p)
   :ensure t
   :init
+  :custom-face (font-lock-comment-face ((t
+                                         (:slant italic))))
+  (neo-root-dir-face ((t
+                       (:extend t))))
   :hook (server-after-make-frame . (lambda()
                                      (load-theme 'doom-one t)))
   :config                               ;
   (load-theme 'doom-one t)
-  ;; Enable flashing mode-line on errors
-  ;; (doom-themes-visual-bell-config)
-
-  ;; Enable custom neotree theme (all-the-icons must be installed!)
-  (doom-themes-neotree-config)
-  ;; or for treemacs users
   (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-  ;; Corrects (and improves) org-mode's native fontification.
-  (doom-themes-org-config)
-  (set-face-attribute 'fringe nil
-                      :foreground "#fc5c59")
-  ;; 设置垂直窗口边框(目前发现只在终端有效)
-  (set-face-inverse-video-p 'vertical-border nil)
-  (set-face-background 'vertical-border (face-background 'default))
   ;; (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config)
   (doom-themes-neotree-config)
   (doom-themes-org-config))
 
-;; (use-package
-;;   minimal-theme
-;;   ;; :when (display-graphic-p)
-;;   :ensure t
-;;   :config (doom-themes-treemacs-config)
-;;   (load-theme 'minimal-light t))
-
 (use-package
   solaire-mode
   :ensure t
+  :if (display-graphic-p)
   :hook                                 ;
   ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
   (minibuffer-setup . solaire-mode-in-minibuffer)
   :config                               ;
   (solaire-global-mode +1)
   (solaire-mode-swap-bg))
+
 
 (use-package
   all-the-icons
@@ -99,14 +82,16 @@
   :custom (ivy-use-virtual-buffers nil)
   (ivy-count-format "(%d/%d) ")
   (ivy-initial-inputs-alist nil)
-  :config (ivy-mode t))
+  :config (ivy-mode t)
+  (define-key ivy-minibuffer-map (kbd "S-RET") 'ivy-immediate-done)
+  (define-key ivy-minibuffer-map (kbd "S-<return>") 'ivy-immediate-done))
 
 (use-package
   smex                                  ;将命令按使用频率排序
   :ensure t
   :defer t
   :init                                 ;
-  (setq smex-save-file (expand-file-name "smex-items" misc-file-directory)))
+  (setq smex-save-file (expand-file-name "smex-items" m/misc-file-directory)))
 
 (use-package
   ivy-rich                              ; 在 M-x 和帮助中显示文档
@@ -154,6 +139,64 @@
   :defer t
   :config (global-command-log-mode))
 
+;; 自动完成
+(use-package
+  company
+  :ensure t
+  :defer t
+  :hook ;; (prog-mode . company-mode)
+  (after-init . global-company-mode)
+  :init ;; Don't convert to downcase.
+  (setq-default company-dabbrev-downcase nil)
+  :bind (("C-SPC" . company-complete-common)
+         ("C-S-SPC" . company-complete-common)
+         ;;
+         :map company-active-map        ;
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous)
+         ("C-s" . company-filter-candidates)
+         ("<tab>" . company-complete-selection)
+         ("TAB" . company-complete-selection)
+         ("<return>" . company-complete-selection) ; 终端下无效
+         ("RET" . company-complete-selection)      ; 终端下生效
+         :map company-search-map                   ;
+         ("C-n" . company-select-next)
+         ("C-p" . company-select-previous)
+         ("<tab>" . company-complete-selection)
+         ("TAB" . company-complete-selection)
+         ("<return>" . company-complete-selection) ; 终端下无效
+         ("RET" . company-complete-selection)      ; 终端下生效
+         )
+  :custom                               ;
+  (company-minimum-prefix-length 2)
+  (company-idle-delay 0.01)
+  (company-echo-delay 0)
+  (company-show-numbers t)
+  :config                               ;
+  (setq company-selection-default 0)
+  (setq company-backends '(;; (:separate company-yasnippet
+                           ;;            company-capf)
+                           (company-capf company-dabbrev-code company-keywords company-files)
+                           (company-dabbrev)))
+  (setq company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend)))
+
+(use-package
+  company-box
+  :ensure t
+  :requires company
+  :hook (company-mode . company-box-mode)
+  :init                                 ;
+  (setq company-box-show-single-candidate t)
+  :config)
+
+(use-package
+  company-statistics
+  :ensure t
+  :requires company
+  :after company
+  :hook (company-mode . company-statistics-mode)
+  :custom                               ;
+  (company-statistics-file (expand-file-name "company-statistics-cache.el" m/misc-file-directory)))
 (use-package
   buffer-move                           ; 交换两个window的buffer
   :ensure t
@@ -182,12 +225,14 @@
   projectile                            ;project 插件
   :ensure t
   :custom                               ;
-  (projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld" misc-file-directory))
+  (projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld"
+                                                    m/misc-file-directory))
   ;; (projectile-track-known-projects-automatically nil)
   ;; (projectile-indexing-method 'native)
   (projectile-sort-order 'access-time)
   (projectile-find-dir-includes-top-level t)
-  :init (w/create-leader-key "c" 'projectile-kill-buffers "close-project" project-map-prefix)
+  :init                                 ;
+  (w/create-leader-key "c" 'projectile-kill-buffers "close-project" project-map-prefix)
   (w/create-leader-key "i" 'projectile-project-info "project-info" project-map-prefix)
   (w/create-leader-key "R" 'projectile-clear-known-projects "clear-project-cache"
                        project-map-prefix)
@@ -210,42 +255,48 @@
                        project-map-prefix)
   :config (counsel-projectile-mode t))
 
+(use-package
+  neotree
+  :ensure t
+  :defer t
+  :bind ("C-<tab>" . m/neotree-project-toggle)
+  ("C-TAB" . m/neotree-project-toggle)
+  :init                                 ;
+  (setq neo-smart-open t)
+  ;; 隐藏 Neotree 的 Modeline
+  (add-hook 'neotree-mode-hook (lambda()
+                                 (setq mode-line-format nil)))
+  (defun m/neotree-project-toggle ()
+    "Open NeoTree using the git root."
+    (interactive)
+    (let ((project-dir (projectile-project-root))
+          (file-name (buffer-file-name)))
+      (neotree-toggle)
+      (when project-dir (if (neo-global--window-exists-p)
+                            (progn (neotree-dir project-dir)
+                                   (neotree-find file-name))))))
+  (w/create-leader-key "f" 'm/neotree-project-toggle "file-tree" view-map-prefix))
 
 (use-package
   treemacs
   :ensure t
-  :init (w/create-leader-key "f" 'treemacs "file-tree" view-map-prefix))
+  :init ;; (w/create-leader-key "f" 'treemacs "file-tree" view-map-prefix)
+  )
 (use-package
   treemacs-evil
   :ensure t
   :after (evil treemacs))
-(use-package
-  treemacs-projectile
-  :after(projectile treemacs)
-  :ensure t)
-;; (use-package
-;;   multi-term
-;;   :ensure t
-;;   :defer t
-;;   :custom                                      ;
-;;   (multi-term-dedicated-select-after-open-p t) ;打开后光标定位到 Terminal Window
-;;   (multi-term-buffer-name "Terminal")
-;;   :init (w/create-leader-key "t" 'multi-term-dedicated-toggle "toggle-terminal" window-map-prefix)
-;;   :bind ("C-`" . multi-term-dedicated-toggle))
-
 
 (use-package
   multi-vterm
   :ensure t
-  :init (defun toggle-termianl()
-          (interactive)
-          (let ((project-dir (projectile-project-root)))
-            (if project-dir (multi-vterm-projectile)
-              (multi-vterm-dedicated-toggle))))
-  (w/create-leader-key "t" 'toggle-termianl "toggle-terminal" view-map-prefix)
-  :bind ("C-`" . toggle-termianl)
-  :config (add-hook 'vterm-mode-hook #'evil-insert-state)
-  (define-key vterm-mode-map [return]                      #'vterm-send-return)
+  :bind ("C-`" . multi-vterm-dedicated-toggle)
+  :init                                 ;
+  (w/create-leader-key "t" 'multi-vterm-dedicated-toggle "terminal" view-map-prefix)
+  :custom (multi-vterm-dedicated-window-height 15)
+  (multi-vterm-buffer-name "terminal")
+  (multi-vterm-dedicated-buffer-name "=")
+  :config (define-key vterm-mode-map [return]                      #'vterm-send-return)
   (setq vterm-keymap-exceptions nil)
   (evil-define-key 'insert vterm-mode-map (kbd "C-e")      #'vterm--self-insert)
   (evil-define-key 'insert vterm-mode-map (kbd "C-f")      #'vterm--self-insert)
@@ -274,8 +325,16 @@
   (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume))
 
 (use-package
+  disable-mouse
+  :ensure t
+  :config (mapc #'disable-mouse-in-keymap (list evil-motion-state-map evil-normal-state-map
+                                                evil-visual-state-map evil-insert-state-map))
+  (global-disable-mouse-mode))
+
+(use-package
   diff-hl
   :ensure t
+  :defer 1
   :config                               ;
   (global-diff-hl-mode))
 
@@ -283,10 +342,10 @@
 ;;;; 编辑增强
 ;;;; ==============================================
 
-
 (use-package
   smart-comment                         ;注释插件
   :ensure t
+  :defer t
   :bind ("C-/" . smart-comment)
   :init (w/create-leader-key "c" 'smart-comment "comment" content-map-prefix))
 
@@ -294,7 +353,10 @@
   ace-jump-mode                         ; 根据字符在文档中跳转
   :ensure t
   :defer t
-  :init (w/create-leader-key "c" 'ace-jump-char-mode "jump-to-char" goto-map-prefix)
+  :bind (:map evil-normal-state-map
+              ("g c". ace-jump-char-mode))
+  :init                                 ;
+  (w/create-leader-key "c" 'ace-jump-char-mode "jump-to-char" goto-map-prefix)
   (w/create-leader-key "l" 'ace-jump-line-mode "jump-to-line" goto-map-prefix)
   (w/create-leader-key "w" 'ace-jump-word-mode "jump-to-word" goto-map-prefix))
 
@@ -302,6 +364,7 @@
   hungry-delete                         ; 可以删除前面所有的空白字符
   :ensure t
   :defer t
+  :custom (hungry-delete-join-reluctantly t)
   :hook (prog-mode . hungry-delete-mode))
 
 (use-package
@@ -334,21 +397,25 @@
 (use-package
   drag-stuff
   :ensure t
+  :defer t
   :after evil
+  :bind (:map evil-visual-state-map
+              ("M-k" . drag-stuff-up)
+              ("M-j" . drag-stuff-down)
+              :map evil-normal-state-map
+              ("M-k" . drag-stuff-up)
+              ("M-j" . drag-stuff-down))
   :config                               ;
-  (drag-stuff-global-mode 1)
-  (define-key evil-visual-state-map (kbd "K") 'drag-stuff-up)
-  (define-key evil-visual-state-map (kbd "J") 'drag-stuff-down)
-  (define-key evil-normal-state-map (kbd "K") 'drag-stuff-up)
-  (define-key evil-normal-state-map (kbd "J") 'drag-stuff-down))
+  (drag-stuff-global-mode 1))
 
 (use-package
   expand-region                         ;选择区域
   :ensure t
+  :defer t
   :after evil
-  :config                               ;
-  (define-key evil-normal-state-map (kbd "<return>") 'er/expand-region)
-  (define-key evil-normal-state-map (kbd "RET") 'er/expand-region))
+  :bind (:map evil-normal-state-map
+              ("<S-return>" . er/expand-region)
+              ("S-RET" . er/expand-region)))
 
 (use-package
   format-all                            ;格式化代码，支持多种格式
@@ -358,8 +425,8 @@
 
 (use-package
   auto-sudoedit                         ;自动请求sudo权限
-  :if (or environment/linux
-          environment/mac)
+  :if (or (eq system-type 'gnu/linux)
+          (eq system-type 'darwin))
   :ensure t
   :config (auto-sudoedit-mode 1))
 
@@ -368,28 +435,43 @@
   :ensure t
   :defer t)
 (use-package
+  popwin                                ; 使用弹出窗口显示部分Buffer
+  :ensure t
+  :config                               ;
+  (popwin-mode 1))
+
+(use-package
   rainbow-mode
   :ensure t
+  :defer 1
+  :hook (prog-mode . rainbow-mode)
   :config
   ;; 默认的会文本属性背景色显示颜色，会与高亮行插件冲突，通过重写这个方法，调换前景与背景色来解决这个问题
   (defun rainbow-colorize-match (color &optional match)
     "Return a matched string propertized with a face whose
-background is COLOR. The foreground is computed using
-`rainbow-color-luminance', and is either white or black."
-    (let ((match (or match
-                     0)))
+  background is COLOR. The foreground is computed using
+  `rainbow-color-luminance', and is either white or black."
+    (let* ((match (or match
+                      0))
+           (color-string
+            (buffer-substring-no-properties
+             (match-beginning match)
+             (match-end match))))
+      ;; (message "color : %s" color-string)
       (put-text-property (match-beginning match)
                          (match-end match) 'face
-                         `((:background ,(if (> 0.5 (rainbow-x-color-luminance color))
-                                             (face-foreground 'default)
-                                           (face-background 'default)))
-                           (:foreground ,color))))))
+                         `(:foreground ,color)))))
 
 (use-package
-  benchmark-init
+  highlight-indent-guides               ;高亮缩进
   :ensure t
-  :config
-  ;; To disable collection of benchmark data after init is done.
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+  :defer t
+  :custom (highlight-indent-guides-suppress-auto-error t)
+  (highlight-indent-guides-method 'bitmap)
+  (highlight-indent-guides-responsive 'top)
+  :hook ((prog-mode text-mode conf-mode) . highlight-indent-guides-mode)
+  :config                               ;
+  (unless (display-graphic-p)
+    (setq highlight-indent-guides-method 'character)))
 
 (provide 'core/global)

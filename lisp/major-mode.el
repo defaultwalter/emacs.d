@@ -11,6 +11,9 @@
 (require 'major-mode/plantuml)
 (require 'major-mode/org)
 (require 'major-mode/yaml)
+;; (require 'major-mode/eshell)
+(require 'major-mode/lua)
+(require 'major-mode/handlebars)
 
 (provide 'major-mode)
 ;;; program-config.el ends here
