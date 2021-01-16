@@ -14,6 +14,7 @@
 ;; (require 'major-mode/eshell)
 (require 'major-mode/lua)
 (require 'major-mode/handlebars)
+(require 'major-mode/note)
 
 (provide 'major-mode)
 ;;; program-config.el ends here
