@@ -15,6 +15,7 @@
               (("C-c n i" . org-roam-insert))
               (("C-c n I" . org-roam-insert-immediate)))
   :config                               ;
+  (require 'org-roam-protocol)
   (setq org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
                                       :file-name "%<%Y%m%d%H%M%S>"
                                       :head "* ${title} \n\n"

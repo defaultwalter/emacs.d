@@ -125,6 +125,7 @@
 ;; 主题样式
 (defun m/ui-ajust()
   "调整主题样式"
+
   (set-face-attribute 'fringe nil
                       :foreground "#fc5c59")
   ;; 设置垂直窗口边框(目前发现只在终端有效)
