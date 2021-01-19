@@ -82,6 +82,7 @@
   :custom (ivy-use-virtual-buffers nil)
   (ivy-count-format "(%d/%d) ")
   (ivy-initial-inputs-alist nil)
+  (ivy-use-selectable-prompt t)         ;允许选择输入提示行
   :config (ivy-mode t)
   (define-key ivy-minibuffer-map (kbd "S-RET") 'ivy-immediate-done)
   (define-key ivy-minibuffer-map (kbd "S-<return>") 'ivy-immediate-done))

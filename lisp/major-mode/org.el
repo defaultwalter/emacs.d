@@ -62,5 +62,53 @@
   (setq org-superstar-prettify-item-bullets nil))
 
 
+(use-package
+  org-roam
+  :ensure t
+  :hook (after-init . org-roam-mode)
+  :custom                               ;
+  (org-roam-directory "~/Storage/Nutstore/Notes")
+  (org-roam-index-file "Index.org")
+  (org-roam-title-sources '((title headline) alias))
+  (org-roam-tag-sources '(vanilla))
+  :config                               ;
+  (w/create-leader-key "d" 'org-roam-jump-to-index "index" major-map-prefix)
+  (w/create-leader-key-for-mode 'org-mode "n" 'org-roam "backlink" major-map-prefix)
+  (w/create-leader-key-for-mode 'org-mode "f" 'org-roam-find-file "find-file" major-map-prefix)
+  (w/create-leader-key-for-mode 'org-mode "n" 'org-roam-graph "graph" major-map-prefix)
+  (w/create-leader-key-for-mode 'org-mode "i" 'org-roam-insert "insert" major-map-prefix)
+  (w/create-leader-key-for-mode 'org-mode "I" 'org-roam-insert-immediate "insert-immediate" major-map-prefix)
+  (require 'org-roam-protocol)
+  (setq org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
+                                      :file-name "${slug}-%<%y%m%d%H%M%S>"
+                                      :head "* ${title} \n"
+                                      :unnarrowed t)))
+  (setq org-roam-capture-immediate-template '("d" "default" plain #'org-roam-capture--get-point "%?"
+                                              :file-name "${slug}-%<%y%m%d%H%M%S>"
+                                              :head "* ${title} \n"
+                                              :unnarrowed t)))
+(use-package
+  deft
+  :ensure t
+  :after org
+  :bind ("C-c n d" . deft)
+  :custom (deft-recursive t)
+  (deft-use-filter-string-for-filename t)
+  (deft-default-extension "org")
+  (deft-directory "~/Storage/Nutstore/Notes"))
+
+(use-package
+  org-roam-server
+  :ensure t
+  :config (setq org-roam-server-host "127.0.0.1" org-roam-server-port 8010
+                org-roam-server-authenticate nil org-roam-server-export-inline-images t
+                org-roam-server-serve-files nil org-roam-server-served-file-extensions '("pdf" "mp4"
+                                                                                         "ogv")
+                org-roam-server-network-poll t org-roam-server-network-arrows nil
+                org-roam-server-network-label-truncate t
+                org-roam-server-network-label-truncate-length 60
+                org-roam-server-network-label-wrap-length 20))
+
+
 (provide 'major-mode/org)
 ;;; org-config.el ends here
