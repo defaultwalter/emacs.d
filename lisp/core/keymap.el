@@ -150,7 +150,7 @@
   (defun m/switch-to-default-im ()
     "Switch to default Input Method"
     (when(eq system-type 'darwin)
-      (start-process "issw" nil (expand-file-name "issw" m/bin-file-directory)
+      (start-process "issw" nil (expand-file-name "bin/issw" user-emacs-directory)
                      "com.apple.keylayout.ABC"))
     (when (eq system-type 'gnu/linux)
       (start-process "fcitx-remote" nil "fcitx-remote" "-c")))

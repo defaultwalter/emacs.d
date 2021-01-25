@@ -92,7 +92,7 @@
   :ensure t
   :defer t
   :init                                 ;
-  (setq smex-save-file (expand-file-name "smex-items" m/misc-file-directory)))
+  (setq smex-save-file (expand-file-name "misc/smex-items" user-emacs-directory)))
 
 (use-package
   ivy-rich                              ; 在 M-x 和帮助中显示文档
@@ -197,7 +197,7 @@
   :after company
   :hook (company-mode . company-statistics-mode)
   :custom                               ;
-  (company-statistics-file (expand-file-name "company-statistics-cache.el" m/misc-file-directory)))
+  (company-statistics-file (expand-file-name "misc/company-statistics-cache.el" user-emacs-directory)))
 (use-package
   buffer-move                           ; 交换两个window的buffer
   :ensure t
@@ -226,8 +226,8 @@
   projectile                            ;project 插件
   :ensure t
   :custom                               ;
-  (projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld"
-                                                    m/misc-file-directory))
+  (projectile-known-projects-file (expand-file-name "misc/projectile-bookmarks.eld"
+                                                    user-emacs-directory))
   ;; (projectile-track-known-projects-automatically nil)
   ;; (projectile-indexing-method 'native)
   (projectile-sort-order 'access-time)
@@ -451,9 +451,6 @@
               ("M-*" . evil-multiedit-match-all)
               ("M-]" . evil-multiedit-match-and-next)
               ("M-[" . evil-multiedit-match-and-prev)
-              :map  evil-motion-state-map
-              ("RET" . evil-multiedit-toggle-or-restrict-region)
-              ("<return>" . evil-multiedit-toggle-or-restrict-region)
               :map  evil-multiedit-state-map
               ("RET" . evil-multiedit-toggle-or-restrict-region)
               ("<return>" . evil-multiedit-toggle-or-restrict-region)

@@ -1,10 +1,6 @@
 ;;;;==================================================
 ;;;; 用户变量/常量
 ;;;;==================================================
-(defconst m/misc-file-directory (expand-file-name "misc" user-emacs-directory)
-  "Save automatically generated files.")
-(defconst m/bin-file-directory (expand-file-name "bin" user-emacs-directory)
-  "Binary file.")
 (defvar m/fontsize 12
   "Default fontsize")
 
@@ -28,10 +24,19 @@
 
 ;; 初始化完成后显示 UI
 (add-hook 'window-setup-hook #'make-frame-visible)
-(add-to-list 'default-frame-alist '(width . 140))
-(add-to-list 'default-frame-alist '(height . 45))
-(add-to-list 'default-frame-alist '(ns-appearance . dark))
-(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)) ; macOS 下沉浸式标题栏
+(add-to-list 'default-frame-alist '(ns-appearance . dark)) ; 使用黑色外观
+;; frame 初始位置
+
+(add-to-list 'default-frame-alist '(width . 0.7))
+(add-to-list 'default-frame-alist '(height . 0.7))
+(add-to-list 'default-frame-alist '(left . 0.5))
+(add-to-list 'default-frame-alist '(top . 0.5))
+(add-to-list 'initial-frame-alist '(width . 0.7))
+(add-to-list 'initial-frame-alist '(height . 0.7))
+(add-to-list 'initial-frame-alist '(left . 0.5))
+(add-to-list 'initial-frame-alist '(top . 0.5))
+
 ;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 ;;;;==================================================
 ;;;; GC 设置

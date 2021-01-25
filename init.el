@@ -1,7 +1,7 @@
 ;;; package -- core
 ;;; Commentary:
 ;;; Code:
-(message "load init")
+
 (when (version< emacs-version "27")
   ;; Emacs版本低于27时，手动加载‘early-init.el’
   (load-file (expand-file-name "early-init.el" user-emacs-directory)))
@@ -15,6 +15,7 @@
 (package-initialize)
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
+
   (package-install 'use-package))
 
 ;; 启用use-package统计
@@ -40,7 +41,7 @@
 
 ;;;; Custom文件配置
 ;; Use `user.el` to save custom config
-(setq custom-file (expand-file-name "custom.el" m/misc-file-directory))
+(setq custom-file (expand-file-name "misc/custom.el" user-emacs-directory))
 ;; Load custom config
 ;; (when (file-exists-p custom-file)
 ;;   (load-file custom-file))
@@ -51,5 +52,6 @@
 (require 'core)
 (require 'major-mode)
 
+;; (make-frame-visible)
 (provide 'init)
 ;;; init.el ends here

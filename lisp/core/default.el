@@ -44,7 +44,8 @@
 ;; 开启窗口UNDO-REDO
 (winner-mode t)
 ;; 编辑备份设置
-(defconst backup-file-directory (expand-file-name "backup" m/misc-file-directory))
+
+(defconst backup-file-directory (expand-file-name "misc/backup" user-emacs-directory))
 (make-directory backup-file-directory t) ; 创建备份文件目录
 (setq backup-directory-alist `(("." . ,backup-file-directory))) ; 设置备份目录
 (setq version-control t)                ; 启动备份版本控制
@@ -66,11 +67,11 @@
 (setq ad-redefinition-action 'accept)   ; 禁止redefine warning
 
 ;; 保存光标位置
-(setq save-place-file (expand-file-name "palces" m/misc-file-directory))
+(setq save-place-file (expand-file-name "misc/palces" user-emacs-directory))
 (save-place-mode 1)
 
 ;; 保存最近打开的文件
-(setq recentf-save-file (expand-file-name "recentf" m/misc-file-directory))
+(setq recentf-save-file (expand-file-name "recentf" user-emacs-directory))
 (recentf-mode 1)
 
 ;; 滚动行为
