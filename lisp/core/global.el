@@ -4,8 +4,8 @@
   :ensure t
   :custom (exec-path-from-shell-check-startup-files nil)
   :config (exec-path-from-shell-initialize))
-  xclip
-(use-package
+
+(use-package xclip
   :ensure t
   :if (not (display-graphic-p))
   :config (xclip-mode 1))
