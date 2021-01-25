@@ -147,13 +147,7 @@
   (w/create-leader-key "j" 'evil-window-down "focus-down-window" window-map-prefix)
   (w/create-leader-key "k" 'evil-window-up "focus-up-window" window-map-prefix)
   (w/create-leader-key "l" 'evil-window-right "focus-right-window" window-map-prefix)
-  (defun m/switch-to-default-im ()
-    "Switch to default Input Method"
-    (when(eq system-type 'darwin)
-      (start-process "issw" nil (expand-file-name "bin/issw" user-emacs-directory)
-                     "com.apple.keylayout.ABC"))
-    (when (eq system-type 'gnu/linux)
-      (start-process "fcitx-remote" nil "fcitx-remote" "-c")))
+
   (defun m/evil-forward-char()
     (interactive)
     (when (< (point)
@@ -202,7 +196,7 @@
         ("(" . electric-pair)
         ("<" . m/evil-shift-left-visual)
         (">" . m/evil-shift-right-visual))
-  :hook (evil-normal-state-entry . m/switch-to-default-im)
+  ;; :hook (evil-normal-state-entry . m/switch-to-default-im)
   :config                               ;
   (evil-mode t))
 

@@ -197,7 +197,8 @@
   :after company
   :hook (company-mode . company-statistics-mode)
   :custom                               ;
-  (company-statistics-file (expand-file-name "misc/company-statistics-cache.el" user-emacs-directory)))
+  (company-statistics-file (expand-file-name "misc/company-statistics-cache.el"
+                                             user-emacs-directory)))
 (use-package
   buffer-move                           ; 交换两个window的buffer
   :ensure t
@@ -444,13 +445,13 @@
   evil-multiedit                        ; 多光标
   :ensure t
   :bind (:map evil-normal-state-map
-              ("M-*" . evil-multiedit-match-all)
-              ("M-]" . evil-multiedit-match-and-next)
-              ("M-[" . evil-multiedit-match-and-prev)
+              ("C-M-*" . evil-multiedit-match-all)
+              ("C-M-]" . evil-multiedit-match-and-next)
+              ("C-M-[" . evil-multiedit-match-and-prev)
               :map evil-visual-state-map
               ("M-*" . evil-multiedit-match-all)
-              ("M-]" . evil-multiedit-match-and-next)
-              ("M-[" . evil-multiedit-match-and-prev)
+              ("C-M-]" . evil-multiedit-match-and-next)
+              ("C-M-[" . evil-multiedit-match-and-prev)
               :map  evil-multiedit-state-map
               ("RET" . evil-multiedit-toggle-or-restrict-region)
               ("<return>" . evil-multiedit-toggle-or-restrict-region)
@@ -494,5 +495,18 @@
   :config                               ;
   (unless (display-graphic-p)
     (setq highlight-indent-guides-method 'character)))
+(use-package
+  sis
+  :ensure t
+  :config ;
+  (cond ((eq system-type 'darwin)
+         (if (executable-find "macism")
+             (sis-ism-lazyman-config "com.apple.keylayout.ABC"
+                                     "com.apple.inputmethod.SCIM.ITABC")
+           (message
+            "SIS need to install macism. use ‘brew tap laishulu/macism;brew install macism’ to install it.")))
+        ((eq system-type 'gnu/linux)
+         (sis-ism-lazyman-config "1" "2" 'fcitx)))
+  (sis-global-respect-mode t))
 
 (provide 'core/global)
