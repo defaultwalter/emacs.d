@@ -5,7 +5,8 @@
   :custom (exec-path-from-shell-check-startup-files nil)
   :config (exec-path-from-shell-initialize))
 
-(use-package xclip
+(use-package
+  xclip
   :ensure t
   :if (not (display-graphic-p))
   :config (xclip-mode 1))
@@ -34,8 +35,9 @@
   doom-themes
   :ensure t
   :init
-  :custom-face (font-lock-comment-face ((t
-                                         (:slant italic))))
+  :custom-face                          ;
+  (font-lock-comment-face ((t
+                            (:slant italic))))
   (neo-root-dir-face ((t
                        (:extend t))))
   :hook (server-after-make-frame . (lambda()
@@ -261,14 +263,18 @@
   neotree
   :ensure t
   :defer t
-  :custom (neo-window-width 35)
-  :bind ("C-<tab>" . m/neotree-project-toggle)
+  :custom ;
+  (neo-smart-open t)
+  (neo-autorefresh t)
+  (neo-window-width 35)
+  (neo-mode-line-type 'none)
+  (neo-vc-integration 'face)
+  (neo-hide-cursor t)
+  ;; (neo-toggle-window-keep-p t)
+  :bind                                 ;
+  ("C-<tab>" . m/neotree-project-toggle)
   ("C-TAB" . m/neotree-project-toggle)
   :init                                 ;
-  (setq neo-smart-open t)
-  ;; 隐藏 Neotree 的 Modeline
-  (add-hook 'neotree-mode-hook (lambda()
-                                 (setq mode-line-format nil)))
   (defun m/neotree-project-toggle ()
     "Open NeoTree using the git root."
     (interactive)
