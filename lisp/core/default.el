@@ -16,13 +16,16 @@
 ;;;;==================================================
 
 ;; UI控件设置
-(menu-bar-mode -1)                          ; 隐藏菜单
-(tool-bar-mode -1)                          ; 隐藏工具栏
-(scroll-bar-mode -1)                        ; 隐藏滚动条
-(setq mouse-highlight nil)                  ; 禁止鼠标悬浮高亮
+(if (and (eq system-type 'darwin)
+         (display-graphic-p))
+    (menu-bar-mode 1)
+  (menu-bar-mode -1))                    ; 隐藏菜单
+(tool-bar-mode -1)                       ; 隐藏工具栏
+(scroll-bar-mode -1)                     ; 隐藏滚动条
+(setq mouse-highlight nil)               ; 禁止鼠标悬浮高亮
 (setq-default frame-title-format " %b ") ; 设置窗口标题格式
-(setq-default use-dialog-box nil)           ; 不显示对话框
-(set-frame-parameter nil 'alpha 100)        ; 设置窗口透明度
+(setq-default use-dialog-box nil)        ; 不显示对话框
+(set-frame-parameter nil 'alpha 100)     ; 设置窗口透明度
 ;; 定义自动换行标识
 (define-fringe-bitmap 'right-curly-arrow [#b00101010 ;
                                           #b00000000 ;
@@ -37,7 +40,7 @@
                                           #b01111110])
 ;; 设置自动换行标识
 (define-fringe-bitmap 'left-curly-arrow [#b00000000])
-;; (cua-mode 1)                            ; 开启CUA模式
+(cua-mode 1)                            ; 开启CUA模式
 ;; 开启窗口UNDO-REDO
 (winner-mode t)
 ;; 编辑备份设置
@@ -125,7 +128,6 @@
 ;; 主题样式
 (defun m/ui-ajust()
   "调整主题样式"
-
   (set-face-attribute 'fringe nil
                       :foreground "#fc5c59")
   ;; 设置垂直窗口边框(目前发现只在终端有效)
@@ -152,15 +154,15 @@
 
 ;; (global-display-line-numbers-mode)
 
-(setq display-line-numbers-type 'relative)            ; 使用相对行号
-(setq display-line-numbers-width-start 5)             ; 行号宽度
+(setq display-line-numbers-type 'relative) ; 使用相对行号
+(setq display-line-numbers-width-start 5)  ; 行号宽度
 (setq-default display-line-numbers-width 5)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode) ; 显示行号
-(global-hl-line-mode t)                 ; 高亮当前的行
-(delete-selection-mode 1)               ; 插入时替换选区
-(electric-pair-mode t)                  ; 自动输入括号
-(electric-quote-mode t)                 ; 自动输入引号
-(electric-indent-mode 1)                ; 回车时使用缩进
+(global-hl-line-mode t)                               ; 高亮当前的行
+(delete-selection-mode 1)                             ; 插入时替换选区
+(electric-pair-mode t)                                ; 自动输入括号
+(electric-quote-mode t)                               ; 自动输入引号
+(electric-indent-mode 1)                              ; 回车时使用缩进
 
 (defun m/clear-whitespace()
   "清除文件中的空格"

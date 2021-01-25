@@ -1,3 +1,6 @@
+(use-package
+  general
+  :ensure t)
 (defmacro m/define-keymap(KEYMAP PREFIX NAME)
   `(progn
      (defvar ,KEYMAP (make-sparse-keymap))
@@ -46,12 +49,13 @@
   :custom (which-key-enable-extended-define-key t)
   :init (setq which-key-idle-delay 0.5)
   (setq which-key-idle-secondary-delay 0)
-  (setq which-key-sort-order 'which-key-key-order)
+  (setq which-key-sort-order 'which-key-key-order-alpha)
   (setq which-key-enable-extended-define-key t)
   :config (which-key-mode t)
-  (add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("↹" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("⏎" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("⇤" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("ESC" . nil) . ("esc" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("tab" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("return" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("delete" . nil)))
   (add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil))))
 
 

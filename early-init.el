@@ -28,7 +28,11 @@
 
 ;; 初始化完成后显示 UI
 (add-hook 'window-setup-hook #'make-frame-visible)
-(add-to-list 'default-frame-alist '(fullscreen . maximized))
+(add-to-list 'default-frame-alist '(width . 140))
+(add-to-list 'default-frame-alist '(height . 45))
+(add-to-list 'default-frame-alist '(ns-appearance . dark))
+(add-to-list 'default-frame-alist '(ns-transparent-titlebar . t))
+;; (add-to-list 'default-frame-alist '(fullscreen . maximized))
 ;;;;==================================================
 ;;;; GC 设置
 ;;;;==================================================

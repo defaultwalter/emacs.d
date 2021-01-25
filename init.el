@@ -21,6 +21,9 @@
 (setq use-package-compute-statistics t)
 (require 'use-package)
 
+(use-package
+  restart-emacs
+  :ensure t)
 ;; 性能统计
 (use-package
   benchmark-init

@@ -385,9 +385,8 @@
   :ensure t
   :defer t
   :custom (hl-paren-highlight-adjacent t)
-  (hl-paren-colors '("red"))            ; 设置高亮括号颜色
+  (hl-paren-colors '("cyan"))           ; 设置高亮括号颜色
   :hook (prog-mode . highlight-parentheses-mode))
-
 
 (use-package
   undo-tree                             ;撤销重做可视化
@@ -401,11 +400,11 @@
   :defer t
   :after evil
   :bind (:map evil-visual-state-map
-              ("M-k" . drag-stuff-up)
-              ("M-j" . drag-stuff-down)
+              ("K" . drag-stuff-up)
+              ("J" . drag-stuff-down)
               :map evil-normal-state-map
-              ("M-k" . drag-stuff-up)
-              ("M-j" . drag-stuff-down))
+              ("K" . drag-stuff-up)
+              ("J" . drag-stuff-down))
   :config                               ;
   (drag-stuff-global-mode 1))
 
@@ -440,6 +439,30 @@
   :ensure t
   :config                               ;
   (popwin-mode 1))
+
+(use-package
+  evil-multiedit                        ; 多光标
+  :ensure t
+  :bind (:map evil-normal-state-map
+              ("M-*" . evil-multiedit-match-all)
+              ("M-]" . evil-multiedit-match-and-next)
+              ("M-[" . evil-multiedit-match-and-prev)
+              :map evil-visual-state-map
+              ("M-*" . evil-multiedit-match-all)
+              ("M-]" . evil-multiedit-match-and-next)
+              ("M-[" . evil-multiedit-match-and-prev)
+              :map  evil-motion-state-map
+              ("RET" . evil-multiedit-toggle-or-restrict-region)
+              ("<return>" . evil-multiedit-toggle-or-restrict-region)
+              :map  evil-multiedit-state-map
+              ("RET" . evil-multiedit-toggle-or-restrict-region)
+              ("<return>" . evil-multiedit-toggle-or-restrict-region)
+              :map evil-multiedit-state-map
+              ("C-n" . evil-multiedit-next)
+              ("C-p" . evil-multiedit-prev)
+              :map evil-multiedit-insert-state-map
+              ("C-n" . evil-multiedit-next)
+              ("C-p" . evil-multiedit-prev)))
 
 (use-package
   rainbow-mode
