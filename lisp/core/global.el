@@ -4,8 +4,8 @@
   :ensure t
   :custom (exec-path-from-shell-check-startup-files nil)
   :config (exec-path-from-shell-initialize))
-(use-package
   xclip
+(use-package
   :ensure t
   :if (not (display-graphic-p))
   :config (xclip-mode 1))
@@ -261,6 +261,7 @@
   neotree
   :ensure t
   :defer t
+  :custom (neo-window-width 35)
   :bind ("C-<tab>" . m/neotree-project-toggle)
   ("C-TAB" . m/neotree-project-toggle)
   :init                                 ;
@@ -495,14 +496,14 @@
   :config                               ;
   (unless (display-graphic-p)
     (setq highlight-indent-guides-method 'character)))
+
 (use-package
-  sis
+  sis                                   ; 自动切换输入法
   :ensure t
-  :config ;
+  :config                               ;
   (cond ((eq system-type 'darwin)
          (if (executable-find "macism")
-             (sis-ism-lazyman-config "com.apple.keylayout.ABC"
-                                     "com.apple.inputmethod.SCIM.ITABC")
+             (sis-ism-lazyman-config "com.apple.keylayout.ABC" "com.apple.inputmethod.SCIM.ITABC")
            (message
             "SIS need to install macism. use ‘brew tap laishulu/macism;brew install macism’ to install it.")))
         ((eq system-type 'gnu/linux)

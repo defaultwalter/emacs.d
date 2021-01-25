@@ -71,7 +71,7 @@
 (save-place-mode 1)
 
 ;; 保存最近打开的文件
-(setq recentf-save-file (expand-file-name "recentf" user-emacs-directory))
+(setq recentf-save-file (expand-file-name "misc/recentf" user-emacs-directory))
 (recentf-mode 1)
 
 ;; 滚动行为
