@@ -15,6 +15,8 @@
 ;;;; Emacs行为
 ;;;;==================================================
 
+(setq default-directory "~")
+
 ;; UI控件设置
 (if (and (eq system-type 'darwin)
          (display-graphic-p))
