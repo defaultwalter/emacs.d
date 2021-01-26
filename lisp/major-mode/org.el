@@ -4,6 +4,8 @@
 (use-package
   org
   :ensure org-plus-contrib
+  :defer t
+  :hook (org-mode . org-superstar-mode)
   :custom-face                          ;
   :init                                 ;
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
@@ -57,6 +59,7 @@
 (use-package
   org-superstar
   :ensure t
+  :defer t
   :hook (org-mode . org-superstar-mode)
   :init                                 ;
   (setq org-superstar-prettify-item-bullets nil))
@@ -65,7 +68,7 @@
 (use-package
   org-roam
   :ensure t
-  :hook (after-init . org-roam-mode)
+  :defer t
   :custom                               ;
   (org-roam-buffer "*Relationship*")
   (org-roam-directory "~/Storage/Nutstore/Notes")
@@ -84,30 +87,32 @@
   (org-roam-dailies-capture-templates '(("d" "default" entry #'org-roam-capture--get-point "* %?"
                                          :file-name "Daily/%<%Y-%m-%d>"
                                          :head "* %<%A, %d %B %Y> \n")))
+  :init                                 ;
+  (maf/leader-key "n"
+    '(:ignore t
+              :which-key "note"))
+  (maf/leader-key "nd" '(org-roam-jump-to-index :which-key "today"))
+  (maf/leader-key "nf" '(org-roam-find-file :which-key "find note"))
+  (maf/leader-key org-mode-map "nv" '(org-roam :which-key "view"))
+  (maf/leader-key org-mode-map "ng" '(org-roam-graph :which-key "graph"))
+  (maf/leader-key org-mode-map "ni" '(org-roam-insert :which-key "insert node"))
   :config                               ;
-  (setq note-map-prefix (w/create-leader-keymap "n" note-mode-map "note"))
-  (w/create-leader-key "n" 'org-roam-jump-to-index "index" note-map-prefix)
-  (w/create-leader-key "d" 'org-roam-dailies-find-today "today" note-map-prefix)
-  (w/create-leader-key "f" 'org-roam-find-file "find-file" note-map-prefix)
-  (w/create-leader-key-for-mode 'org-mode "l" 'org-roam "backlink" note-map-prefix)
-  (w/create-leader-key-for-mode 'org-mode "g" 'org-roam-graph "graph" note-map-prefix)
-  (w/create-leader-key-for-mode 'org-mode "i" 'org-roam-insert "insert" note-map-prefix)
-  (w/create-leader-key-for-mode 'org-mode "I" 'org-roam-insert-immediate "insert-immediate"
-                                note-map-prefix)
   (require 'org-roam-protocol))
 (use-package
   deft
   :ensure t
   :after org
-  :bind ("C-c n d" . deft)
   :custom (deft-recursive t)
   (deft-use-filter-string-for-filename t)
   (deft-default-extension "org")
-  (deft-directory "~/Storage/Nutstore/Notes"))
+  (deft-directory "~/Storage/Nutstore/Notes")
+  :config                               ;
+  (maf/leader-key "nn" '(deft :which-key "list")))
 
 (use-package
   org-roam-server
   :ensure t
+  :defer t
   :config (setq org-roam-server-host "127.0.0.1" org-roam-server-port 8010
                 org-roam-server-authenticate nil org-roam-server-export-inline-images t
                 org-roam-server-serve-files nil org-roam-server-served-file-extensions '("pdf" "mp4"
@@ -122,7 +127,7 @@
                          "~/Storage/Nutstore/Notes/GTD/project.org"
                          "~/Storage/Nutstore/Notes/GTD/someday.org"))
 (setq org-refile-targets '((nil :maxlevel . 9)
-                                (org-agenda-files :maxlevel . 9)))
+                           (org-agenda-files :maxlevel . 9)))
 
 (provide 'major-mode/org)
 ;;; org-config.el ends here

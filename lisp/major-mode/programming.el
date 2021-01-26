@@ -10,61 +10,23 @@
 ;;   :defer t
 ;;   :hook (prog-mode . autopair-mode))
 
-
-
-(defun w/bind-lsp-map-for-mode (mode)
-  (w/create-leader-key-for-mode mode "f" 'lsp-format-buffer "format" content-map-prefix)
-  (w/create-leader-key-for-mode mode "r" 'lsp-rename "rename" content-map-prefix)
-  (w/create-leader-key-for-mode mode "e" 'lsp-ui-flycheck-list "error-list" view-map-prefix)
-  (w/create-leader-key-for-mode mode "h" 'lsp-ui-doc-glance "show-document" view-map-prefix)
-  (w/create-leader-key-for-mode mode "d" 'lsp-ui-peek-find-definitions "peek-definitions"
-                                goto-map-prefix)
-  (w/create-leader-key-for-mode mode "r" 'lsp-ui-peek-find-references "peek-references"
-                                goto-map-prefix)
-  (w/create-leader-key-for-mode mode "i" 'lsp-ui-peek-find-implementation "peek-implementation"
-                                goto-map-prefix))
-
-
-
-(defun w/bind-dap-map-for-mode (mode)
-  (setq debug-map-prefix (w/create-leader-keymap-for-mode mode "d" debug-map "debug"
-                                                          major-map-prefix))
-  (w/create-leader-key-for-mode mode "h" 'dap-hydra "control"  debug-map-prefix)
-  (w/create-leader-key-for-mode mode "d" 'dap-debug "debug" debug-map-prefix)
-  (w/create-leader-key-for-mode mode "r" 'dap-debug-restart "debug-restart" debug-map-prefix)
-  (w/create-leader-key-for-mode mode "l" 'dap-debug-last "debug-last" debug-map-prefix)
-  (setq breakpoint-map-prefix (w/create-leader-keymap-for-mode mode "b" breakpoint-map "breakpoint"
-                                                               major-map-prefix))
-  (w/create-leader-key-for-mode mode "a" 'dap-breakpoint-add "add-breakpoint" breakpoint-map-prefix)
-  (w/create-leader-key-for-mode mode "c" 'dap-breakpoint-condition "set-condition"
-                                breakpoint-map-prefix)
-  (w/create-leader-key-for-mode mode "t" 'dap-breakpoint-toggle "toggle-breakpoint"
-                                breakpoint-map-prefix)
-  (w/create-leader-key-for-mode mode "b" 'dap-breakpoint-toggle "toggle-breakpoint"
-                                breakpoint-map-prefix)
-  (w/create-leader-key-for-mode mode "d" 'dap-breakpoint-delete "delete-breakpoint"
-                                breakpoint-map-prefix)
-  (w/create-leader-key-for-mode mode "D" 'dap-breakpoint-delete-all "delete-all-breakpoint"
-                                breakpoint-map-prefix))
-
 (use-package
   yasnippet
   :ensure t
+  :defer t
   :hook (prog-mode . yas-minor-mode)
   :config                               ;
   (use-package
     yasnippet-snippets
     :ensure t
-    :defer 1
+    :defer t
     :config (yas-reload-all)))
 
 (use-package
   ivy-yasnippet
   :ensure t
   :after (yasnippet ivy)
-  :defer t
-  :init                                 ;
-  (w/create-leader-key "s" 'ivy-yasnippet "snippet" content-map-prefix))
+  :defer t)
 
 
 

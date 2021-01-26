@@ -5,7 +5,7 @@
   rust-mode
   :ensure t
   :defer t
-  :init (w/bind-lsp-map-for-mode 'rust-mode))
+  :init )
 (use-package
   cargo
   :ensure t

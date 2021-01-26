@@ -71,11 +71,143 @@
 ;;;; 交互增强
 ;;;; ==============================================
 
-;; (use-package
-;;   disable-mouse
-;;   :ensure t
-;;   :config                               ;
-;;   (global-disable-mouse-mode))
+(use-package
+  which-key
+  :ensure t
+  :custom                               ;
+  (which-key-enable-extended-define-key t)
+  (which-key-idle-delay 0.3)
+  (which-key-idle-secondary-delay 0)
+  (which-key-sort-order 'which-key-prefix-then-key-order)
+  (which-key-enable-extended-define-key t)
+  :config                               ;
+  (which-key-mode t))
+
+(use-package
+  general
+  :ensure t
+  :config                               ;
+  (general-evil-setup t)
+  (general-create-definer maf/leader-key
+    :states '(normal insert visual emacs)
+    :prefix "SPC"
+    :global-prefix "C-SPC")
+  (maf/leader-key "SPC" '(counsel-M-x :which-key "command"))
+  (maf/leader-key "f"
+    '(:ignore t
+              :which-key "file"))
+  (maf/leader-key "ff" '(find-file :which-key "find file"))
+  (maf/leader-key "fs" '(save-buffer :which-key "save file"))
+  (maf/leader-key "fS" '(save-some-buffers :which-key "save all files"))
+  (maf/leader-key "fr" '(recentf-open-files :which-key "recent file"))
+  (maf/leader-key "b"
+    '(:ignore t
+              :which-key "buffer"))
+  (maf/leader-key "bb" '(switch-to-buffer :which-key "switch buffer"))
+  (maf/leader-key "bs" '(save-buffer :which-key "save buffer"))
+  (maf/leader-key "bS" '(save-some-buffers :which-key "save all buffers"))
+  (maf/leader-key "bk" '(kill-buffer :which-key "kill buffer"))
+  (maf/leader-key "bK" '(kill-buffer-and-window :which-key "kill buffer&window"))
+  (maf/leader-key "c"
+    '(:ignore t
+              :which-key "content"))
+  (maf/leader-key "cc" '(comment-line :which-key "comment"))
+  (maf/leader-key "cr" '(comment-or-uncomment-region :which-key "comment region"))
+  (maf/leader-key "w"
+    '(:ignore t
+              :which-key "window"))
+  (maf/leader-key "ws" '(split-window-horizontally :which-key "split window horizontally"))
+  (maf/leader-key "wv" '(split-window-vertically :which-key "split window vertically"))
+  (maf/leader-key "wm" '(maximize-window :which-key "maximize window"))
+  (maf/leader-key "wn" '(minimize-window :which-key "minimize window"))
+  (maf/leader-key "wb" '(balance-windows :which-key "balance window"))
+  (maf/leader-key "wd" '(delete-window :which-key "delete window"))
+  (maf/leader-key "wD" '(delete-other-windows :which-key "delete other window"))
+  (maf/leader-key "h"
+    '(:ignore t
+              :which-key "help"))
+  ;; (maf/leader-key "h <return>" '(view-order-manuals :which-key "manuals"))
+  (maf/leader-key "h RET" '(view-order-manuals :which-key ("return" . "manuals")))
+  (maf/leader-key "hf" '(describe-function :which-key "describe function"))
+  (maf/leader-key "hv" '(describe-variable :which-key "describe variable"))
+  (maf/leader-key "hk" '(describe-key :which-key "describe key"))
+  (maf/leader-key "hc" '(describe-char :which-key "describe char"))
+  (maf/leader-key "hm" '(describe-mode :which-key "describe mode"))
+  (maf/leader-key "hf" '(describe-face :which-key "describe face"))
+  (maf/leader-key "hp" '(describe-package :which-key "describe package"))
+  (maf/leader-key "hs" '(describe-symbol :which-key "describe symbol"))
+  (maf/leader-key "hw" '(where-is :which-key "where is"))
+  (maf/leader-key "h?" '(about-emacs :which-key "about"))
+  (maf/leader-key "p"
+    '(:ignore t
+              :which-key "project")))
+(use-package
+  evil
+  :ensure t
+  :custom                               ;
+  (evil-want-minibuffer nil)
+  (evil-want-keybinding nil)
+  (evil-want-integration t)
+  :init
+  ;; (setq evil-undo-system "undo-tree")
+  (setq evil-want-C-i-jump nil)
+  (when evil-want-C-i-jump (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward))
+  (setq evil-emacs-state-cursor '("pink" bar))
+  (setq evil-normal-state-cursor '("cyan" box))
+  (setq evil-visual-state-cursor '("orange" box))
+  (setq evil-insert-state-cursor '("magenta" bar))
+  (setq evil-replace-state-cursor '("magenta" hollow-rectangle))
+  (setq evil-operator-state-cursor '("magenta" hollow))
+  (maf/leader-key "wh" '(evil-window-left :which-key "left window"))
+  (maf/leader-key "wj" '(evil-window-down :which-key "down window"))
+  (maf/leader-key "wk" '(evil-window-up :which-key "up window"))
+  (maf/leader-key "wl" '(evil-window-right :which-key "right window"))
+  :config                               ;
+  (defun maf/evil-shift-left-visual ()
+    (interactive)
+    (call-interactively 'evil-shift-left)
+    (evil-normal-state)
+    (evil-visual-restore))
+  (defun maf/evil-shift-right-visual ()
+    (interactive)
+    (call-interactively 'evil-shift-right)
+    (evil-normal-state)
+    (evil-visual-restore))
+  (evil-define-key 'visual 'global ">" 'maf/evil-shift-right-visual)
+  (evil-define-key 'visual 'global "<" 'maf/evil-shift-left-visual)
+  (evil-mode 1))
+
+
+(use-package
+  evil-collection
+  :ensure t
+  :after evil
+  :custom                               ;
+  (evil-collection-company-use-tng nil)
+  :config                               ;
+  (evil-collection-init))
+
+(use-package
+  evil-surround
+  :ensure t
+  :requires evil
+  :config                               ;
+  (global-evil-surround-mode 1))
+
+(use-package
+  evil-terminal-cursor-changer
+  :ensure t
+  :requires evil
+  :unless (display-graphic-p)
+  :after evil
+  :config                               ;
+  (evil-terminal-cursor-changer-activate))
+
+(use-package
+  disable-mouse
+  :ensure t
+  :config                               ;
+  (global-disable-mouse-mode))
 
 (use-package
   ivy
@@ -107,19 +239,18 @@
   :ensure t
   :defer t
   :init                                 ;
-  (w/create-leader-key "f" (lambda()
-                             (interactive)
-                             (let ((counsel-find-file-ignore-regexp "^\\."))
-                               (counsel-find-file))) "find-file" file-map-prefix)
-  (w/create-leader-key "a" 'counsel-find-file "find-all-file" file-map-prefix)
-  (w/create-leader-key "r" 'counsel-recentf "recent-file" file-map-prefix)
-  (w/create-leader-key "b" (lambda()
-                             (interactive)
-                             (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
-                               (counsel-switch-buffer))) "switch-buffer" buffer-map-prefix)
-  (w/create-leader-key "a" 'counsel-switch-buffer "switch-all-buffer" buffer-map-prefix)
-  (defalias 'command 'counsel-M-x)
-  (evil-leader/set-key "SPC" 'command)
+  (maf/leader-key "ff" '((lambda()
+                           (interactive)
+                           (let ((counsel-find-file-ignore-regexp "^\\."))
+                             (counsel-find-file))) :which-key "find file"))
+  (maf/leader-key "fa" '(counsel-find-file :which-key "find all file"))
+  (maf/leader-key "fr" '(counsel-recentf :which-key "recent file"))
+  (maf/leader-key "bb" '((lambda()
+                           (interactive)
+                           (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
+                             (counsel-switch-buffer))) :which-key "switch buffer"))
+  (maf/leader-key "ba" '(counsel-switch-buffer :which-key "switch all buffer"))
+  (maf/leader-key "SPC" '(counsel-M-x :which-key ("␣" . "command")))
   :bind (("M-x" . counsel-M-x))
   :config)
 
@@ -128,8 +259,8 @@
   :ensure t
   :defer t
   :init                                 ;
-  (w/create-leader-key "s" 'swiper "isearch" content-map-prefix)
-  (w/create-leader-key "S" 'swiper-all "search-in-buffers" content-map-prefix)
+  (maf/leader-key "cs" '(swiper :which-key "search"))
+  (maf/leader-key "cS" '(swiper-all :which-key "search in all buffers"))
   :bind                                 ;
   ("C-S-s" . swiper-all)
   ("C-s" . swiper))
@@ -149,8 +280,8 @@
   (after-init . global-company-mode)
   :init ;; Don't convert to downcase.
   (setq-default company-dabbrev-downcase nil)
-  :bind (("C-SPC" . company-complete-common)
-         ("C-S-SPC" . company-complete-common)
+  :bind (("C-TAB" . company-complete-common)
+         ;; ("C-S-SPC" . company-complete-common)
          ;;
          :map company-active-map        ;
          ("C-n" . company-select-next)
@@ -201,10 +332,10 @@
   :ensure t
   :defer t
   :init                                 ;
-  (w/create-leader-key "h" 'buf-move-left "buffer-move-to-left-window" buffer-map-prefix)
-  (w/create-leader-key "j" 'buf-move-down "buffer-move-to-down-window" buffer-map-prefix)
-  (w/create-leader-key "k" 'buf-move-up "buffer-move-to-up-window" buffer-map-prefix)
-  (w/create-leader-key "l" 'buf-move-right "buffer-move-to-right-window" buffer-map-prefix)
+  (maf/leader-key "bh" '(buf-move-left :which-key "move to left window"))
+  (maf/leader-key "bj" '(buf-move-down :which-key "move to down window"))
+  (maf/leader-key "bk" '(buf-move-up :which-key "move to up window"))
+  (maf/leader-key "bl" '(buf-move-right :which-key "move to right window"))
   (setq buffer-move-stay-after-swap t)
   (setq buffer-move-behavior 'move))
 
@@ -213,26 +344,24 @@
   :ensure t
   :defer t
   :init                                 ;
-  (w/create-leader-key "r" 'windresize "resize-window" window-map-prefix))
+  (maf/leader-key "wr" '(windresize :which-key "resize window")))
 (use-package
   transpose-frame
   :ensure t
   :defer t
-  :init (w/create-leader-key "t" 'transpose-frame "transpose-window" window-map-prefix))
+  :init (maf/leader-key "wt" '(transpose-frame :which-key "transpose")))
 
 (use-package
   projectile                            ;project 插件
   :ensure t
-  :custom                               ;
+  :custom       ;
   ;; (projectile-track-known-projects-automatically nil)
   ;; (projectile-indexing-method 'native)
   (projectile-sort-order 'access-time)
   (projectile-find-dir-includes-top-level t)
   :init                                 ;
-  (w/create-leader-key "c" 'projectile-kill-buffers "close-project" project-map-prefix)
-  (w/create-leader-key "i" 'projectile-project-info "project-info" project-map-prefix)
-  (w/create-leader-key "R" 'projectile-clear-known-projects "clear-project-cache"
-                       project-map-prefix)
+  (maf/leader-key "pk" '(project-kill-buffers :which-key "close all project buffers"))
+  (maf/leader-key "pi" '(projectile-project-info :which-key "project info"))
   :config (projectile-mode +1))
 
 (use-package
@@ -243,13 +372,11 @@
   (counsel-projectile-sort-directories t)
   (counsel-projectile-sort-buffers t)
   (counsel-projectile-sort-projects t)
-  :init (w/create-leader-key "p" 'counsel-projectile-switch-project "switch-project"
-                             project-map-prefix)
-  (w/create-leader-key "f" 'counsel-projectile-find-file "find-project-file" project-map-prefix)
-  (w/create-leader-key "d" 'counsel-projectile-find-dir "find-project-dir" project-map-prefix)
-  (w/create-leader-key "s" 'counsel-projectile-grep "search-in-project" project-map-prefix)
-  (w/create-leader-key "S" 'counsel-projectile-git-grep "search-in-project-by-git"
-                       project-map-prefix)
+  :init (maf/leader-key "pp" '(counsel-projectile-switch-project :which-key "switch project"))
+  (maf/leader-key "pf" '(counsel-projectile-find-file :which-key "find file in project"))
+  (maf/leader-key "pd" '(counsel-projectile-find-dir :which-key "find directory in project"))
+  (maf/leader-key "ps" '(counsel-projectile-git-grep :which-key "search in project by git"))
+  (maf/leader-key "pS" '(counsel-projectile-grep :which-key "search in project"))
   :config (counsel-projectile-mode t))
 
 (use-package
@@ -263,38 +390,18 @@
   (neo-mode-line-type 'none)
   (neo-vc-integration 'face)
   (neo-hide-cursor t)
-  ;; (neo-toggle-window-keep-p t)
   :bind                                 ;
-  ("C-<tab>" . m/neotree-project-toggle)
-  ("C-TAB" . m/neotree-project-toggle)
+  ("C-<tab>" . neotree-toggle)
+  ("C-TAB" . neotree-toggle)
   :init                                 ;
-  (defun m/neotree-project-toggle ()
-    "Open NeoTree using the git root."
-    (interactive)
-    (let ((project-dir (projectile-project-root))
-          (file-name (buffer-file-name)))
-      (neotree-toggle)
-      (when project-dir (if (neo-global--window-exists-p)
-                            (progn (neotree-dir project-dir)
-                                   (neotree-find file-name))))))
-  (w/create-leader-key "f" 'm/neotree-project-toggle "file-tree" view-map-prefix))
+  (maf/leader-key "fv" '(neotree-toggle :which-key "file view")))
 
-(use-package
-  treemacs
-  :ensure t
-  :init ;; (w/create-leader-key "f" 'treemacs "file-tree" view-map-prefix)
-  )
-(use-package
-  treemacs-evil
-  :ensure t
-  :after (evil treemacs))
 
 (use-package
   multi-vterm
   :ensure t
   :bind ("C-`" . multi-vterm-dedicated-toggle)
   :init                                 ;
-  (w/create-leader-key "t" 'multi-vterm-dedicated-toggle "terminal" view-map-prefix)
   :custom (multi-vterm-dedicated-window-height 15)
   (multi-vterm-buffer-name "terminal")
   (multi-vterm-dedicated-buffer-name "=")
@@ -349,18 +456,14 @@
   :ensure t
   :defer t
   :bind ("C-/" . smart-comment)
-  :init (w/create-leader-key "c" 'smart-comment "comment" content-map-prefix))
+  :init (maf/leader-key "cc" '(smart-comment :which-key "comment")))
 
 (use-package
   ace-jump-mode                         ; 根据字符在文档中跳转
   :ensure t
   :defer t
   :bind (:map evil-normal-state-map
-              ("g c". ace-jump-char-mode))
-  :init                                 ;
-  (w/create-leader-key "c" 'ace-jump-char-mode "jump-to-char" goto-map-prefix)
-  (w/create-leader-key "l" 'ace-jump-line-mode "jump-to-line" goto-map-prefix)
-  (w/create-leader-key "w" 'ace-jump-word-mode "jump-to-word" goto-map-prefix))
+              ("g c". ace-jump-char-mode)))
 
 (use-package
   hungry-delete                         ; 可以删除前面所有的空白字符
@@ -422,7 +525,7 @@
   format-all                            ;格式化代码，支持多种格式
   :ensure t
   :defer t
-  :init (w/create-leader-key "f" 'format-all-buffer "format" content-map-prefix))
+  :init (maf/leader-key "cf" '(format-all-buffer :which-key "format")))
 
 (use-package
   auto-sudoedit                         ;自动请求sudo权限
@@ -488,13 +591,16 @@
   highlight-indent-guides               ;高亮缩进
   :ensure t
   :defer t
-  :custom (highlight-indent-guides-suppress-auto-error t)
+  :custom                               ;
+  (highlight-indent-guides-suppress-auto-error t)
   (highlight-indent-guides-method 'bitmap)
   (highlight-indent-guides-responsive 'top)
+  (highlight-indent-guides-character ?⠅)
   :hook ((prog-mode text-mode conf-mode) . highlight-indent-guides-mode)
   :config                               ;
   (unless (display-graphic-p)
-    (setq highlight-indent-guides-method 'character)))
+    (setq highlight-indent-guides-method 'character)
+    (set-face-foreground 'highlight-indent-guides-character-face "black")))
 
 (use-package
   sis                                   ; 自动切换输入法

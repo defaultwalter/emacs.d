@@ -15,7 +15,6 @@
   eshell-toggle
   :ensure t
   :defer t
-  :init (w/create-leader-key "t" 'eshell-toggle "toggle-terminal" view-map-prefix)
   :bind ("C-`" . eshell-toggle))
 (use-package
   esh-autosuggest

@@ -94,7 +94,7 @@
                                        (abort-recursive-edit))))
 
 
-(defun m/set-font(fontsize)
+(defun maf/set-font(fontsize)
   "Try to config font"
   ;; 设置默认字体
   (let ((frame-font (cond ((member "Sarasa Mono SC" (font-family-list)) "Sarasa Mono SC")
@@ -120,27 +120,28 @@
                           ((member "Segoe UI Emoji" (font-family-list)) "Segoe UI Emoji")
                           ((member "Symbola" (font-family-list)) "Symbola")
                           ((member "Apple Color Emoji" (font-family-list)) "Apple Color Emoji"))))
-(m/set-font maf/fontsize)
+(maf/set-font maf/fontsize)
 ;; C/S 模式需要再次设置字体
 (add-hook 'server-after-make-frame-hook (lambda ()
-                                          (m/set-font maf/fontsize)))
+                                          (maf/set-font maf/fontsize)))
 ;; 主题样式
-(defun m/ui-ajust()
+(defun maf/ui-ajust()
   "调整主题样式"
   (set-face-attribute 'fringe nil
                       :foreground "#fc5c59")
   ;; 设置垂直窗口边框(目前发现只在终端有效)
-  ;; (set-face-inverse-video-p 'vertical-border nil)
-  (set-face-foreground 'vertical-border (face-background 'default))
+  (set-face-inverse-video-p 'vertical-border nil)
   (set-face-background 'vertical-border (face-background 'default))
-  (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?!))
+  (when (display-graphic-p)
+    (set-face-foreground 'vertical-border (face-background 'default)))
+  (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?┊))
   ;; Modeline
   (set-face-background 'mode-line-inactive nil)
   (set-face-background 'mode-line nil)
   (setq underline-minimum-offset 5))
 
-(add-hook 'after-init-hook 'm/ui-ajust)
-(add-hook 'server-after-make-frame-hook 'm/ui-ajust)
+(add-hook 'after-init-hook 'maf/ui-ajust)
+(add-hook 'server-after-make-frame-hook 'maf/ui-ajust)
 ;;;;==================================================
 ;;;; 编辑行为
 ;;;;==================================================
