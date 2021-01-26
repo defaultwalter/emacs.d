@@ -51,6 +51,111 @@
   (doom-themes-org-config))
 
 (use-package
+  dashboard
+  :ensure t
+  :config                               ;
+  (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
+  (setq dashboard-center-content t)
+  (setq dashboard-show-shortcuts t)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-items '())
+  (setq dashboard-set-navigator t)
+  (setq dashboard-navigator-buttons `(   ;
+                                      () ;
+                                      () ;
+                                      () ;
+                                      ((,(all-the-icons-octicon "calendar"
+                                                                :height 0.9
+                                                                :v-adjust 0.0)
+                                        " Open agenda                         " "" (lambda
+                                                                                     (&rest
+                                                                                      _)
+                                                                                     (call-interactively
+                                                                                      'org-agenda))
+                                        nil "" "")
+                                       ("" "SPC n a" "" (lambda
+                                                          (&rest
+                                                           _)
+                                                          (call-interactively 'org-agenda)) warning
+                                                          "" ""))
+                                      () ;
+                                      ((,(all-the-icons-octicon "file-text"
+                                                                :height 0.9
+                                                                :v-adjust 0.0)
+                                        " Open recently file                  " "" (lambda
+                                                                                     (&rest
+                                                                                      _)
+                                                                                     (call-interactively
+                                                                                      'counsel-recentf))
+                                        nil "" "")
+                                       ("" "SPC f r" "" (lambda
+                                                          (&rest
+                                                           _)
+                                                          (call-interactively 'counsel-recentf))
+                                        warning "" ""))
+                                      () ;
+                                      ((,(all-the-icons-octicon "briefcase"
+                                                                :height 0.9
+                                                                :v-adjust 0.0)
+                                        " Open project                        " "" (lambda
+                                                                                     (&rest
+                                                                                      _)
+                                                                                     (call-interactively
+                                                                                      'counsel-projectile))
+                                        nil "" "")
+                                       ("" "SPC p p" "" (lambda
+                                                          (&rest
+                                                           _)
+                                                          (call-interactively 'counsel-projectile))
+                                        warning "" ""))
+                                      () ;
+                                      ((,(all-the-icons-octicon "star"
+                                                                :height 0.9
+                                                                :v-adjust 0.0)
+                                        " Jump to bookmark                    " "" (lambda
+                                                                                     (&rest
+                                                                                      _)
+                                                                                     (call-interactively
+                                                                                      'counsel-bookmark))
+                                        nil "" "")
+                                       ("" "SPC j b" "" (lambda
+                                                          (&rest
+                                                           _)
+                                                          (call-interactively 'counsel-bookmark))
+                                        warning "" ""))
+                                      () ;
+                                      ((,(all-the-icons-octicon "gear"
+                                                                :height 0.9
+                                                                :v-adjust 0.0)
+                                        " Open configuration                  " "" (lambda
+                                                                                     (&rest
+                                                                                      _)
+                                                                                     (find-file
+                                                                                      (expand-file-name
+                                                                                       "init.el"
+                                                                                       user-config-directory)))
+                                        nil "" "")
+                                       ("" "SPC f ." "" (lambda
+                                                          (&rest
+                                                           _)
+                                                          (find-file (expand-file-name "init.el"
+                                                                                       user-config-directory)))
+                                        warning "" ""))
+                                      () ;
+                                      () ;
+                                      () ;
+                                      ;;
+                                      ))
+  (setq dashboard-page-separator "")
+  (setq dashboard-set-footer nil)
+  (setq dashboard-items-default-length 20)
+  ;; C/S mode use dashboard as default buffer
+  (setq initial-buffer-choice (lambda ()
+                                (get-buffer "*dashboard*")))
+  (dashboard-setup-startup-hook))
+
+(use-package
   solaire-mode
   :ensure t
   :if (display-graphic-p)
@@ -70,6 +175,7 @@
 ;;;; ==============================================
 ;;;; 交互增强
 ;;;; ==============================================
+
 
 (use-package
   which-key
@@ -106,7 +212,7 @@
   (maf/leader-key "bb" '(switch-to-buffer :which-key "switch buffer"))
   (maf/leader-key "bs" '(save-buffer :which-key "save buffer"))
   (maf/leader-key "bS" '(save-some-buffers :which-key "save all buffers"))
-  (maf/leader-key "bk" '(kill-buffer :which-key "kill buffer"))
+  (maf/leader-key "bk" '(kill-this-buffer :which-key "kill buffer"))
   (maf/leader-key "bK" '(kill-buffer-and-window :which-key "kill buffer&window"))
   (maf/leader-key "c"
     '(:ignore t
@@ -133,7 +239,6 @@
   (maf/leader-key "hk" '(describe-key :which-key "describe key"))
   (maf/leader-key "hc" '(describe-char :which-key "describe char"))
   (maf/leader-key "hm" '(describe-mode :which-key "describe mode"))
-  (maf/leader-key "hf" '(describe-face :which-key "describe face"))
   (maf/leader-key "hp" '(describe-package :which-key "describe package"))
   (maf/leader-key "hs" '(describe-symbol :which-key "describe symbol"))
   (maf/leader-key "hw" '(where-is :which-key "where is"))
@@ -148,12 +253,11 @@
   (evil-want-minibuffer nil)
   (evil-want-keybinding nil)
   (evil-want-integration t)
-  :init
-  ;; (setq evil-undo-system "undo-tree")
+  :init (setq evil-undo-system 'undo-tree)
   (setq evil-want-C-i-jump nil)
   (when evil-want-C-i-jump (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward))
   (setq evil-emacs-state-cursor '("pink" bar))
-  (setq evil-normal-state-cursor '("cyan" box))
+  (setq evil-normal-state-cursor '("dodgerblue" box))
   (setq evil-visual-state-cursor '("orange" box))
   (setq evil-insert-state-cursor '("magenta" bar))
   (setq evil-replace-state-cursor '("magenta" hollow-rectangle))
@@ -177,7 +281,6 @@
   (evil-define-key 'visual 'global "<" 'maf/evil-shift-left-visual)
   (evil-mode 1))
 
-
 (use-package
   evil-collection
   :ensure t
@@ -197,9 +300,8 @@
 (use-package
   evil-terminal-cursor-changer
   :ensure t
-  :requires evil
-  :unless (display-graphic-p)
   :after evil
+  :unless (display-graphic-p)
   :config                               ;
   (evil-terminal-cursor-changer-activate))
 
@@ -229,7 +331,6 @@
 (use-package
   ivy-rich                              ; 在 M-x 和帮助中显示文档
   :ensure t
-  :defer 1
   :init
   :config (ivy-rich-mode +1)
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
@@ -259,8 +360,8 @@
   :ensure t
   :defer t
   :init                                 ;
-  (maf/leader-key "cs" '(swiper :which-key "search"))
-  (maf/leader-key "cS" '(swiper-all :which-key "search in all buffers"))
+  (maf/leader-key "cs" '(swiper :which-key "swipe"))
+  (maf/leader-key "cS" '(swiper-all :which-key "swipe in all buffers"))
   :bind                                 ;
   ("C-S-s" . swiper-all)
   ("C-s" . swiper))
@@ -327,15 +428,21 @@
   :requires company
   :after company
   :hook (company-mode . company-statistics-mode))
+
+(use-package
+  undo-tree                             ;撤销重做可视化
+  :ensure t
+  :config (global-undo-tree-mode))
+
 (use-package
   buffer-move                           ; 交换两个window的buffer
   :ensure t
   :defer t
   :init                                 ;
-  (maf/leader-key "bh" '(buf-move-left :which-key "move to left window"))
-  (maf/leader-key "bj" '(buf-move-down :which-key "move to down window"))
-  (maf/leader-key "bk" '(buf-move-up :which-key "move to up window"))
-  (maf/leader-key "bl" '(buf-move-right :which-key "move to right window"))
+  (maf/leader-key "bH" '(buf-move-left :which-key "move to left window"))
+  (maf/leader-key "bJ" '(buf-move-down :which-key "move to down window"))
+  (maf/leader-key "bK" '(buf-move-up :which-key "move to up window"))
+  (maf/leader-key "bL" '(buf-move-right :which-key "move to right window"))
   (setq buffer-move-stay-after-swap t)
   (setq buffer-move-behavior 'move))
 
@@ -492,11 +599,6 @@
   (hl-paren-colors '("cyan"))           ; 设置高亮括号颜色
   :hook (prog-mode . highlight-parentheses-mode))
 
-(use-package
-  undo-tree                             ;撤销重做可视化
-  :ensure t
-  :defer t
-  :config (global-undo-tree-mode))
 
 (use-package
   drag-stuff

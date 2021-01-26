@@ -158,17 +158,16 @@
 (setq display-line-numbers-width-start 5)  ; 行号宽度
 (setq-default display-line-numbers-width 5)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode) ; 显示行号
-(global-hl-line-mode t)                               ; 高亮当前的行
+;; (global-hl-line-mode t)                               ; 高亮当前的行
 (delete-selection-mode 1)                             ; 插入时替换选区
 (electric-pair-mode t)                                ; 自动输入括号
 (electric-quote-mode t)                               ; 自动输入引号
 (electric-indent-mode 1)                              ; 回车时使用缩进
 
-(defun m/clear-whitespace()
-  "清除文件中的空格"
-  (whitespace-cleanup)
-  (delete-trailing-whitespace))
-(add-hook 'before-save-hook 'm/clear-whitespace)
+(add-hook 'before-save-hook '(lambda ()
+                               (when (derived-mode-p 'prog-mode)
+                                 (whitespace-cleanup)
+                                 (delete-trailing-whitespace))))
 
 ;;;;==================================================
 ;;;; 文件
