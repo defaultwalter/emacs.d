@@ -127,6 +127,10 @@
 ;; 主题样式
 (defun maf/ui-ajust()
   "调整主题样式"
+  (if (and (eq system-type 'darwin)
+           (display-graphic-p))
+      (menu-bar-mode 1)
+    (menu-bar-mode -1))
   (set-face-attribute 'fringe nil
                       :foreground "#fc5c59")
   ;; 设置垂直窗口边框(目前发现只在终端有效)
@@ -159,10 +163,10 @@
 (setq-default display-line-numbers-width 5)
 (add-hook 'prog-mode-hook 'display-line-numbers-mode) ; 显示行号
 ;; (global-hl-line-mode t)                               ; 高亮当前的行
-(delete-selection-mode 1)                             ; 插入时替换选区
-(electric-pair-mode t)                                ; 自动输入括号
-(electric-quote-mode t)                               ; 自动输入引号
-(electric-indent-mode 1)                              ; 回车时使用缩进
+(delete-selection-mode 1)               ; 插入时替换选区
+(electric-pair-mode t)                  ; 自动输入括号
+(electric-quote-mode t)                 ; 自动输入引号
+(electric-indent-mode 1)                ; 回车时使用缩进
 
 (add-hook 'before-save-hook '(lambda ()
                                (when (derived-mode-p 'prog-mode)
