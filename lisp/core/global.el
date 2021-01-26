@@ -74,7 +74,7 @@
                                                                                      (call-interactively
                                                                                       'org-agenda))
                                         nil "" "")
-                                       ("" "SPC n a" "" (lambda
+                                       ("" "SPC n a   " "" (lambda
                                                           (&rest
                                                            _)
                                                           (call-interactively 'org-agenda)) warning
@@ -89,7 +89,7 @@
                                                                                      (call-interactively
                                                                                       'counsel-recentf))
                                         nil "" "")
-                                       ("" "SPC f r" "" (lambda
+                                       ("" "SPC f r   " "" (lambda
                                                           (&rest
                                                            _)
                                                           (call-interactively 'counsel-recentf))
@@ -104,7 +104,7 @@
                                                                                      (call-interactively
                                                                                       'counsel-projectile))
                                         nil "" "")
-                                       ("" "SPC p p" "" (lambda
+                                       ("" "SPC p p   " "" (lambda
                                                           (&rest
                                                            _)
                                                           (call-interactively 'counsel-projectile))
@@ -119,28 +119,10 @@
                                                                                      (call-interactively
                                                                                       'counsel-bookmark))
                                         nil "" "")
-                                       ("" "SPC j b" "" (lambda
+                                       ("" "SPC return" "" (lambda
                                                           (&rest
                                                            _)
                                                           (call-interactively 'counsel-bookmark))
-                                        warning "" ""))
-                                      () ;
-                                      ((,(all-the-icons-octicon "gear"
-                                                                :height 0.9
-                                                                :v-adjust 0.0)
-                                        " Open configuration                  " "" (lambda
-                                                                                     (&rest
-                                                                                      _)
-                                                                                     (find-file
-                                                                                      (expand-file-name
-                                                                                       "init.el"
-                                                                                       user-config-directory)))
-                                        nil "" "")
-                                       ("" "SPC f ." "" (lambda
-                                                          (&rest
-                                                           _)
-                                                          (find-file (expand-file-name "init.el"
-                                                                                       user-config-directory)))
                                         warning "" ""))
                                       () ;
                                       () ;
@@ -199,6 +181,7 @@
     :prefix "SPC"
     :global-prefix "C-SPC")
   (maf/leader-key "SPC" '(counsel-M-x :which-key "command"))
+  (maf/leader-key "RET" '(bookmark-jump :which-key ("return" . "bookmark")))
   (maf/leader-key "f"
     '(:ignore t
               :which-key "file"))
@@ -206,6 +189,9 @@
   (maf/leader-key "fs" '(save-buffer :which-key "save file"))
   (maf/leader-key "fS" '(save-some-buffers :which-key "save all files"))
   (maf/leader-key "fr" '(recentf-open-files :which-key "recent file"))
+  (maf/leader-key "f." '((lambda()
+                           (interactive)
+                           (dired user-config-directory)) :which-key "open configuration"))
   (maf/leader-key "b"
     '(:ignore t
               :which-key "buffer"))
@@ -245,7 +231,11 @@
   (maf/leader-key "h?" '(about-emacs :which-key "about"))
   (maf/leader-key "p"
     '(:ignore t
-              :which-key "project")))
+              :which-key "project"))
+  (maf/leader-key "n"
+    '(:ignore t
+              :which-key "note"))
+  (maf/leader-key "na" '(org-agenda :which-key "agenda")))
 (use-package
   evil
   :ensure t
@@ -340,17 +330,19 @@
   :ensure t
   :defer t
   :init                                 ;
+
+  (maf/leader-key "RET" '(counsel-bookmark :which-key ("return" . "bookmark")))
   (maf/leader-key "ff" '((lambda()
                            (interactive)
                            (let ((counsel-find-file-ignore-regexp "^\\."))
                              (counsel-find-file))) :which-key "find file"))
-  (maf/leader-key "fa" '(counsel-find-file :which-key "find all file"))
+  (maf/leader-key "fF" '(counsel-find-file :which-key "find all file"))
   (maf/leader-key "fr" '(counsel-recentf :which-key "recent file"))
   (maf/leader-key "bb" '((lambda()
                            (interactive)
                            (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
                              (counsel-switch-buffer))) :which-key "switch buffer"))
-  (maf/leader-key "ba" '(counsel-switch-buffer :which-key "switch all buffer"))
+  (maf/leader-key "bB" '(counsel-switch-buffer :which-key "switch all buffer"))
   (maf/leader-key "SPC" '(counsel-M-x :which-key ("␣" . "command")))
   :bind (("M-x" . counsel-M-x))
   :config)

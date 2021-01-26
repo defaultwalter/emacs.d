@@ -88,9 +88,6 @@
                                          :file-name "Daily/%<%Y-%m-%d>"
                                          :head "* %<%A, %d %B %Y> \n")))
   :init                                 ;
-  (maf/leader-key "n"
-    '(:ignore t
-              :which-key "note"))
   (maf/leader-key "nd" '(org-roam-jump-to-index :which-key "today"))
   (maf/leader-key "nf" '(org-roam-find-file :which-key "find note"))
   (maf/leader-key org-mode-map "nv" '(org-roam :which-key "view"))
