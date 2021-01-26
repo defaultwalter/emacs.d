@@ -1,16 +1,11 @@
 ;;;;==================================================
-;;;; 用户变量/常量
+;;;; 配置目录设置
 ;;;;==================================================
-(defvar m/fontsize 12
-  "Default fontsize")
 
-;;;;==================================================
-;;;; 加载机器相关的配置
-;;;;==================================================
-(setq machine-file (expand-file-name "machine.el" user-emacs-directory))
-;; Load machine config
-(when (file-exists-p machine-file)
-  (load-file machine-file))
+(defvar user-config-directory user-emacs-directory
+  "Instead ‘user-emacs-directory’")
+;; 保持 .emacs.d 目录整洁
+(setq user-emacs-directory (expand-file-name "~/.cache/emacs"))
 
 ;;;;==================================================
 ;;;; UI 设置
@@ -27,7 +22,6 @@
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)) ; macOS 下沉浸式标题栏
 (add-to-list 'default-frame-alist '(ns-appearance . dark)) ; 使用黑色外观
 ;; frame 初始位置
-
 (add-to-list 'default-frame-alist '(width . 0.7))
 (add-to-list 'default-frame-alist '(height . 0.7))
 (add-to-list 'default-frame-alist '(left . 0.5))

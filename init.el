@@ -39,16 +39,10 @@
   :ensure t
   :defer t)
 
-;;;; Custom文件配置
-;; Use `user.el` to save custom config
-(setq custom-file (expand-file-name "misc/custom.el" user-emacs-directory))
-;; Load custom config
-;; (when (file-exists-p custom-file)
-;;   (load-file custom-file))
 
 
 ;;;; 加载配置
-(add-to-list 'load-path (expand-file-name "lisp" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 (require 'core)
 (require 'major-mode)
 

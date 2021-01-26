@@ -92,9 +92,7 @@
 (use-package
   smex                                  ;将命令按使用频率排序
   :ensure t
-  :defer t
-  :init                                 ;
-  (setq smex-save-file (expand-file-name "misc/smex-items" user-emacs-directory)))
+  :defer t)
 
 (use-package
   ivy-rich                              ; 在 M-x 和帮助中显示文档
@@ -197,10 +195,7 @@
   :ensure t
   :requires company
   :after company
-  :hook (company-mode . company-statistics-mode)
-  :custom                               ;
-  (company-statistics-file (expand-file-name "misc/company-statistics-cache.el"
-                                             user-emacs-directory)))
+  :hook (company-mode . company-statistics-mode))
 (use-package
   buffer-move                           ; 交换两个window的buffer
   :ensure t
@@ -229,8 +224,6 @@
   projectile                            ;project 插件
   :ensure t
   :custom                               ;
-  (projectile-known-projects-file (expand-file-name "misc/projectile-bookmarks.eld"
-                                                    user-emacs-directory))
   ;; (projectile-track-known-projects-automatically nil)
   ;; (projectile-indexing-method 'native)
   (projectile-sort-order 'access-time)
@@ -263,7 +256,7 @@
   neotree
   :ensure t
   :defer t
-  :custom ;
+  :custom                               ;
   (neo-smart-open t)
   (neo-autorefresh t)
   (neo-window-width 35)

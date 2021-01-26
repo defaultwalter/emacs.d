@@ -8,8 +8,8 @@
 ;;;;==================================================
 ;;;;用户信息
 ;;;;==================================================
-(setq user-full-name "walter")
-(setq user-mail-address "ismrwalter@gmail.com")
+(setq user-full-name "Maf")
+(setq user-mail-address "wmafire@gmail.com")
 
 ;;;;==================================================
 ;;;; Emacs行为
@@ -45,7 +45,7 @@
 (winner-mode t)
 ;; 编辑备份设置
 
-(defconst backup-file-directory (expand-file-name "misc/backup" user-emacs-directory))
+(defconst backup-file-directory (expand-file-name "backup" user-emacs-directory))
 (make-directory backup-file-directory t) ; 创建备份文件目录
 (setq backup-directory-alist `(("." . ,backup-file-directory))) ; 设置备份目录
 (setq version-control t)                ; 启动备份版本控制
@@ -67,11 +67,9 @@
 (setq ad-redefinition-action 'accept)   ; 禁止redefine warning
 
 ;; 保存光标位置
-(setq save-place-file (expand-file-name "misc/palces" user-emacs-directory))
 (save-place-mode 1)
 
 ;; 保存最近打开的文件
-(setq recentf-save-file (expand-file-name "misc/recentf" user-emacs-directory))
 (recentf-mode 1)
 
 ;; 滚动行为
@@ -95,7 +93,7 @@
                                                 (active-minibuffer-window))
                                        (abort-recursive-edit))))
 
-;; 字体
+
 (defun m/set-font(fontsize)
   "Try to config font"
   ;; 设置默认字体
@@ -122,10 +120,10 @@
                           ((member "Segoe UI Emoji" (font-family-list)) "Segoe UI Emoji")
                           ((member "Symbola" (font-family-list)) "Symbola")
                           ((member "Apple Color Emoji" (font-family-list)) "Apple Color Emoji"))))
-(m/set-font m/fontsize)
+(m/set-font maf/fontsize)
 ;; C/S 模式需要再次设置字体
 (add-hook 'server-after-make-frame-hook (lambda ()
-                                          (m/set-font m/fontsize)))
+                                          (m/set-font maf/fontsize)))
 ;; 主题样式
 (defun m/ui-ajust()
   "调整主题样式"
