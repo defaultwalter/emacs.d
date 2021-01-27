@@ -53,6 +53,8 @@
 (use-package
   dashboard
   :ensure t
+  :init;
+  (maf/leader-key "bd" '(dashboard-refresh-buffer :which-key "dashboard"))
   :config                               ;
   (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
   (setq dashboard-center-content t)

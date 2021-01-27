@@ -82,7 +82,7 @@
   :defer t
   :custom                               ;
   (org-roam-buffer "*Relationship*")
-  (org-roam-directory "~/Storage/Nutstore/Notes")
+  (org-roam-directory maf/note-directory)
   (org-roam-index-file "Index.org")
   (org-roam-dailies-directory "Journal")
   (org-roam-title-sources '(headline))
@@ -99,7 +99,7 @@
                                          :file-name "Daily/%<%Y-%m-%d>"
                                          :head "* %<%A, %d %B %Y> \n")))
   :init                                 ;
-  (maf/leader-key "nd" '(org-roam-jump-to-index :which-key "today"))
+  (maf/leader-key "nd" '(org-roam-dailies-today :which-key "today"))
   (maf/leader-key "nf" '(org-roam-find-file :which-key "find note"))
   (maf/leader-key org-mode-map "nv" '(org-roam :which-key "view"))
   (maf/leader-key org-mode-map "ng" '(org-roam-graph :which-key "graph"))
