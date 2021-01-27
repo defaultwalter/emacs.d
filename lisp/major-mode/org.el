@@ -12,10 +12,8 @@
   :init                                 ;
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
   (add-hook 'org-mode-hook (lambda ()
-                             (org-display-inline-images t t)
-                             (org-indent-mode 1)
                              (setq truncate-lines nil)
-                             (setq org-ellipsis " ▾")
+                             (setq org-ellipsis " ······▾")
                              (setq org-edit-src-content-indentation 2)
                              (setq org-src-preserve-indentation nil)
                              (setq org-hide-emphasis-markers t)
@@ -30,6 +28,8 @@
                                                                   ("#+begin_src" . "†")
                                                                   ("#+end_src" . "†")))
                              (setq-local prettify-symbols-unprettify-at-point 'right-edge)
+                             (org-display-inline-images t t)
+                             (org-indent-mode 1)
                              (prettify-symbols-mode 1)
                              (visual-fill-column-mode 1)))
   ;; (setq org-image-actual-width '(100 200 300))
@@ -68,6 +68,9 @@
   org-superstar
   :ensure t
   :defer t
+  :custom                               ;
+  (org-superstar-remove-leading-stars t)
+  (org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●"))
   :hook (org-mode . org-superstar-mode)
   :init                                 ;
   (setq org-superstar-prettify-item-bullets nil))
@@ -82,7 +85,7 @@
   (org-roam-directory "~/Storage/Nutstore/Notes")
   (org-roam-index-file "Index.org")
   (org-roam-dailies-directory "Daily")
-  (org-roam-title-sources '((title headline) alias))
+  (org-roam-title-sources '(headline))
   (org-roam-tag-sources '(vanilla all-directories))
   (org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
                                  :file-name "%<%y%m%d%H%M%S>-${slug}"
@@ -103,6 +106,7 @@
   (maf/leader-key org-mode-map "ni" '(org-roam-insert :which-key "insert node"))
   :config                               ;
   (require 'org-roam-protocol))
+
 (use-package
   deft
   :ensure t

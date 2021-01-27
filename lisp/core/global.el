@@ -56,7 +56,6 @@
   :config                               ;
   (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
   (setq dashboard-center-content t)
-  (setq dashboard-show-shortcuts t)
   (setq dashboard-set-heading-icons t)
   (setq dashboard-set-file-icons t)
   (setq dashboard-items '())
@@ -132,8 +131,7 @@
   (setq dashboard-set-footer nil)
   (setq dashboard-items-default-length 20)
   ;; C/S mode use dashboard as default buffer
-  (setq initial-buffer-choice (lambda ()
-                                (get-buffer "*dashboard*")))
+
   (dashboard-setup-startup-hook))
 
 (use-package
@@ -160,8 +158,8 @@
   :defer t
   :commands (visual-fill-column-mode)
   :config                               ;
-  (setq visual-fill-column-width 100)
-  (setq visual-fill-column-center-text t))
+  (setq-default visual-fill-column-width 100)
+  (setq-default visual-fill-column-center-text t))
 
 ;;;; ==============================================
 ;;;; 交互增强
@@ -453,10 +451,10 @@
   :ensure t
   :defer t
   :init                                 ;
-  (maf/leader-key "bH" '(buf-move-left :which-key "move to left window"))
-  (maf/leader-key "bJ" '(buf-move-down :which-key "move to down window"))
-  (maf/leader-key "bK" '(buf-move-up :which-key "move to up window"))
-  (maf/leader-key "bL" '(buf-move-right :which-key "move to right window"))
+  (maf/leader-key "b C-h" '(buf-move-left :which-key "move to left window"))
+  (maf/leader-key "b C-j" '(buf-move-down :which-key "move to down window"))
+  (maf/leader-key "b C-k" '(buf-move-up :which-key "move to up window"))
+  (maf/leader-key "b C-l" '(buf-move-right :which-key "move to right window"))
   (setq buffer-move-stay-after-swap t)
   (setq buffer-move-behavior 'move))
 
