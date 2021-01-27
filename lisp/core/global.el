@@ -75,10 +75,10 @@
                                                                                       'org-agenda))
                                         nil "" "")
                                        ("" "SPC n a   " "" (lambda
-                                                          (&rest
-                                                           _)
-                                                          (call-interactively 'org-agenda)) warning
-                                                          "" ""))
+                                                             (&rest
+                                                              _)
+                                                             (call-interactively 'org-agenda))
+                                        warning "" ""))
                                       () ;
                                       ((,(all-the-icons-octicon "file-text"
                                                                 :height 0.9
@@ -90,9 +90,9 @@
                                                                                       'counsel-recentf))
                                         nil "" "")
                                        ("" "SPC f r   " "" (lambda
-                                                          (&rest
-                                                           _)
-                                                          (call-interactively 'counsel-recentf))
+                                                             (&rest
+                                                              _)
+                                                             (call-interactively 'counsel-recentf))
                                         warning "" ""))
                                       () ;
                                       ((,(all-the-icons-octicon "briefcase"
@@ -105,10 +105,10 @@
                                                                                       'counsel-projectile))
                                         nil "" "")
                                        ("" "SPC p p   " "" (lambda
-                                                          (&rest
-                                                           _)
-                                                          (call-interactively 'counsel-projectile))
-                                        warning "" ""))
+                                                             (&rest
+                                                              _)
+                                                             (call-interactively
+                                                              'counsel-projectile)) warning "" ""))
                                       () ;
                                       ((,(all-the-icons-octicon "star"
                                                                 :height 0.9
@@ -120,15 +120,14 @@
                                                                                       'counsel-bookmark))
                                         nil "" "")
                                        ("" "SPC return" "" (lambda
-                                                          (&rest
-                                                           _)
-                                                          (call-interactively 'counsel-bookmark))
+                                                             (&rest
+                                                              _)
+                                                             (call-interactively 'counsel-bookmark))
                                         warning "" ""))
-                                      () ;
-                                      () ;
-                                      () ;
-                                      ;;
-                                      ))
+                                      ()   ;
+                                      ()   ;
+                                      ())) ;
+  ;;
   (setq dashboard-page-separator "")
   (setq dashboard-set-footer nil)
   (setq dashboard-items-default-length 20)
@@ -153,6 +152,16 @@
   all-the-icons
   :ensure t
   :init (setq all-the-icons-scale-factor 0.9))
+
+
+(use-package
+  visual-fill-column                    ;设置正文宽度
+  :ensure t
+  :defer t
+  :commands (visual-fill-column-mode)
+  :config                               ;
+  (setq visual-fill-column-width 100)
+  (setq visual-fill-column-center-text t))
 
 ;;;; ==============================================
 ;;;; 交互增强
@@ -179,7 +188,7 @@
   (general-create-definer maf/leader-key
     :states '(normal insert visual emacs)
     :prefix "SPC"
-    :global-prefix "C-SPC")
+    :global-prefix "C-S-SPC")
   (maf/leader-key "SPC" '(counsel-M-x :which-key "command"))
   (maf/leader-key "RET" '(bookmark-jump :which-key ("return" . "bookmark")))
   (maf/leader-key "f"
@@ -229,6 +238,9 @@
   (maf/leader-key "hs" '(describe-symbol :which-key "describe symbol"))
   (maf/leader-key "hw" '(where-is :which-key "where is"))
   (maf/leader-key "h?" '(about-emacs :which-key "about"))
+  (maf/leader-key "g"
+    '(:ignore t
+              :which-key "goto"))
   (maf/leader-key "p"
     '(:ignore t
               :which-key "project"))
@@ -314,11 +326,6 @@
   (define-key ivy-minibuffer-map (kbd "S-<return>") 'ivy-immediate-done))
 
 (use-package
-  smex                                  ;将命令按使用频率排序
-  :ensure t
-  :defer t)
-
-(use-package
   ivy-rich                              ; 在 M-x 和帮助中显示文档
   :ensure t
   :init
@@ -330,7 +337,6 @@
   :ensure t
   :defer t
   :init                                 ;
-
   (maf/leader-key "RET" '(counsel-bookmark :which-key ("return" . "bookmark")))
   (maf/leader-key "ff" '((lambda()
                            (interactive)
@@ -346,6 +352,24 @@
   (maf/leader-key "SPC" '(counsel-M-x :which-key ("␣" . "command")))
   :bind (("M-x" . counsel-M-x))
   :config)
+
+(use-package
+  flx ;; Improves sorting for fuzzy-matched results
+  :after ivy
+  :defer t
+  :init (setq ivy-flx-limit 10000))
+
+(use-package
+  prescient
+  :ensure t
+  :after counsel
+  :config (prescient-persist-mode 1))
+
+(use-package
+  ivy-prescient
+  :ensure t
+  :after prescient
+  :config (ivy-prescient-mode 1))
 
 (use-package
   swiper                                ;基于ivy的增量搜索工具
@@ -390,9 +414,8 @@
          ("<tab>" . company-complete-selection)
          ("TAB" . company-complete-selection)
          ("<return>" . company-complete-selection) ; 终端下无效
-         ("RET" . company-complete-selection)      ; 终端下生效
-         )
-  :custom                               ;
+         ("RET" . company-complete-selection))     ; 终端下生效
+  :custom                                          ;
   (company-minimum-prefix-length 2)
   (company-idle-delay 0.01)
   (company-echo-delay 0)
@@ -415,11 +438,10 @@
   :config)
 
 (use-package
-  company-statistics
+  company-prescient
   :ensure t
-  :requires company
   :after company
-  :hook (company-mode . company-statistics-mode))
+  :hook (company-mode . company-prescient-mode))
 
 (use-package
   undo-tree                             ;撤销重做可视化
@@ -444,6 +466,15 @@
   :defer t
   :init                                 ;
   (maf/leader-key "wr" '(windresize :which-key "resize window")))
+
+(use-package
+  ace-window                            ; 窗口跳转
+  :ensure t
+  :defer t
+  :init                                 ;
+  (maf/leader-key "ww" '(ace-window :which-key "select window"))
+  :config (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)))
+
 (use-package
   transpose-frame
   :ensure t
@@ -477,6 +508,30 @@
   (maf/leader-key "ps" '(counsel-projectile-git-grep :which-key "search in project by git"))
   (maf/leader-key "pS" '(counsel-projectile-grep :which-key "search in project"))
   :config (counsel-projectile-mode t))
+
+(use-package
+  magit
+  :ensure t
+  :commands (magit-status magit-get-current-branch)
+  :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
+  :init                                 ;
+  (maf/leader-key "pg"
+    '(:ignore t
+              :which-key "git"))
+  (maf/leader-key "pgs" '(magit-status :which-key "status"))
+  (maf/leader-key "pgd" '(magit-diff-unstaged :which-key "diff unstaged"))
+  (maf/leader-key "pgr" '(magit-rebase :which-key "rebase"))
+  (maf/leader-key "pgb" '(magit-barnch :which-key "barnch"))
+  (maf/leader-key "pgP" '(magit-push-current :which-key "push"))
+  (maf/leader-key "pgp" '(magit-pull-current :which-key "pull"))
+  (maf/leader-key "pgf" '(magit-fetch :which-key "fetch"))
+  (maf/leader-key "pgF" '(magit-fetch-all :which-key "fetch all"))
+  (maf/leader-key "pgc" '(magit-branch-or-checkout :which-key "checkout"))
+  (maf/leader-key "pgl"
+    '(:ignore t
+              :which-key "log"))
+  (maf/leader-key "pglc" '(magit-log-current :which-key "log current"))
+  (maf/leader-key "pglf" '(magit-log-buffer-file :which-key "log buffer file")))
 
 (use-package
   neotree
@@ -539,6 +594,7 @@
                                                 evil-visual-state-map evil-insert-state-map))
   (global-disable-mouse-mode))
 
+
 (use-package
   diff-hl
   :ensure t
@@ -558,11 +614,13 @@
   :init (maf/leader-key "cc" '(smart-comment :which-key "comment")))
 
 (use-package
-  ace-jump-mode                         ; 根据字符在文档中跳转
+  avy
   :ensure t
   :defer t
-  :bind (:map evil-normal-state-map
-              ("g c". ace-jump-char-mode)))
+  :init                                 ;
+  (maf/leader-key "gg" '(avy-goto-char :which-key "goto char"))
+  (maf/leader-key "gw" '(avy-goto-word-0 :which-key "goto word"))
+  (maf/leader-key "gl" '(avy-goto-line :which-key "goto line")))
 
 (use-package
   hungry-delete                         ; 可以删除前面所有的空白字符

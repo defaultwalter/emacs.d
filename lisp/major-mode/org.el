@@ -1,6 +1,8 @@
 ;;; package -- org-config
 ;;; Commentary:
 ;;; Code:
+
+
 (use-package
   org
   :ensure org-plus-contrib
@@ -13,18 +15,23 @@
                              (org-display-inline-images t t)
                              (org-indent-mode 1)
                              (setq truncate-lines nil)
+                             (setq org-ellipsis " ▾")
+                             (setq org-edit-src-content-indentation 2)
+                             (setq org-src-preserve-indentation nil)
                              (setq org-hide-emphasis-markers t)
                              (setq org-fontify-done-headline t)
+                             (setq org-src-tab-acts-natively t)
+                             (setq org-cycle-separator-lines 2)
+                             (setq org-startup-folded 'content)
                              (setq org-hide-leading-stars t)
                              (setq org-pretty-entities t)
-                             ;; (setq left-margin-width 2)
-                             ;; (setq right-margin-width 5)
                              (setq-local prettify-symbols-alist '(("#+BEGIN_SRC" . "†")
                                                                   ("#+END_SRC" . "†")
                                                                   ("#+begin_src" . "†")
                                                                   ("#+end_src" . "†")))
                              (setq-local prettify-symbols-unprettify-at-point 'right-edge)
-                             (prettify-symbols-mode 1)))
+                             (prettify-symbols-mode 1)
+                             (visual-fill-column-mode 1)))
   ;; (setq org-image-actual-width '(100 200 300))
   (setq-default org-confirm-babel-evaluate nil)
   :config                               ;
@@ -45,16 +52,17 @@
   :init (setq-default org-plantuml-exec-mode 'plantuml)
   (setq-default org-plantuml-jar-path ""))
 
-;; (use-package
-;;   evil-org
-;;   :ensure t
-;;   :after org
-;;   :hook (org-mode . evil-org-mode)
-;;   :config                  ;
-;;   ;; (add-hook 'evil-org-mode-hook (lambda ()
-;;   ;;                                 (evil-org-set-key-theme)))
-;;   (require 'evil-org-agenda)
-;;   (evil-org-agenda-set-keys))
+(use-package
+  evil-org
+  :ensure t
+  :after org
+  :hook ((org-mode . evil-org-mode)
+         (org-agenda-mode . evil-org-mode))
+  :config                  ;
+  ;; (add-hook 'evil-org-mode-hook (lambda ()
+  ;;                                 (evil-org-set-key-theme)))
+  (require 'evil-org-agenda)
+  (evil-org-agenda-set-keys))
 
 (use-package
   org-superstar
@@ -125,6 +133,7 @@
                          "~/Storage/Nutstore/Notes/GTD/someday.org"))
 (setq org-refile-targets '((nil :maxlevel . 9)
                            (org-agenda-files :maxlevel . 9)))
+
 
 (provide 'major-mode/org)
 ;;; org-config.el ends here

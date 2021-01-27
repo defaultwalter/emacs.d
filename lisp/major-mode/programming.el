@@ -19,7 +19,6 @@
   (use-package
     yasnippet-snippets
     :ensure t
-    :defer t
     :config (yas-reload-all)))
 
 (use-package
@@ -27,8 +26,6 @@
   :ensure t
   :after (yasnippet ivy)
   :defer t)
-
-
 
 (use-package
   lsp-mode

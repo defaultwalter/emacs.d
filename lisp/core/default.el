@@ -94,7 +94,7 @@
                                      (when (and (>= (recursion-depth) 1)
                                                 (active-minibuffer-window))
                                        (abort-recursive-edit))))
-
+(setq tramp-default-method "ssh")  ; tramp 默认使用 ssh
 
 (defun maf/set-font(fontsize)
   "Try to config font"
@@ -178,6 +178,7 @@
 ;;;;==================================================
 ;;;; 文件
 ;;;;==================================================
+(setq vc-follow-symlinks t)             ; 跟踪符号链接
 (setq load-prefer-newer t)              ; 加载最新的文件
 (setq-default create-lockfiles nil)     ; 不要锁定文件
 (global-auto-revert-mode t)             ; 开启重新加载被修改的文件
