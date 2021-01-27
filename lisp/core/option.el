@@ -12,10 +12,12 @@
   :group 'maf)
 
 
-(defcustom maf/note-directory "~/.notes"
+(defcustom maf/note-directory "~/.cache/notes"
   "Note root directory"
   :type 'string
   :group 'maf)
+(unless (file-directory-p maf/note-directory)
+  (mkdir maf/note-directory))
 
 (defcustom maf/note-server-host "127.0.0.1"
   "Note server host"
@@ -28,16 +30,15 @@
   :group 'maf)
 
 
-(defcustom maf/agenda-directory "~/.agenda"
+(defcustom maf/agenda-directory "~/.cache/agenda"
   "Agenda root directory"
   :type 'string
   :group 'maf)
-
+(unless (file-directory-p maf/agenda-directory)
+  (mkdir maf/agenda-directory))
 
 ;;;; Custom文件配置
 ;; Use `user.el` to save custom config
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 ;;Load custom config
-(when (file-exists-p custom-file)
-  (load-file custom-file))
 (provide 'core/option)

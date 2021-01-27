@@ -20,7 +20,7 @@
 ;; 初始化完成后显示 UI
 (add-hook 'window-setup-hook (lambda ()
                                (make-frame-visible)
-                               (selected-frame)))
+                               (select-frame-set-input-focus (selected-frame))))
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)) ; macOS 下沉浸式标题栏
 (add-to-list 'default-frame-alist '(ns-appearance . dark)) ; 使用黑色外观
 ;; frame 初始位置
