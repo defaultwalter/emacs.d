@@ -78,7 +78,7 @@
                                                              (&rest
                                                               _)
                                                              (call-interactively 'org-agenda))
-                                        warning "" ""))
+                                        default "" ""))
                                       () ;
                                       ((,(all-the-icons-octicon "file-text"
                                                                 :height 0.9
@@ -93,7 +93,7 @@
                                                              (&rest
                                                               _)
                                                              (call-interactively 'counsel-recentf))
-                                        warning "" ""))
+                                        default "" ""))
                                       () ;
                                       ((,(all-the-icons-octicon "briefcase"
                                                                 :height 0.9
@@ -108,7 +108,7 @@
                                                              (&rest
                                                               _)
                                                              (call-interactively
-                                                              'counsel-projectile)) warning "" ""))
+                                                              'counsel-projectile)) default "" ""))
                                       () ;
                                       ((,(all-the-icons-octicon "star"
                                                                 :height 0.9
@@ -123,7 +123,7 @@
                                                              (&rest
                                                               _)
                                                              (call-interactively 'counsel-bookmark))
-                                        warning "" ""))
+                                        default "" ""))
                                       ()   ;
                                       ()   ;
                                       ())) ;
