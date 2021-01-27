@@ -110,12 +110,12 @@
 (use-package
   deft
   :ensure t
-  :after org
+  :defer t
   :custom (deft-recursive t)
   (deft-use-filter-string-for-filename t)
   (deft-default-extension "org")
   (deft-directory maf/note-directory)
-  :config                               ;
+  :init                               ;
   (maf/leader-key "nn" '(deft :which-key "list")))
 
 (use-package
