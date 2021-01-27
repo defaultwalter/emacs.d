@@ -84,7 +84,7 @@
   (org-roam-buffer "*Relationship*")
   (org-roam-directory "~/Storage/Nutstore/Notes")
   (org-roam-index-file "Index.org")
-  (org-roam-dailies-directory "Daily")
+  (org-roam-dailies-directory "Journal")
   (org-roam-title-sources '(headline))
   (org-roam-tag-sources '(vanilla all-directories))
   (org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
@@ -114,7 +114,7 @@
   :custom (deft-recursive t)
   (deft-use-filter-string-for-filename t)
   (deft-default-extension "org")
-  (deft-directory "~/Storage/Nutstore/Notes")
+  (deft-directory maf/note-directory)
   :config                               ;
   (maf/leader-key "nn" '(deft :which-key "list")))
 
@@ -122,19 +122,30 @@
   org-roam-server
   :ensure t
   :defer t
-  :config (setq org-roam-server-host "127.0.0.1" org-roam-server-port 8010
-                org-roam-server-authenticate nil org-roam-server-export-inline-images t
-                org-roam-server-serve-files nil org-roam-server-served-file-extensions '("pdf" "mp4"
-                                                                                         "ogv")
-                org-roam-server-network-poll t org-roam-server-network-arrows nil
-                org-roam-server-network-label-truncate t
-                org-roam-server-network-label-truncate-length 60
-                org-roam-server-network-label-wrap-length 20))
+  :custom                               ;
+  (org-roam-server-host maf/note-server-host )
+  (org-roam-server-port maf/note-server-port )
+  (org-roam-server-authenticate nil)
+  (org-roam-server-export-inline-images t)
+  (org-roam-server-serve-files nil)
+  (org-roam-server-served-file-extensions '("pdf" "mp4" "ogv"))
+  (org-roam-server-network-poll t)
+  (org-roam-server-network-arrows nil)
+  (org-roam-server-network-label-truncate t)
+  (org-roam-server-network-label-truncate-length 60 )
+  (org-roam-server-network-label-wrap-length 20)
+  :init                                 ;
+  (maf/leader-key "ns" '((lambda ()
+                           (interactive)
+                           (when (not (bound-and-true-p org-roam-server-mode))
+                             (org-roam-server-mode t))
+                           (browse-url (format "http://%s:%s" org-roam-server-host
+                                               org-roam-server-port))) :which-key "server"))
+  :config )
 
-(setq org-agenda-files '("~/Storage/Nutstore/Notes/GTD/inbox.org"
-                         "~/Storage/Nutstore/Notes/GTD/task.org"
-                         "~/Storage/Nutstore/Notes/GTD/project.org"
-                         "~/Storage/Nutstore/Notes/GTD/someday.org"))
+(setq org-agenda-files (mapcar (lambda (file)
+                                 (expand-file-name file maf/agenda-directory))
+                               (directory-files maf/agenda-directory nil ".*\.org")))
 (setq org-refile-targets '((nil :maxlevel . 9)
                            (org-agenda-files :maxlevel . 9)))
 
