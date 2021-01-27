@@ -12,161 +12,8 @@
   :config (xclip-mode 1))
 
 ;;;; ==============================================
-;;;; 主题外观
-;;;; ==============================================
-
-(use-package
-  doom-modeline
-  :ensure t
-  :defer t
-  :init (doom-modeline-init)
-  (setq doom-modeline-height 20)
-  (setq doom-modeline-bar-width 3)
-  (setq doom-modeline-enable-word-count t) ;字数统计
-  (setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
-  (setq doom-modeline-buffer-file-name-style 'auto)
-  ;; (setq doom-modeline-minor-modes t)
-  (setq doom-modeline-icon (display-graphic-p))
-  (setq doom-modeline-major-mode-color-icon t)
-  (setq doom-modeline-modal-icon t)
-  (doom-modeline-mode 1))
-
-(use-package
-  doom-themes
-  :ensure t
-  :init
-  :custom-face                          ;
-  (font-lock-comment-face ((t
-                            (:slant italic))))
-  (neo-root-dir-face ((t
-                       (:extend t))))
-  :hook (server-after-make-frame . (lambda()
-                                     (load-theme 'doom-one t)))
-  :config                               ;
-  (load-theme 'doom-one t)
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
-  ;; (doom-themes-visual-bell-config)
-  (doom-themes-treemacs-config)
-  (doom-themes-neotree-config)
-  (doom-themes-org-config))
-
-(use-package
-  dashboard
-  :ensure t
-  :init;
-  (maf/leader-key "bd" '(dashboard-refresh-buffer :which-key "dashboard"))
-  :config                               ;
-  (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
-  (setq dashboard-center-content t)
-  (setq dashboard-set-heading-icons t)
-  (setq dashboard-set-file-icons t)
-  (setq dashboard-items '())
-  (setq dashboard-set-navigator t)
-  (setq dashboard-navigator-buttons `(   ;
-                                      () ;
-                                      () ;
-                                      () ;
-                                      ((,(all-the-icons-octicon "calendar"
-                                                                :height 0.9
-                                                                :v-adjust 0.0)
-                                        " Open agenda                         " "" (lambda
-                                                                                     (&rest
-                                                                                      _)
-                                                                                     (call-interactively
-                                                                                      'org-agenda))
-                                        nil "" "")
-                                       ("" "SPC n a   " "" (lambda
-                                                             (&rest
-                                                              _)
-                                                             (call-interactively 'org-agenda))
-                                        default "" ""))
-                                      () ;
-                                      ((,(all-the-icons-octicon "file-text"
-                                                                :height 0.9
-                                                                :v-adjust 0.0)
-                                        " Open recently file                  " "" (lambda
-                                                                                     (&rest
-                                                                                      _)
-                                                                                     (call-interactively
-                                                                                      'counsel-recentf))
-                                        nil "" "")
-                                       ("" "SPC f r   " "" (lambda
-                                                             (&rest
-                                                              _)
-                                                             (call-interactively 'counsel-recentf))
-                                        default "" ""))
-                                      () ;
-                                      ((,(all-the-icons-octicon "briefcase"
-                                                                :height 0.9
-                                                                :v-adjust 0.0)
-                                        " Open project                        " "" (lambda
-                                                                                     (&rest
-                                                                                      _)
-                                                                                     (call-interactively
-                                                                                      'counsel-projectile))
-                                        nil "" "")
-                                       ("" "SPC p p   " "" (lambda
-                                                             (&rest
-                                                              _)
-                                                             (call-interactively
-                                                              'counsel-projectile)) default "" ""))
-                                      () ;
-                                      ((,(all-the-icons-octicon "star"
-                                                                :height 0.9
-                                                                :v-adjust 0.0)
-                                        " Jump to bookmark                    " "" (lambda
-                                                                                     (&rest
-                                                                                      _)
-                                                                                     (call-interactively
-                                                                                      'counsel-bookmark))
-                                        nil "" "")
-                                       ("" "SPC return" "" (lambda
-                                                             (&rest
-                                                              _)
-                                                             (call-interactively 'counsel-bookmark))
-                                        default "" ""))
-                                      ()   ;
-                                      ()   ;
-                                      ())) ;
-  ;;
-  (setq dashboard-page-separator "")
-  (setq dashboard-set-footer nil)
-  (setq dashboard-items-default-length 20)
-  ;; C/S mode use dashboard as default buffer
-
-  (dashboard-setup-startup-hook))
-
-(use-package
-  solaire-mode
-  :ensure t
-  :if (display-graphic-p)
-  :hook                                 ;
-  ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
-  (minibuffer-setup . solaire-mode-in-minibuffer)
-  :config                               ;
-  (solaire-global-mode +1)
-  (solaire-mode-swap-bg))
-
-
-(use-package
-  all-the-icons
-  :ensure t
-  :init (setq all-the-icons-scale-factor 0.9))
-
-
-(use-package
-  visual-fill-column                    ;设置正文宽度
-  :ensure t
-  :defer t
-  :commands (visual-fill-column-mode)
-  :config                               ;
-  (setq-default visual-fill-column-width 100)
-  (setq-default visual-fill-column-center-text t))
-
-;;;; ==============================================
 ;;;; 交互增强
 ;;;; ==============================================
-
 
 (use-package
   which-key
@@ -259,7 +106,7 @@
   (setq evil-want-C-i-jump nil)
   (when evil-want-C-i-jump (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward))
   (setq evil-emacs-state-cursor '("pink" bar))
-  (setq evil-normal-state-cursor '("dodgerblue" box))
+  (setq evil-normal-state-cursor `(,(face-foreground 'link) box))
   (setq evil-visual-state-cursor '("orange" box))
   (setq evil-insert-state-cursor '("magenta" bar))
   (setq evil-replace-state-cursor '("magenta" hollow-rectangle))
@@ -766,5 +613,157 @@
         ((eq system-type 'gnu/linux)
          (sis-ism-lazyman-config "1" "2" 'fcitx)))
   (sis-global-respect-mode t))
+
+;;;; ==============================================
+;;;; 主题外观
+;;;; ==============================================
+
+(use-package
+  doom-modeline
+  :ensure t
+  :defer t
+  :init (doom-modeline-init)
+  (setq doom-modeline-height 20)
+  (setq doom-modeline-bar-width 3)
+  (setq doom-modeline-enable-word-count t) ;字数统计
+  (setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
+  (setq doom-modeline-buffer-file-name-style 'auto)
+  ;; (setq doom-modeline-minor-modes t)
+  (setq doom-modeline-icon (display-graphic-p))
+  (setq doom-modeline-major-mode-color-icon t)
+  (setq doom-modeline-modal-icon t)
+  (doom-modeline-mode 1))
+
+(use-package
+  doom-themes
+  :ensure t
+  :init
+  :custom-face                          ;
+  (font-lock-comment-face ((t
+                            (:slant italic))))
+  (neo-root-dir-face ((t
+                       (:extend t))))
+  :hook (server-after-make-frame . (lambda()
+                                     (load-theme 'doom-one t)))
+  :config                               ;
+  (load-theme 'doom-one t)
+  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
+  ;; (doom-themes-visual-bell-config)
+  (doom-themes-treemacs-config)
+  (doom-themes-neotree-config)
+  (doom-themes-org-config))
+
+(use-package
+  dashboard
+  :ensure t
+  :init;
+  (maf/leader-key "bd" '(dashboard-refresh-buffer :which-key "dashboard"))
+  :config                               ;
+  (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
+  (setq dashboard-center-content t)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-items '())
+  (setq dashboard-set-navigator t)
+  (setq dashboard-navigator-buttons `(   ;
+                                      () ;
+                                      () ;
+                                      () ;
+                                      ((,(all-the-icons-octicon "calendar"
+                                                                :height 0.9
+                                                                :v-adjust 0.0)
+                                        " Open agenda                         " "" (lambda
+                                                                                     (&rest
+                                                                                      _)
+                                                                                     (call-interactively
+                                                                                      'org-agenda))
+                                        nil "" "")
+                                       ("" "SPC n a   " "" (lambda
+                                                             (&rest
+                                                              _)
+                                                             (call-interactively 'org-agenda))
+                                        default "" ""))
+                                      () ;
+                                      ((,(all-the-icons-octicon "file-text"
+                                                                :height 0.9
+                                                                :v-adjust 0.0)
+                                        " Open recently file                  " "" (lambda
+                                                                                     (&rest
+                                                                                      _)
+                                                                                     (call-interactively
+                                                                                      'counsel-recentf))
+                                        nil "" "")
+                                       ("" "SPC f r   " "" (lambda
+                                                             (&rest
+                                                              _)
+                                                             (call-interactively 'counsel-recentf))
+                                        default "" ""))
+                                      () ;
+                                      ((,(all-the-icons-octicon "briefcase"
+                                                                :height 0.9
+                                                                :v-adjust 0.0)
+                                        " Open project                        " "" (lambda
+                                                                                     (&rest
+                                                                                      _)
+                                                                                     (call-interactively
+                                                                                      'counsel-projectile))
+                                        nil "" "")
+                                       ("" "SPC p p   " "" (lambda
+                                                             (&rest
+                                                              _)
+                                                             (call-interactively
+                                                              'counsel-projectile)) default "" ""))
+                                      () ;
+                                      ((,(all-the-icons-octicon "star"
+                                                                :height 0.9
+                                                                :v-adjust 0.0)
+                                        " Jump to bookmark                    " "" (lambda
+                                                                                     (&rest
+                                                                                      _)
+                                                                                     (call-interactively
+                                                                                      'counsel-bookmark))
+                                        nil "" "")
+                                       ("" "SPC return" "" (lambda
+                                                             (&rest
+                                                              _)
+                                                             (call-interactively 'counsel-bookmark))
+                                        default "" ""))
+                                      ()   ;
+                                      ()   ;
+                                      ())) ;
+  ;;
+  (setq dashboard-page-separator "")
+  (setq dashboard-set-footer nil)
+  (setq dashboard-items-default-length 20)
+  ;; C/S mode use dashboard as default buffer
+
+  (dashboard-setup-startup-hook))
+
+(use-package
+  solaire-mode
+  :ensure t
+  :if (display-graphic-p)
+  :hook                                 ;
+  ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
+  (minibuffer-setup . solaire-mode-in-minibuffer)
+  :config                               ;
+  (solaire-global-mode +1)
+  (solaire-mode-swap-bg))
+
+
+(use-package
+  all-the-icons
+  :ensure t
+  :init (setq all-the-icons-scale-factor 0.9))
+
+
+(use-package
+  visual-fill-column                    ;设置正文宽度
+  :ensure t
+  :defer t
+  :commands (visual-fill-column-mode)
+  :config                               ;
+  (setq-default visual-fill-column-width 100)
+  (setq-default visual-fill-column-center-text t))
 
 (provide 'core/global)
