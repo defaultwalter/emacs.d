@@ -115,7 +115,7 @@
   (deft-use-filter-string-for-filename t)
   (deft-default-extension "org")
   (deft-directory maf/note-directory)
-  :init                               ;
+  :init                                 ;
   (maf/leader-key "nn" '(deft :which-key "list")))
 
 (use-package
@@ -149,6 +149,16 @@
 (setq org-refile-targets '((nil :maxlevel . 9)
                            (org-agenda-files :maxlevel . 9)))
 
+(use-package
+  org-tree-slide                        ; 幻灯片
+  :ensure t
+  :defer t
+  :custom (org-tree-slide-header nil)
+  :hook (org-tree-slide-mode . (lambda()
+                                 (read-only-mode 1)))
+  :config                               ;
+  (evil-define-key 'normal 'org-tree-slide-mode-map (kbd "C-k") 'org-tree-slide-move-previous-tree)
+  (evil-define-key 'normal 'org-tree-slide-mode-map (kbd "C-j") 'org-tree-slide-move-next-tree))
 
 (provide 'major-mode/org)
 ;;; org-config.el ends here
