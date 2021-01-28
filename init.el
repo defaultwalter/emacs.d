@@ -27,11 +27,13 @@
 
 (use-package
   restart-emacs
-  :ensure t)
+  :ensure t
+  :disabled)
 ;; 性能统计
 (use-package
   benchmark-init
   :ensure t
+  :disabled
   :config
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))

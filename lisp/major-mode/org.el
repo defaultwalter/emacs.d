@@ -2,7 +2,6 @@
 ;;; Commentary:
 ;;; Code:
 
-
 (use-package
   org
   :ensure org-plus-contrib
@@ -23,15 +22,12 @@
                              (setq org-startup-folded 'content)
                              (setq org-hide-leading-stars t)
                              (setq org-pretty-entities t)
-                             (setq-local prettify-symbols-alist '(("#+BEGIN_SRC" . "†")
-                                                                  ("#+END_SRC" . "†")
-                                                                  ("#+begin_src" . "†")
-                                                                  ("#+end_src" . "†")))
-                             (setq-local prettify-symbols-unprettify-at-point 'right-edge)
                              (org-display-inline-images t t)
                              (org-indent-mode 1)
                              (prettify-symbols-mode 1)
-                             (visual-fill-column-mode 1)))
+                             (visual-fill-column-mode 1)
+                             (add-hook 'before-save-hook (lambda()
+                                                           (org-align-tags t)) nil 'local)))
   ;; (setq org-image-actual-width '(100 200 300))
   (setq-default org-confirm-babel-evaluate nil)
   :config                               ;
@@ -80,27 +76,30 @@
   org-roam
   :ensure t
   :defer t
+  :commands (org-roam-dailies-today org-roam-db-clear org-roam-db-build-cache)
   :custom                               ;
   (org-roam-buffer "*Relationship*")
   (org-roam-directory maf/note-directory)
   (org-roam-index-file "Index.org")
   (org-roam-dailies-directory "Journal")
   (org-roam-title-sources '(headline))
-  (org-roam-tag-sources '(vanilla all-directories))
+  (org-roam-tag-sources '(vanilla))
   (org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
                                  :file-name "%<%y%m%d%H%M%S>-${slug}"
-                                 :head "* ${title} \n"
+                                 :head "* ${title} :Default:\n"
                                  :unnarrowed t)))
   (org-roam-capture-immediate-template '("d" "default" plain #'org-roam-capture--get-point "%?"
                                          :file-name "%<%y%m%d%H%M%S>-${slug}"
-                                         :head "* ${title} \n"
+                                         :head "* ${title} :Default:\n"
                                          :unnarrowed t))
   (org-roam-dailies-capture-templates '(("d" "default" entry #'org-roam-capture--get-point "* %?"
-                                         :file-name "Daily/%<%Y-%m-%d>"
-                                         :head "* %<%A, %d %B %Y> \n")))
+                                         :file-name "Journal/%<%Y-%m-%d>"
+                                         :head "* %<%A, %d %B %Y> :Journal:\n")))
   :init                                 ;
   (maf/leader-key "nd" '(org-roam-dailies-today :which-key "today"))
   (maf/leader-key "nf" '(org-roam-find-file :which-key "find note"))
+  (maf/leader-key "n DEL" '(org-roam-db-clear :which-key ("delete" . "delete cache")))
+  (maf/leader-key "n RET" '(org-roam-db-build-cache :which-key ("return" . "build cache")))
   (maf/leader-key org-mode-map "nv" '(org-roam :which-key "view"))
   (maf/leader-key org-mode-map "ng" '(org-roam-graph :which-key "graph"))
   (maf/leader-key org-mode-map "ni" '(org-roam-insert :which-key "insert node"))

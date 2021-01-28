@@ -95,6 +95,7 @@
     '(:ignore t
               :which-key "note"))
   (maf/leader-key "na" '(org-agenda :which-key "agenda")))
+
 (use-package
   evil
   :ensure t
@@ -126,7 +127,7 @@
     (call-interactively 'evil-shift-right)
     (evil-normal-state)
     (evil-visual-restore))
-  (evil-define-key 'visual 'global ">" 'maf/evil-shift-right-visual)
+    (evil-define-key 'visual 'global ">" 'maf/evil-shift-right-visual)
   (evil-define-key 'visual 'global "<" 'maf/evil-shift-left-visual)
   (evil-mode 1))
 
@@ -153,12 +154,6 @@
   :unless (display-graphic-p)
   :config                               ;
   (evil-terminal-cursor-changer-activate))
-
-(use-package
-  disable-mouse
-  :ensure t
-  :config                               ;
-  (global-disable-mouse-mode))
 
 (use-package
   ivy
@@ -234,6 +229,11 @@
   :ensure t
   :defer t
   :config (global-command-log-mode))
+
+(use-package ranger
+  :ensure t
+  :config
+  (ranger-override-dired-mode t))
 
 ;; 自动完成
 (use-package
