@@ -1,8 +1,8 @@
 ;;; package -- core
 ;;; Commentary:
 ;;; Code:
-;;; use ‘emacs --batch -q -l ~/.emacs.d/dump.e’ create dump file
-;;; use ‘emacs --dump-file=$HOME/.cache/emacs/emacs.dump’ load dump file
+;;; use ‘emacs --batch -q -l ~/.emacs.d/dump.el’ create dump file
+;;; use ‘emacs --dump-file=path/to/emacs.dump’ load dump file
 
 (require 'package)
 
