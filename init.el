@@ -8,14 +8,17 @@
 
 ;;;; Package初始化
 (require 'package)
-(setq package-user-dir (expand-file-name "packages" user-emacs-directory))
 (setq package-archives '(("gnu"   . "http://elpa.emacs-china.org/gnu/")
                          ("melpa" . "http://elpa.emacs-china.org/melpa/")
                          ("org" . "http://elpa.emacs-china.org/org/")))
-(package-initialize)
+
+(if (bound-and-true-p user/with-dump)
+    (setq load-path user/dump-load-path)
+  (package-initialize) )
+(add-to-list 'load-path (expand-file-name "lisp" user-config-directory))
+
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
-
   (package-install 'use-package))
 
 ;; 启用use-package统计
@@ -39,10 +42,7 @@
   :ensure t
   :defer t)
 
-
-
 ;;;; 加载配置
-(add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp"))
 (require 'core)
 (require 'major-mode)
 
