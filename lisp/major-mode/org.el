@@ -9,23 +9,24 @@
   :hook (org-mode . org-superstar-mode)
   :custom-face                          ;
   :init                                 ;
+  (setq-default truncate-lines nil)
+  (setq org-hide-emphasis-markers t) ; 隐藏强调符号（加粗，下划线等等）
+  (setq org-pretty-entities t)       ; 可以显示上标下标
+  (setq org-ellipsis " ······▾")     ;设置折叠标识
+  (setq org-edit-src-content-indentation 0) ; 设置代码内容缩进
+  (setq org-src-preserve-indentation nil)
+  (setq org-src-tab-acts-natively t)
+  ;; (setq org-fontify-done-headline t) ; 标题状态为 Done 的时候修改标题样式
+  (setq org-hide-leading-stars t)       ; 隐藏标题多余的星号
+  (setq org-startup-folded 'nofold)     ; 是否默认开启折叠
+  (setq org-cycle-separator-lines 2)
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
   (add-hook 'org-mode-hook (lambda ()
-                             (setq truncate-lines nil)
-                             (setq org-ellipsis " ······▾")
-                             (setq org-edit-src-content-indentation 2)
-                             (setq org-src-preserve-indentation nil)
-                             (setq org-hide-emphasis-markers t)
-                             (setq org-fontify-done-headline t)
-                             (setq org-src-tab-acts-natively t)
-                             (setq org-cycle-separator-lines 2)
-                             (setq org-startup-folded 'nofold)
-                             (setq org-hide-leading-stars t)
-                             ;; (setq org-pretty-entities t)
-                             (org-display-inline-images t t)
-                             (org-indent-mode 1)
+                             (org-display-inline-images t t) ; 显示图片
+                             (org-indent-mode 1) ; 缩进模式
                              (visual-fill-column-mode 1)
                              (add-hook 'before-save-hook (lambda()
+                                                           ;; 保存时 对齐 tag
                                                            (org-align-tags t)) nil 'local)))
   ;; (setq org-image-actual-width '(100 200 300))
   (setq-default org-confirm-babel-evaluate nil)
