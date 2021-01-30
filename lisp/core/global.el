@@ -479,9 +479,9 @@ window"))))
 (use-package
   smartparens
   :ensure t
-  :hook (prog-mode . smartparens-mode)
   :config                               ;
-  (require 'smartparens-config))
+  (require 'smartparens-config)
+  (smartparens-global-mode))
 
 (use-package
   smart-comment                         ;注释插件
