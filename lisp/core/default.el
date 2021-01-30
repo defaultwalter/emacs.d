@@ -153,7 +153,7 @@
 ;; (global-hl-line-mode t)                               ; 高亮当前的行
 (delete-selection-mode 1)               ; 插入时替换选区
 
-
+(setq-default truncate-lines nil)
 (add-hook 'before-save-hook '(lambda ()
                                (when (derived-mode-p 'prog-mode)
                                  (whitespace-cleanup)

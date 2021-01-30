@@ -9,7 +9,6 @@
   :hook (org-mode . org-superstar-mode)
   :custom-face                          ;
   :init                                 ;
-  (setq-default truncate-lines nil)
   (setq org-hide-emphasis-markers t) ; 隐藏强调符号（加粗，下划线等等）
   (setq org-pretty-entities t)       ; 可以显示上标下标
   (setq org-ellipsis " ······▾")     ;设置折叠标识
@@ -22,6 +21,7 @@
   (setq org-cycle-separator-lines 2)
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
   (add-hook 'org-mode-hook (lambda ()
+                             (setq truncate-lines nil)
                              (org-display-inline-images t t) ; 显示图片
                              (org-indent-mode 1) ; 缩进模式
                              (visual-fill-column-mode 1)

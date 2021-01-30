@@ -63,6 +63,7 @@ window"))))
     (evil-visual-restore))
   (evil-define-key 'visual 'global ">" 'user/evil-shift-right-visual)
   (evil-define-key 'visual 'global "<" 'user/evil-shift-left-visual)
+  (evil-define-key 'normal 'global (kbd "C-S-v") 'evil-visual-block)
   (evil-mode 1))
 
 (use-package
