@@ -2,40 +2,40 @@
 ;;; Commentary:
 ;;; Code:
 
-(defgroup maf nil
+(defgroup user nil
   "Option for my config"
-  :prefix "maf/")
+  :prefix "user/")
 
-(defcustom maf/fontsize 12
+(defcustom user/fontsize 12
   "Font size"
   :type 'integer
-  :group 'maf)
+  :group 'user)
 
 
-(defcustom maf/note-directory "~/.cache/notes"
+(defcustom user/note-directory "~/.cache/notes"
   "Note root directory"
   :type 'string
-  :group 'maf)
-(unless (file-directory-p maf/note-directory)
-  (mkdir maf/note-directory))
+  :group 'user)
+(unless (file-directory-p user/note-directory)
+  (mkdir user/note-directory))
 
-(defcustom maf/note-server-host "127.0.0.1"
+(defcustom user/note-server-host "127.0.0.1"
   "Note server host"
   :type 'string
-  :group 'maf)
+  :group 'user)
 
-(defcustom maf/note-server-port 10101
+(defcustom user/note-server-port 10101
   "Note server port"
   :type 'integer
-  :group 'maf)
+  :group 'user)
 
 
-(defcustom maf/agenda-directory "~/.cache/agenda"
+(defcustom user/agenda-directory "~/.cache/agenda"
   "Agenda root directory"
   :type 'string
-  :group 'maf)
-(unless (file-directory-p maf/agenda-directory)
-  (mkdir maf/agenda-directory))
+  :group 'user)
+(unless (file-directory-p user/agenda-directory)
+  (mkdir user/agenda-directory))
 
 ;;;; Custom文件配置
 ;; Use `user.el` to save custom config

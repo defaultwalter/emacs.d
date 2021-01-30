@@ -45,24 +45,24 @@
         '("#98ce65"
           hollow))
   (add-hook 'after-init-hook (lambda ()
-                               (maf/leader-key "wh" '(evil-window-left :which-key "left window"))
-                               (maf/leader-key "wj" '(evil-window-down :which-key "down window"))
-                               (maf/leader-key "wk" '(evil-window-up :which-key "up window"))
-                               (maf/leader-key "wl" '(evil-window-right :which-key "right
+                               (user/leader-key "wh" '(evil-window-left :which-key "left window"))
+                               (user/leader-key "wj" '(evil-window-down :which-key "down window"))
+                               (user/leader-key "wk" '(evil-window-up :which-key "up window"))
+                               (user/leader-key "wl" '(evil-window-right :which-key "right
 window"))))
   :config                               ;
-  (defun maf/evil-shift-left-visual ()
+  (defun user/evil-shift-left-visual ()
     (interactive)
     (call-interactively 'evil-shift-left)
     (evil-normal-state)
     (evil-visual-restore))
-  (defun maf/evil-shift-right-visual ()
+  (defun user/evil-shift-right-visual ()
     (interactive)
     (call-interactively 'evil-shift-right)
     (evil-normal-state)
     (evil-visual-restore))
-  (evil-define-key 'visual 'global ">" 'maf/evil-shift-right-visual)
-  (evil-define-key 'visual 'global "<" 'maf/evil-shift-left-visual)
+  (evil-define-key 'visual 'global ">" 'user/evil-shift-right-visual)
+  (evil-define-key 'visual 'global "<" 'user/evil-shift-left-visual)
   (evil-mode 1))
 
 (use-package
@@ -94,69 +94,70 @@ window"))))
   :ensure t
   :config                               ;
   (general-evil-setup t)
-  (general-create-definer maf/leader-key
+  (general-create-definer user/leader-key
     :states '(normal insert visual emacs)
+    :keymaps 'override
     :prefix "SPC"
     :global-prefix "C-S-SPC")
-  (maf/leader-key "SPC" '(counsel-M-x :which-key "command"))
-  (maf/leader-key "RET" '(bookmark-jump :which-key ("return" . "bookmark")))
-  (maf/leader-key "f"
+  (user/leader-key "SPC" '(counsel-M-x :which-key "command"))
+  (user/leader-key "RET" '(bookmark-jump :which-key ("return" . "bookmark")))
+  (user/leader-key "f"
     '(:ignore t
               :which-key "file"))
-  (maf/leader-key "ff" '(find-file :which-key "find file"))
-  (maf/leader-key "fs" '(save-buffer :which-key "save file"))
-  (maf/leader-key "fS" '(save-some-buffers :which-key "save all files"))
-  (maf/leader-key "fr" '(recentf-open-files :which-key "recent file"))
-  (maf/leader-key "f." '((lambda()
+  (user/leader-key "ff" '(find-file :which-key "find file"))
+  (user/leader-key "fs" '(save-buffer :which-key "save file"))
+  (user/leader-key "fS" '(save-some-buffers :which-key "save all files"))
+  (user/leader-key "fr" '(recentf-open-files :which-key "recent file"))
+  (user/leader-key "f." '((lambda()
                            (interactive)
                            (dired user-config-directory)) :which-key "open configuration"))
-  (maf/leader-key "b"
+  (user/leader-key "b"
     '(:ignore t
               :which-key "buffer"))
-  (maf/leader-key "bb" '(switch-to-buffer :which-key "switch buffer"))
-  (maf/leader-key "bs" '(save-buffer :which-key "save buffer"))
-  (maf/leader-key "bS" '(save-some-buffers :which-key "save all buffers"))
-  (maf/leader-key "bk" '(kill-this-buffer :which-key "kill buffer"))
-  (maf/leader-key "bK" '(kill-buffer-and-window :which-key "kill buffer&window"))
-  (maf/leader-key "c"
+  (user/leader-key "bb" '(switch-to-buffer :which-key "switch buffer"))
+  (user/leader-key "bs" '(save-buffer :which-key "save buffer"))
+  (user/leader-key "bS" '(save-some-buffers :which-key "save all buffers"))
+  (user/leader-key "bk" '(kill-this-buffer :which-key "kill buffer"))
+  (user/leader-key "bK" '(kill-buffer-and-window :which-key "kill buffer&window"))
+  (user/leader-key "c"
     '(:ignore t
               :which-key "content"))
-  (maf/leader-key "cc" '(comment-line :which-key "comment"))
-  (maf/leader-key "cr" '(comment-or-uncomment-region :which-key "comment region"))
-  (maf/leader-key "w"
+  (user/leader-key "cc" '(comment-line :which-key "comment"))
+  (user/leader-key "cr" '(comment-or-uncomment-region :which-key "comment region"))
+  (user/leader-key "w"
     '(:ignore t
               :which-key "window"))
-  (maf/leader-key "ws" '(split-window-horizontally :which-key "split window horizontally"))
-  (maf/leader-key "wv" '(split-window-vertically :which-key "split window vertically"))
-  (maf/leader-key "wm" '(maximize-window :which-key "maximize window"))
-  (maf/leader-key "wn" '(minimize-window :which-key "minimize window"))
-  (maf/leader-key "wb" '(balance-windows :which-key "balance window"))
-  (maf/leader-key "wd" '(delete-window :which-key "delete window"))
-  (maf/leader-key "wD" '(delete-other-windows :which-key "delete other window"))
-  (maf/leader-key "h"
+  (user/leader-key "ws" '(split-window-horizontally :which-key "split window horizontally"))
+  (user/leader-key "wv" '(split-window-vertically :which-key "split window vertically"))
+  (user/leader-key "wm" '(maximize-window :which-key "maximize window"))
+  (user/leader-key "wn" '(minimize-window :which-key "minimize window"))
+  (user/leader-key "wb" '(balance-windows :which-key "balance window"))
+  (user/leader-key "wd" '(delete-window :which-key "delete window"))
+  (user/leader-key "wD" '(delete-other-windows :which-key "delete other window"))
+  (user/leader-key "h"
     '(:ignore t
               :which-key "help"))
-  ;; (maf/leader-key "h <return>" '(view-order-manuals :which-key "manuals"))
-  (maf/leader-key "h RET" '(view-order-manuals :which-key ("return" . "manuals")))
-  (maf/leader-key "hf" '(describe-function :which-key "describe function"))
-  (maf/leader-key "hv" '(describe-variable :which-key "describe variable"))
-  (maf/leader-key "hk" '(describe-key :which-key "describe key"))
-  (maf/leader-key "hc" '(describe-char :which-key "describe char"))
-  (maf/leader-key "hm" '(describe-mode :which-key "describe mode"))
-  (maf/leader-key "hp" '(describe-package :which-key "describe package"))
-  (maf/leader-key "hs" '(describe-symbol :which-key "describe symbol"))
-  (maf/leader-key "hw" '(where-is :which-key "where is"))
-  (maf/leader-key "h?" '(about-emacs :which-key "about"))
-  (maf/leader-key "g"
+  ;; (user/leader-key "h <return>" '(view-order-manuals :which-key "manuals"))
+  (user/leader-key "h RET" '(view-order-manuals :which-key ("return" . "manuals")))
+  (user/leader-key "hf" '(describe-function :which-key "describe function"))
+  (user/leader-key "hv" '(describe-variable :which-key "describe variable"))
+  (user/leader-key "hk" '(describe-key :which-key "describe key"))
+  (user/leader-key "hc" '(describe-char :which-key "describe char"))
+  (user/leader-key "hm" '(describe-mode :which-key "describe mode"))
+  (user/leader-key "hp" '(describe-package :which-key "describe package"))
+  (user/leader-key "hs" '(describe-symbol :which-key "describe symbol"))
+  (user/leader-key "hw" '(where-is :which-key "where is"))
+  (user/leader-key "h?" '(about-emacs :which-key "about"))
+  (user/leader-key "g"
     '(:ignore t
               :which-key "goto"))
-  (maf/leader-key "p"
+  (user/leader-key "p"
     '(:ignore t
               :which-key "project"))
-  (maf/leader-key "n"
+  (user/leader-key "n"
     '(:ignore t
               :which-key "note"))
-  (maf/leader-key "na" '(org-agenda :which-key "agenda")))
+  (user/leader-key "na" '(org-agenda :which-key "agenda")))
 
 (use-package
   which-key
@@ -202,19 +203,19 @@ window"))))
   :ensure t
   :defer t
   :init                                 ;
-  (maf/leader-key "RET" '(counsel-bookmark :which-key ("return" . "bookmark")))
-  (maf/leader-key "ff" '((lambda()
+  (user/leader-key "RET" '(counsel-bookmark :which-key ("return" . "bookmark")))
+  (user/leader-key "ff" '((lambda()
                            (interactive)
                            (let ((counsel-find-file-ignore-regexp "^\\."))
                              (counsel-find-file))) :which-key "find file"))
-  (maf/leader-key "fF" '(counsel-find-file :which-key "find all file"))
-  (maf/leader-key "fr" '(counsel-recentf :which-key "recent file"))
-  (maf/leader-key "bb" '((lambda()
+  (user/leader-key "fF" '(counsel-find-file :which-key "find all file"))
+  (user/leader-key "fr" '(counsel-recentf :which-key "recent file"))
+  (user/leader-key "bb" '((lambda()
                            (interactive)
                            (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
                              (counsel-switch-buffer))) :which-key "switch buffer"))
-  (maf/leader-key "bB" '(counsel-switch-buffer :which-key "switch all buffer"))
-  (maf/leader-key "SPC" '(counsel-M-x :which-key ("␣" . "command")))
+  (user/leader-key "bB" '(counsel-switch-buffer :which-key "switch all buffer"))
+  (user/leader-key "SPC" '(counsel-M-x :which-key ("␣" . "command")))
   :bind (("M-x" . counsel-M-x))
   :config)
 
@@ -241,8 +242,8 @@ window"))))
   :ensure t
   :defer t
   :init                                 ;
-  (maf/leader-key "cs" '(swiper :which-key "swipe"))
-  (maf/leader-key "cS" '(swiper-all :which-key "swipe in all buffers"))
+  (user/leader-key "cs" '(swiper :which-key "swipe"))
+  (user/leader-key "cS" '(swiper-all :which-key "swipe in all buffers"))
   :bind                                 ;
   ("C-S-s" . swiper-all)
   ("C-s" . swiper))
@@ -323,10 +324,10 @@ window"))))
   :ensure t
   :defer t
   :init                                 ;
-  (maf/leader-key "b C-h" '(buf-move-left :which-key "move to left window"))
-  (maf/leader-key "b C-j" '(buf-move-down :which-key "move to down window"))
-  (maf/leader-key "b C-k" '(buf-move-up :which-key "move to up window"))
-  (maf/leader-key "b C-l" '(buf-move-right :which-key "move to right window"))
+  (user/leader-key "b C-h" '(buf-move-left :which-key "move to left window"))
+  (user/leader-key "b C-j" '(buf-move-down :which-key "move to down window"))
+  (user/leader-key "b C-k" '(buf-move-up :which-key "move to up window"))
+  (user/leader-key "b C-l" '(buf-move-right :which-key "move to right window"))
   (setq buffer-move-stay-after-swap t)
   (setq buffer-move-behavior 'move))
 
@@ -335,21 +336,21 @@ window"))))
   :ensure t
   :defer t
   :init                                 ;
-  (maf/leader-key "wr" '(windresize :which-key "resize window")))
+  (user/leader-key "wr" '(windresize :which-key "resize window")))
 
 (use-package
   ace-window                            ; 窗口跳转
   :ensure t
   :defer t
   :init                                 ;
-  (maf/leader-key "ww" '(ace-window :which-key "select window"))
+  (user/leader-key "ww" '(ace-window :which-key "select window"))
   :config (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)))
 
 (use-package
   transpose-frame
   :ensure t
   :defer t
-  :init (maf/leader-key "wt" '(transpose-frame :which-key "transpose")))
+  :init (user/leader-key "wt" '(transpose-frame :which-key "transpose")))
 
 (use-package
   projectile                            ;project 插件
@@ -360,8 +361,8 @@ window"))))
   (projectile-sort-order 'access-time)
   (projectile-find-dir-includes-top-level t)
   :init                                 ;
-  (maf/leader-key "pk" '(project-kill-buffers :which-key "close all project buffers"))
-  (maf/leader-key "pi" '(projectile-project-info :which-key "project info"))
+  (user/leader-key "pk" '(project-kill-buffers :which-key "close all project buffers"))
+  (user/leader-key "pi" '(projectile-project-info :which-key "project info"))
   :config (projectile-mode +1))
 
 (use-package
@@ -372,11 +373,11 @@ window"))))
   (counsel-projectile-sort-directories t)
   (counsel-projectile-sort-buffers t)
   (counsel-projectile-sort-projects t)
-  :init (maf/leader-key "pp" '(counsel-projectile-switch-project :which-key "switch project"))
-  (maf/leader-key "pf" '(counsel-projectile-find-file :which-key "find file in project"))
-  (maf/leader-key "pd" '(counsel-projectile-find-dir :which-key "find directory in project"))
-  (maf/leader-key "ps" '(counsel-projectile-git-grep :which-key "search in project by git"))
-  (maf/leader-key "pS" '(counsel-projectile-grep :which-key "search in project"))
+  :init (user/leader-key "pp" '(counsel-projectile-switch-project :which-key "switch project"))
+  (user/leader-key "pf" '(counsel-projectile-find-file :which-key "find file in project"))
+  (user/leader-key "pd" '(counsel-projectile-find-dir :which-key "find directory in project"))
+  (user/leader-key "ps" '(counsel-projectile-git-grep :which-key "search in project by git"))
+  (user/leader-key "pS" '(counsel-projectile-grep :which-key "search in project"))
   :config (counsel-projectile-mode t))
 
 (use-package
@@ -385,23 +386,23 @@ window"))))
   :commands (magit-status magit-get-current-branch)
   :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   :init                                 ;
-  (maf/leader-key "pg"
+  (user/leader-key "pg"
     '(:ignore t
               :which-key "git"))
-  (maf/leader-key "pgs" '(magit-status :which-key "status"))
-  (maf/leader-key "pgd" '(magit-diff-unstaged :which-key "diff unstaged"))
-  (maf/leader-key "pgr" '(magit-rebase :which-key "rebase"))
-  (maf/leader-key "pgb" '(magit-barnch :which-key "barnch"))
-  (maf/leader-key "pgP" '(magit-push-current :which-key "push"))
-  (maf/leader-key "pgp" '(magit-pull-current :which-key "pull"))
-  (maf/leader-key "pgf" '(magit-fetch :which-key "fetch"))
-  (maf/leader-key "pgF" '(magit-fetch-all :which-key "fetch all"))
-  (maf/leader-key "pgc" '(magit-branch-or-checkout :which-key "checkout"))
-  (maf/leader-key "pgl"
+  (user/leader-key "pgs" '(magit-status :which-key "status"))
+  (user/leader-key "pgd" '(magit-diff-unstaged :which-key "diff unstaged"))
+  (user/leader-key "pgr" '(magit-rebase :which-key "rebase"))
+  (user/leader-key "pgb" '(magit-barnch :which-key "barnch"))
+  (user/leader-key "pgP" '(magit-push-current :which-key "push"))
+  (user/leader-key "pgp" '(magit-pull-current :which-key "pull"))
+  (user/leader-key "pgf" '(magit-fetch :which-key "fetch"))
+  (user/leader-key "pgF" '(magit-fetch-all :which-key "fetch all"))
+  (user/leader-key "pgc" '(magit-branch-or-checkout :which-key "checkout"))
+  (user/leader-key "pgl"
     '(:ignore t
               :which-key "log"))
-  (maf/leader-key "pglc" '(magit-log-current :which-key "log current"))
-  (maf/leader-key "pglf" '(magit-log-buffer-file :which-key "log buffer file")))
+  (user/leader-key "pglc" '(magit-log-current :which-key "log current"))
+  (user/leader-key "pglf" '(magit-log-buffer-file :which-key "log buffer file")))
 
 (use-package
   neotree
@@ -412,13 +413,13 @@ window"))))
   (neo-autorefresh t)
   (neo-window-width 35)
   (neo-mode-line-type 'none)
-  (neo-vc-integration 'face)
+  ;; (neo-vc-integration 'face); 和doom主题冲突
   (neo-hide-cursor t)
   :bind                                 ;
   ("C-<tab>" . neotree-toggle)
   ("C-TAB" . neotree-toggle)
   :init                                 ;
-  (maf/leader-key "fv" '(neotree-toggle :which-key "file view")))
+  (user/leader-key "fv" '(neotree-toggle :which-key "file view")))
 
 
 (use-package
@@ -488,16 +489,16 @@ window"))))
   :ensure t
   :defer t
   :bind ("C-/" . smart-comment)
-  :init (maf/leader-key "cc" '(smart-comment :which-key "comment")))
+  :init (user/leader-key "cc" '(smart-comment :which-key "comment")))
 
 (use-package
   avy
   :ensure t
   :defer t
   :init                                 ;
-  (maf/leader-key "gg" '(avy-goto-char :which-key "goto char"))
-  (maf/leader-key "gw" '(avy-goto-word-0 :which-key "goto word"))
-  (maf/leader-key "gl" '(avy-goto-line :which-key "goto line")))
+  (user/leader-key "gg" '(avy-goto-char :which-key "goto char"))
+  (user/leader-key "gw" '(avy-goto-word-0 :which-key "goto word"))
+  (user/leader-key "gl" '(avy-goto-line :which-key "goto line")))
 
 (use-package
   hungry-delete                         ; 可以删除前面所有的空白字符
@@ -554,7 +555,7 @@ window"))))
   format-all                            ;格式化代码，支持多种格式
   :ensure t
   :defer t
-  :init (maf/leader-key "cf" '(format-all-buffer :which-key "format")))
+  :init (user/leader-key "cf" '(format-all-buffer :which-key "format")))
 
 (use-package
   auto-sudoedit                         ;自动请求sudo权限
@@ -686,7 +687,7 @@ window"))))
   dashboard
   :ensure t
   :init                                 ;
-  (maf/leader-key "bd" '(dashboard-refresh-buffer :which-key "dashboard"))
+  (user/leader-key "bd" '(dashboard-refresh-buffer :which-key "dashboard"))
   :config                               ;
   (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
   (setq dashboard-center-content t)

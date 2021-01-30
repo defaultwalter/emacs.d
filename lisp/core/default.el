@@ -86,7 +86,7 @@
     (vconcat (mapcar (lambda (c)
       (make-glyph-code c 'font-lock-comment-face)) " ······▾")))
 
-(defun maf/set-font(fontsize)
+(defun user/set-font(fontsize)
 "Try to config font"
 ;; 设置默认字体
   (let ((frame-font (cond ((member "Sarasa Mono SC" (font-family-list)) "Sarasa Mono SC")
@@ -110,12 +110,12 @@
 ((member "Segoe UI Emoji" (font-family-list)) "Segoe UI Emoji")
 ((member "Symbola" (font-family-list)) "Symbola")
 ((member "Apple Color Emoji" (font-family-list)) "Apple Color Emoji"))))
-(maf/set-font maf/fontsize)
+(user/set-font user/fontsize)
 ;; C/S 模式需要再次设置字体
 (add-hook 'server-after-make-frame-hook (lambda ()
-                                          (maf/set-font maf/fontsize)))
+                                          (user/set-font user/fontsize)))
 ;; 主题样式
-(defun maf/ui-ajust()
+(defun user/gui-ajust()
   "调整主题样式"
   (if (and (eq system-type 'darwin)
            (display-graphic-p))
@@ -132,8 +132,8 @@
   (set-face-background 'mode-line nil)
   (setq underline-minimum-offset 5))
 
-(add-hook 'after-init-hook 'maf/ui-ajust)
-(add-hook 'server-after-make-frame-hook 'maf/ui-ajust)
+(add-hook 'after-init-hook 'user/gui-ajust)
+(add-hook 'server-after-make-frame-hook 'user/gui-ajust)
 ;;;;==================================================
 ;;;; 编辑行为
 ;;;;==================================================

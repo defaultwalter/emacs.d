@@ -78,7 +78,7 @@
   :commands (org-roam org-roam-dailies-today org-roam-db-clear org-roam-db-build-cache)
   :custom                               ;
   (org-roam-buffer "*Relationship*")
-  (org-roam-directory maf/note-directory)
+  (org-roam-directory user/note-directory)
   (org-roam-index-file "Index.org")
   (org-roam-dailies-directory "Journal")
   (org-roam-title-sources '(headline))
@@ -95,13 +95,13 @@
                                          :file-name "Journal/%<%Y-%m-%d>"
                                          :head "* %<%A, %d %B %Y> :Journal:\n")))
   :init                                 ;
-  (maf/leader-key "nd" '(org-roam-dailies-today :which-key "today"))
-  (maf/leader-key "nf" '(org-roam-find-file :which-key "find note"))
-  (maf/leader-key "n DEL" '(org-roam-db-clear :which-key ("delete" . "delete cache")))
-  (maf/leader-key "n RET" '(org-roam-db-build-cache :which-key ("return" . "build cache")))
-  (maf/leader-key org-mode-map "nv" '(org-roam :which-key "view"))
-  (maf/leader-key org-mode-map "ng" '(org-roam-graph :which-key "graph"))
-  (maf/leader-key org-mode-map "ni" '(org-roam-insert :which-key "insert node"))
+  (user/leader-key "nd" '(org-roam-dailies-today :which-key "today"))
+  (user/leader-key "nf" '(org-roam-find-file :which-key "find note"))
+  (user/leader-key "n DEL" '(org-roam-db-clear :which-key ("delete" . "delete cache")))
+  (user/leader-key "n RET" '(org-roam-db-build-cache :which-key ("return" . "build cache")))
+  (user/leader-key org-mode-map "nv" '(org-roam :which-key "view"))
+  (user/leader-key org-mode-map "ng" '(org-roam-graph :which-key "graph"))
+  (user/leader-key org-mode-map "ni" '(org-roam-insert :which-key "insert node"))
   :config                               ;
   (require 'org-roam-protocol))
 
@@ -112,17 +112,17 @@
   :custom (deft-recursive t)
   (deft-use-filter-string-for-filename t)
   (deft-default-extension "org")
-  (deft-directory maf/note-directory)
+  (deft-directory user/note-directory)
   :init                                 ;
-  (maf/leader-key "nn" '(deft :which-key "list")))
+  (user/leader-key "nn" '(deft :which-key "list")))
 
 (use-package
   org-roam-server
   :ensure t
   :defer t
   :custom                               ;
-  (org-roam-server-host maf/note-server-host )
-  (org-roam-server-port maf/note-server-port )
+  (org-roam-server-host user/note-server-host )
+  (org-roam-server-port user/note-server-port )
   (org-roam-server-authenticate nil)
   (org-roam-server-export-inline-images t)
   (org-roam-server-serve-files nil)
@@ -133,7 +133,7 @@
   (org-roam-server-network-label-truncate-length 60 )
   (org-roam-server-network-label-wrap-length 20)
   :init                                 ;
-  (maf/leader-key "ns" '((lambda ()
+  (user/leader-key "ns" '((lambda ()
                            (interactive)
                            (when (not (bound-and-true-p org-roam-server-mode))
                              (org-roam-server-mode t))
@@ -142,8 +142,8 @@
   :config )
 
 (setq org-agenda-files (mapcar (lambda (file)
-                                 (expand-file-name file maf/agenda-directory))
-                               (directory-files maf/agenda-directory nil ".*\.org")))
+                                 (expand-file-name file user/agenda-directory))
+                               (directory-files user/agenda-directory nil ".*\.org")))
 (setq org-refile-targets '((nil :maxlevel . 9)
                            (org-agenda-files :maxlevel . 9)))
 
