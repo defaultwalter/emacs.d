@@ -15,17 +15,79 @@
 ;;;; 交互增强
 ;;;; ==============================================
 
+
 (use-package
-  which-key
+  evil
   :ensure t
   :custom                               ;
-  (which-key-enable-extended-define-key t)
-  (which-key-idle-delay 0.3)
-  (which-key-idle-secondary-delay 0)
-  (which-key-sort-order 'which-key-prefix-then-key-order)
-  (which-key-enable-extended-define-key t)
+  (evil-want-minibuffer nil)
+  (evil-want-keybinding nil)
+  (evil-want-integration t)
+  :init (setq evil-undo-system 'undo-tree)
+  (setq evil-want-C-i-jump nil)
+  (when evil-want-C-i-jump (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward))
+  (setq evil-emacs-state-cursor
+        '("#51afef"
+          bar))
+  (setq evil-normal-state-cursor
+        '("#51afef"
+          box))
+  (setq evil-visual-state-cursor
+        '("#fe9865"
+          box))
+  (setq evil-insert-state-cursor
+        '("#d698dd"
+          bar))
+  (setq evil-replace-state-cursor
+        '("#fd6698"
+          hollow-rectangle))
+  (setq evil-operator-state-cursor
+        '("#98ce65"
+          hollow))
+  (add-hook 'after-init-hook (lambda ()
+                               (maf/leader-key "wh" '(evil-window-left :which-key "left window"))
+                               (maf/leader-key "wj" '(evil-window-down :which-key "down window"))
+                               (maf/leader-key "wk" '(evil-window-up :which-key "up window"))
+                               (maf/leader-key "wl" '(evil-window-right :which-key "right
+window"))))
   :config                               ;
-  (which-key-mode t))
+  (defun maf/evil-shift-left-visual ()
+    (interactive)
+    (call-interactively 'evil-shift-left)
+    (evil-normal-state)
+    (evil-visual-restore))
+  (defun maf/evil-shift-right-visual ()
+    (interactive)
+    (call-interactively 'evil-shift-right)
+    (evil-normal-state)
+    (evil-visual-restore))
+  (evil-define-key 'visual 'global ">" 'maf/evil-shift-right-visual)
+  (evil-define-key 'visual 'global "<" 'maf/evil-shift-left-visual)
+  (evil-mode 1))
+
+(use-package
+  evil-collection
+  :ensure t
+  :after evil
+  :custom                               ;
+  (evil-collection-company-use-tng nil)
+  :config                               ;
+  (evil-collection-init))
+
+(use-package
+  evil-surround
+  :ensure t
+  :requires evil
+  :config                               ;
+  (global-evil-surround-mode 1))
+
+(use-package
+  evil-terminal-cursor-changer
+  :ensure t
+  :after evil
+  :unless (display-graphic-p)
+  :config                               ;
+  (evil-terminal-cursor-changer-activate))
 
 (use-package
   general
@@ -97,63 +159,24 @@
   (maf/leader-key "na" '(org-agenda :which-key "agenda")))
 
 (use-package
-  evil
+  which-key
   :ensure t
   :custom                               ;
-  (evil-want-minibuffer nil)
-  (evil-want-keybinding nil)
-  (evil-want-integration t)
-  :init (setq evil-undo-system 'undo-tree)
-  (setq evil-want-C-i-jump nil)
-  (when evil-want-C-i-jump (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward))
-  (setq evil-emacs-state-cursor '("#51afef" bar))
-  (setq evil-normal-state-cursor '("#51afef" box))
-  (setq evil-visual-state-cursor '("#fe9865" box))
-  (setq evil-insert-state-cursor '("#d698dd" bar))
-  (setq evil-replace-state-cursor '("#fd6698" hollow-rectangle))
-  (setq evil-operator-state-cursor '("#98ce65" hollow))
-  (maf/leader-key "wh" '(evil-window-left :which-key "left window"))
-  (maf/leader-key "wj" '(evil-window-down :which-key "down window"))
-  (maf/leader-key "wk" '(evil-window-up :which-key "up window"))
-  (maf/leader-key "wl" '(evil-window-right :which-key "right window"))
+  (which-key-enable-extended-define-key t)
+  (which-key-idle-delay 0.3)
+  (which-key-idle-secondary-delay 0)
+  (which-key-sort-order 'which-key-prefix-then-key-order)
+  (which-key-enable-extended-define-key t)
   :config                               ;
-  (defun maf/evil-shift-left-visual ()
-    (interactive)
-    (call-interactively 'evil-shift-left)
-    (evil-normal-state)
-    (evil-visual-restore))
-  (defun maf/evil-shift-right-visual ()
-    (interactive)
-    (call-interactively 'evil-shift-right)
-    (evil-normal-state)
-    (evil-visual-restore))
-    (evil-define-key 'visual 'global ">" 'maf/evil-shift-right-visual)
-  (evil-define-key 'visual 'global "<" 'maf/evil-shift-left-visual)
-  (evil-mode 1))
+  (which-key-mode t))
 
 (use-package
-  evil-collection
+  minimap
   :ensure t
-  :after evil
-  :custom                               ;
-  (evil-collection-company-use-tng nil)
-  :config                               ;
-  (evil-collection-init))
-
-(use-package
-  evil-surround
-  :ensure t
-  :requires evil
-  :config                               ;
-  (global-evil-surround-mode 1))
-
-(use-package
-  evil-terminal-cursor-changer
-  :ensure t
-  :after evil
-  :unless (display-graphic-p)
-  :config                               ;
-  (evil-terminal-cursor-changer-activate))
+  :disabled
+  :if (display-graphic-p)
+  :custom (minimap-window-location 'right)
+  :config (minimap-mode 1))
 
 (use-package
   ivy
@@ -230,10 +253,10 @@
   :defer t
   :config (global-command-log-mode))
 
-(use-package ranger
+(use-package
+  ranger
   :ensure t
-  :config
-  (ranger-override-dired-mode t))
+  :config (ranger-override-dired-mode t))
 
 ;; 自动完成
 (use-package
@@ -592,13 +615,12 @@
   :defer t
   :custom                               ;
   (highlight-indent-guides-suppress-auto-error t)
-  (highlight-indent-guides-method 'bitmap)
+  (highlight-indent-guides-method 'character)
   (highlight-indent-guides-responsive 'top)
-  (highlight-indent-guides-character ?⠅)
-  :hook ((prog-mode text-mode conf-mode) . highlight-indent-guides-mode)
+  (highlight-indent-guides-character ?┊)
+  :hook ((prog-mode conf-mode) . highlight-indent-guides-mode)
   :config                               ;
   (unless (display-graphic-p)
-    (setq highlight-indent-guides-method 'character)
     (set-face-foreground 'highlight-indent-guides-character-face "black")))
 
 (use-package
@@ -656,7 +678,7 @@
 (use-package
   dashboard
   :ensure t
-  :init;
+  :init                                 ;
   (maf/leader-key "bd" '(dashboard-refresh-buffer :which-key "dashboard"))
   :config                               ;
   (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
@@ -736,7 +758,6 @@
   (setq dashboard-set-footer nil)
   (setq dashboard-items-default-length 20)
   ;; C/S mode use dashboard as default buffer
-
   (dashboard-setup-startup-hook))
 
 (use-package

@@ -14,13 +14,14 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
-;; ;; 初始化时隐藏 UI
-(add-to-list 'initial-frame-alist '(visibility . icon))
+(unless (bound-and-true-p user/with-dump)
+  ;; 初始化时隐藏 UI
+  (add-to-list 'initial-frame-alist '(visibility . icon))
+  ;; 初始化完成后显示 UI
+  (add-hook 'window-setup-hook (lambda ()
+                                 (make-frame-visible)
+                                 (select-frame-set-input-focus (selected-frame)))))
 
-;; 初始化完成后显示 UI
-(add-hook 'window-setup-hook (lambda ()
-                               (make-frame-visible)
-                               (select-frame-set-input-focus (selected-frame))))
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)) ; macOS 下沉浸式标题栏
 (add-to-list 'default-frame-alist '(ns-appearance . dark)) ; 使用黑色外观
 ;; frame 初始位置

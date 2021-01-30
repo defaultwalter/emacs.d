@@ -19,12 +19,11 @@
                              (setq org-fontify-done-headline t)
                              (setq org-src-tab-acts-natively t)
                              (setq org-cycle-separator-lines 2)
-                             (setq org-startup-folded 'content)
+                             (setq org-startup-folded 'nofold)
                              (setq org-hide-leading-stars t)
-                             (setq org-pretty-entities t)
+                             ;; (setq org-pretty-entities t)
                              (org-display-inline-images t t)
                              (org-indent-mode 1)
-                             (prettify-symbols-mode 1)
                              (visual-fill-column-mode 1)
                              (add-hook 'before-save-hook (lambda()
                                                            (org-align-tags t)) nil 'local)))
@@ -71,12 +70,11 @@
   :init                                 ;
   (setq org-superstar-prettify-item-bullets nil))
 
-
 (use-package
   org-roam
   :ensure t
   :defer t
-  :commands (org-roam-dailies-today org-roam-db-clear org-roam-db-build-cache)
+  :commands (org-roam org-roam-dailies-today org-roam-db-clear org-roam-db-build-cache)
   :custom                               ;
   (org-roam-buffer "*Relationship*")
   (org-roam-directory maf/note-directory)

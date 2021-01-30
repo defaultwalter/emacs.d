@@ -45,6 +45,7 @@
   :defer t)
 
 ;;;; 加载配置
+
 (require 'core)
 (require 'major-mode)
 
