@@ -152,9 +152,7 @@
 (add-hook 'prog-mode-hook 'display-line-numbers-mode) ; 显示行号
 ;; (global-hl-line-mode t)                               ; 高亮当前的行
 (delete-selection-mode 1)               ; 插入时替换选区
-(electric-pair-mode t)                  ; 自动输入括号
-(electric-quote-mode t)                 ; 自动输入引号
-(electric-indent-mode 1)                ; 回车时使用缩进
+
 
 (add-hook 'before-save-hook '(lambda ()
                                (when (derived-mode-p 'prog-mode)

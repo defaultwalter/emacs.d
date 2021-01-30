@@ -477,6 +477,13 @@ window"))))
 ;;;; ==============================================
 
 (use-package
+  smartparens
+  :ensure t
+  :hook (prog-mode . smartparens-mode)
+  :config                               ;
+  (require 'smartparens-config))
+
+(use-package
   smart-comment                         ;注释插件
   :ensure t
   :defer t
