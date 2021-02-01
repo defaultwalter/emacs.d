@@ -16,11 +16,13 @@
   :ensure t
   :defer t
   :bind ("C-`" . eshell-toggle))
+
 (use-package
   esh-autosuggest
   :ensure t
   :defer t
   :hook (eshell-mode . esh-autosuggest-mode))
+
 (use-package
   eshell-syntax-highlighting
   :ensure t

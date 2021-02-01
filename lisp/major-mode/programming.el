@@ -31,27 +31,24 @@
   lsp-mode
   :ensure t
   :defer t
-  :hook ((lsp-mode . lsp-enable-which-key-integration))
-  :init  ;
-  ;; (defun m/watcher(s n o w) (message "new value %s|%s" n w))
-  ;; (add-variable-watcher 'lsp-enable-snippet 'm/watcher)
-  (setq lsp-auto-configure t)
-  (setq lsp-log-io nil)
-  (setq lsp-file-watch-threshold 2000)
-  (setq lsp-prefer-capf t)
-  (setq lsp-enable-snippet t)
-  (setq lsp-keymap-prefix "C-l")
-  (setq lsp-enable-completion-at-point t)
-  (setq lsp-keep-workspace-alive nil)
-  (setq lsp-enable-file-watchers nil)
-  (setq lsp-enable-semantic-highlighting nil)
-  (setq lsp-enable-symbol-highlighting nil)
-  (setq lsp-enable-text-document-color nil)
-  (setq lsp-enable-folding nil)
-  (setq lsp-enable-indentation nil)
-  (setq lsp-enable-on-type-formatting nil)
-  :config                               ;
-  )
+  :custom                               ;
+  (lsp-headerline-breadcrumb-enable nil)
+  (lsp-auto-configure t)
+  (lsp-log-io nil)
+  (lsp-file-watch-threshold 2000)
+  (lsp-prefer-capf t)
+  (lsp-enable-snippet t)
+  (lsp-keymap-prefix "SPC m l")
+  (lsp-enable-completion-at-point t)
+  (lsp-keep-workspace-alive nil)
+  (lsp-enable-file-watchers nil)
+  (lsp-enable-semantic-highlighting nil)
+  (lsp-enable-symbol-highlighting nil)
+  (lsp-enable-text-document-color nil)
+  (lsp-enable-folding nil)
+  (lsp-enable-indentation nil)
+  (lsp-enable-on-type-formatting nil)
+  :hook ((lsp-mode . lsp-enable-which-key-integration)))
 (use-package
   lsp-ui
   :ensure t
@@ -60,7 +57,8 @@
   (lsp-ui-doc-position 'at-point)
   (lsp-ui-doc-use-webkit t)
   (lsp-ui-sideline-enable t)
-  (lsp-ui-doc-border "#999999")
+  (lsp-ui-doc-enable t)
+  (lsp-ui-doc-border "black")
   :hook (lsp-mode . lsp-ui-mode))
 
 (use-package

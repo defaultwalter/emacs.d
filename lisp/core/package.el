@@ -110,8 +110,8 @@ window"))))
   (user/leader-key "fS" '(save-some-buffers :which-key "save all files"))
   (user/leader-key "fr" '(recentf-open-files :which-key "recent file"))
   (user/leader-key "f." '((lambda()
-                           (interactive)
-                           (dired user-config-directory)) :which-key "open configuration"))
+                            (interactive)
+                            (dired user-config-directory)) :which-key "open configuration"))
   (user/leader-key "b"
     '(:ignore t
               :which-key "buffer"))
@@ -120,6 +120,8 @@ window"))))
   (user/leader-key "bS" '(save-some-buffers :which-key "save all buffers"))
   (user/leader-key "bk" '(kill-this-buffer :which-key "kill buffer"))
   (user/leader-key "bK" '(kill-buffer-and-window :which-key "kill buffer&window"))
+  (user/leader-key "bc" '(kill-this-buffer :which-key "kill buffer"))
+  (user/leader-key "bC" '(kill-buffer-and-window :which-key "kill buffer&window"))
   (user/leader-key "c"
     '(:ignore t
               :which-key "content"))
@@ -135,6 +137,8 @@ window"))))
   (user/leader-key "wb" '(balance-windows :which-key "balance window"))
   (user/leader-key "wd" '(delete-window :which-key "delete window"))
   (user/leader-key "wD" '(delete-other-windows :which-key "delete other window"))
+  (user/leader-key "wc" '(delete-window :which-key "delete window"))
+  (user/leader-key "wC" '(delete-other-windows :which-key "delete other window"))
   (user/leader-key "h"
     '(:ignore t
               :which-key "help"))
@@ -158,7 +162,11 @@ window"))))
   (user/leader-key "n"
     '(:ignore t
               :which-key "note"))
-  (user/leader-key "na" '(org-agenda :which-key "agenda")))
+  (user/leader-key "na" '(org-agenda :which-key "agenda"))
+  (user/leader-key "m"
+    '(:ignore t
+              :which-key "mode"))
+  )
 
 (use-package
   which-key
@@ -206,15 +214,15 @@ window"))))
   :init                                 ;
   (user/leader-key "RET" '(counsel-bookmark :which-key ("return" . "bookmark")))
   (user/leader-key "ff" '((lambda()
-                           (interactive)
-                           (let ((counsel-find-file-ignore-regexp "^\\."))
-                             (counsel-find-file))) :which-key "find file"))
+                            (interactive)
+                            (let ((counsel-find-file-ignore-regexp "^\\."))
+                              (counsel-find-file))) :which-key "find file"))
   (user/leader-key "fF" '(counsel-find-file :which-key "find all file"))
   (user/leader-key "fr" '(counsel-recentf :which-key "recent file"))
   (user/leader-key "bb" '((lambda()
-                           (interactive)
-                           (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
-                             (counsel-switch-buffer))) :which-key "switch buffer"))
+                            (interactive)
+                            (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
+                              (counsel-switch-buffer))) :which-key "switch buffer"))
   (user/leader-key "bB" '(counsel-switch-buffer :which-key "switch all buffer"))
   (user/leader-key "SPC" '(counsel-M-x :which-key ("␣" . "command")))
   :bind (("M-x" . counsel-M-x))
@@ -269,8 +277,8 @@ window"))))
   (after-init . global-company-mode)
   :init ;; Don't convert to downcase.
   (setq-default company-dabbrev-downcase nil)
-  :bind (("C-TAB" . company-complete-common)
-         ;; ("C-S-SPC" . company-complete-common)
+  :bind (;; ("C-TAB" . company-complete-common)
+         ("C-SPC" . company-complete-common)
          ;;
          :map company-active-map        ;
          ("C-n" . company-select-next)
@@ -422,42 +430,6 @@ window"))))
   :init                                 ;
   (user/leader-key "fv" '(neotree-toggle :which-key "file view")))
 
-
-(use-package
-  multi-vterm
-  :ensure t
-  :bind ("C-`" . multi-vterm-dedicated-toggle)
-  :init                                 ;
-  :custom (multi-vterm-dedicated-window-height 15)
-  (multi-vterm-buffer-name "terminal")
-  (multi-vterm-dedicated-buffer-name "=")
-  :config (define-key vterm-mode-map [return]                      #'vterm-send-return)
-  (setq vterm-keymap-exceptions nil)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-e")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-f")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-a")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-v")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-b")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-w")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-n")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-m")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-p")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-j")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-k")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-r")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-g")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-c")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-SPC")    #'vterm--self-insert)
-  (evil-define-key 'normal vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
-  (evil-define-key 'normal vterm-mode-map (kbd ",c")       #'multi-vterm)
-  (evil-define-key 'normal vterm-mode-map (kbd ",n")       #'multi-vterm-next)
-  (evil-define-key 'normal vterm-mode-map (kbd ",p")       #'multi-vterm-prev)
-  (evil-define-key 'normal vterm-mode-map (kbd "i")        #'evil-insert-resume)
-  (evil-define-key 'normal vterm-mode-map (kbd "o")        #'evil-insert-resume)
-  (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume))
 
 (use-package
   disable-mouse
@@ -796,4 +768,4 @@ window"))))
   (setq-default visual-fill-column-width 100)
   (setq-default visual-fill-column-center-text t))
 
-(provide 'core/global)
+(provide 'core/package)
