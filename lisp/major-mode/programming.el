@@ -3,13 +3,6 @@
 ;;; Code:
 
 
-;; Auto complete parentheses
-;; (use-package
-;;   autopair
-;;   :ensure t
-;;   :defer t
-;;   :hook (prog-mode . autopair-mode))
-
 (use-package
   yasnippet
   :ensure t

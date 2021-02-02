@@ -17,6 +17,26 @@
 
 
 (use-package
+  which-key
+  :ensure t
+  :custom                               ;
+  (which-key-enable-extended-define-key t)
+  (which-key-idle-delay 0.3)
+  (which-key-idle-secondary-delay 0)
+  (which-key-sort-order 'which-key-prefix-then-key-order)
+  (which-key-enable-extended-define-key t)
+  :config                               ;
+  (add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("tab" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("return" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("delete" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil))) ;
+  (add-to-list 'which-key-replacement-alist '(("left" . nil) . ("left" . nil))) ;
+  (add-to-list 'which-key-replacement-alist '(("right" . nil) . ("right" . nil))) ;
+  (add-to-list 'which-key-replacement-alist '(("up" . nil) . ("up" . nil))) ;
+  (add-to-list 'which-key-replacement-alist '(("down" . nil) . ("down" . nil))) ;
+  (which-key-mode t))
+
+(use-package
   evil
   :ensure t
   :custom                               ;
@@ -94,10 +114,9 @@ window"))))
   general
   :ensure t
   :config                               ;
-  (general-evil-setup t)
   (general-create-definer user/leader-key
     :states '(normal insert visual emacs)
-    :keymaps 'override
+    ;; :keymap 'override
     :prefix "SPC"
     :global-prefix "C-S-SPC")
   (user/leader-key "SPC" '(counsel-M-x :which-key "command"))
@@ -165,20 +184,8 @@ window"))))
   (user/leader-key "na" '(org-agenda :which-key "agenda"))
   (user/leader-key "m"
     '(:ignore t
-              :which-key "mode"))
-  )
+              :which-key "mode")))
 
-(use-package
-  which-key
-  :ensure t
-  :custom                               ;
-  (which-key-enable-extended-define-key t)
-  (which-key-idle-delay 0.3)
-  (which-key-idle-secondary-delay 0)
-  (which-key-sort-order 'which-key-prefix-then-key-order)
-  (which-key-enable-extended-define-key t)
-  :config                               ;
-  (which-key-mode t))
 
 (use-package
   minimap
@@ -262,11 +269,6 @@ window"))))
   :ensure t
   :defer t
   :config (global-command-log-mode))
-
-(use-package
-  ranger
-  :ensure t
-  :config (ranger-override-dired-mode t))
 
 ;; 自动完成
 (use-package
@@ -455,7 +457,7 @@ window"))))
   :ensure t
   :config                               ;
   (require 'smartparens-config)
-  (smartparens-global-mode))
+  (smartparens-global-strict-mode))
 
 (use-package
   smart-comment                         ;注释插件
@@ -491,10 +493,10 @@ window"))))
   :ensure t
   :defer t
   :hook (prog-mode . rainbow-delimiters-mode))
-
 (use-package
   highlight-parentheses                 ;高亮当前括号
   :ensure t
+  :disabled
   :defer t
   :custom (hl-paren-highlight-adjacent t)
   (hl-paren-colors '("cyan"))           ; 设置高亮括号颜色
@@ -749,6 +751,8 @@ window"))))
   ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
   (minibuffer-setup . solaire-mode-in-minibuffer)
   :config                               ;
+  (set-face-background 'solaire-mode-line-face nil)
+  (set-face-background 'solaire-mode-line-inactive-face nil)
   (solaire-global-mode +1)
   (solaire-mode-swap-bg))
 

@@ -28,7 +28,7 @@
 (setq-default frame-title-format " %b ") ; 设置窗口标题格式
 (setq-default use-dialog-box nil)        ; 不显示对话框
 (set-frame-parameter nil 'alpha 100)     ; 设置窗口透明度
-(cua-mode 1)                            ; 开启CUA模式
+(cua-mode 1)                             ; 开启CUA模式
 ;; 开启窗口UNDO-REDO
 (winner-mode t)
 ;; 编辑备份设置
@@ -80,36 +80,43 @@
                                      (when (and (>= (recursion-depth) 1)
                                                 (active-minibuffer-window))
                                        (abort-recursive-edit))))
-(setq tramp-default-method "ssh")       ; tramp 默认使用 ssh
+(setq tramp-default-method "ssh")    ; tramp 默认使用 ssh
 ;; 设置 outline mode 指示符号样式
-(set-display-table-slot  standard-display-table 'selective-display
-    (vconcat (mapcar (lambda (c)
-      (make-glyph-code c 'font-lock-comment-face)) " ······▾")))
+(set-display-table-slot  standard-display-table 'selective-display (vconcat (mapcar (lambda (c)
+                                                                                      (make-glyph-code
+                                                                                       c
+                                                                                       'font-lock-comment-face))
+                                                                                    " ······▾")))
+
+;; 显示当前所在的括号
+(show-paren-mode 1)
 
 (defun user/set-font(fontsize)
-"Try to config font"
-;; 设置默认字体
+  "Try to config font"
+  ;; 设置默认字体
   (let ((frame-font (cond ((member "Sarasa Mono SC" (font-family-list)) "Sarasa Mono SC")
-((member "Consolas" (font-family-list)) "Consolas")
-((member "Menlo" (font-family-list)) "Menlo")
-((member "DejaVu Sans Mono" (font-family-list)) "DejaVu Sans Mono")
-((member "WenQuanYi Micro Hei Mono" (font-family-list)) "WenQuanYi Micro Hei Mono"))))
-(set-frame-font (format "%s-%s" frame-font fontsize) t t))
+                          ((member "Consolas" (font-family-list)) "Consolas")
+                          ((member "Menlo" (font-family-list)) "Menlo")
+                          ((member "DejaVu Sans Mono" (font-family-list)) "DejaVu Sans Mono")
+                          ((member "WenQuanYi Micro Hei Mono" (font-family-list))
+                           "WenQuanYi Micro Hei Mono"))))
+    (set-frame-font (format "%s-%s" frame-font fontsize) t t))
 
   ;; 中文字体
   (set-fontset-font t '(#x4e00 . #x9fff)
-(cond ((member "Sarasa Mono SC" (font-family-list)) "Sarasa Mono SC")
-((member "WenQuanYi Micro Hei" (font-family-list)) "WenQuanYi Micro Hei")
-((member "Microsoft YaHei" (font-family-list)) "Microsoft YaHei")
-((member "Hei" (font-family-list)) "Hei")
-((member "WenQuanYi Micro Hei Mono" (font-family-list)) "WenQuanYi Micro Hei Mono")))
+                    (cond ((member "Sarasa Mono SC" (font-family-list)) "Sarasa Mono SC")
+                          ((member "WenQuanYi Micro Hei" (font-family-list)) "WenQuanYi Micro Hei")
+                          ((member "Microsoft YaHei" (font-family-list)) "Microsoft YaHei")
+                          ((member "Hei" (font-family-list)) "Hei")
+                          ((member "WenQuanYi Micro Hei Mono" (font-family-list))
+                           "WenQuanYi Micro Hei Mono")))
   ;; 设置Emoji字体
   (set-fontset-font t '(#x1f300 . #x1fad0)
-(cond ((member "Noto Color Emoji" (font-family-list)) "Noto Color Emoji")
-((member "Noto Emoji" (font-family-list)) "Noto Emoji")
-((member "Segoe UI Emoji" (font-family-list)) "Segoe UI Emoji")
-((member "Symbola" (font-family-list)) "Symbola")
-((member "Apple Color Emoji" (font-family-list)) "Apple Color Emoji"))))
+                    (cond ((member "Noto Color Emoji" (font-family-list)) "Noto Color Emoji")
+                          ((member "Noto Emoji" (font-family-list)) "Noto Emoji")
+                          ((member "Segoe UI Emoji" (font-family-list)) "Segoe UI Emoji")
+                          ((member "Symbola" (font-family-list)) "Symbola")
+                          ((member "Apple Color Emoji" (font-family-list)) "Apple Color Emoji"))))
 (user/set-font user/fontsize)
 ;; C/S 模式需要再次设置字体
 (add-hook 'server-after-make-frame-hook (lambda ()

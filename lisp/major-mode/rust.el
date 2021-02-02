@@ -5,7 +5,7 @@
   rust-mode
   :ensure t
   :defer t
-  :init )
+  :hook (rust-mode . lsp-deferred))
 (use-package
   cargo
   :ensure t
