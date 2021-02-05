@@ -20,12 +20,12 @@
   which-key
   :ensure t
   :custom                               ;
-  (which-key-enable-extended-define-key t)
   (which-key-idle-delay 0.3)
   (which-key-idle-secondary-delay 0)
   (which-key-sort-order 'which-key-prefix-then-key-order)
-  (which-key-enable-extended-define-key t)
   :config                               ;
+(which-key-mode t)
+  (add-to-list 'which-key-replacement-alist '(("ESC" . nil) . ("esc" . nil)))
   (add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("tab" . nil)))
   (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("return" . nil)))
   (add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("delete" . nil)))
@@ -34,7 +34,7 @@
   (add-to-list 'which-key-replacement-alist '(("right" . nil) . ("right" . nil))) ;
   (add-to-list 'which-key-replacement-alist '(("up" . nil) . ("up" . nil))) ;
   (add-to-list 'which-key-replacement-alist '(("down" . nil) . ("down" . nil))) ;
-  (which-key-mode t))
+  )
 
 (use-package
   evil
@@ -65,10 +65,10 @@
         '("#98ce65"
           hollow))
   (add-hook 'after-init-hook (lambda ()
-                               (user/leader-key "wh" '(evil-window-left :which-key "left window"))
-                               (user/leader-key "wj" '(evil-window-down :which-key "down window"))
-                               (user/leader-key "wk" '(evil-window-up :which-key "up window"))
-                               (user/leader-key "wl" '(evil-window-right :which-key "right
+                               (user/leader-key "wh" '(evil-window-left :name "left window"))
+                               (user/leader-key "wj" '(evil-window-down :name "down window"))
+                               (user/leader-key "wk" '(evil-window-up :name "up window"))
+                               (user/leader-key "wl" '(evil-window-right :name "right
 window"))))
   :config                               ;
   (defun user/evil-shift-left-visual ()
@@ -84,7 +84,8 @@ window"))))
   (evil-define-key 'visual 'global ">" 'user/evil-shift-right-visual)
   (evil-define-key 'visual 'global "<" 'user/evil-shift-left-visual)
   (evil-define-key 'normal 'global (kbd "C-S-v") 'evil-visual-block)
-  (evil-mode 1))
+  ;; (evil-mode 1)
+  )
 
 (use-package
   evil-collection
@@ -98,7 +99,7 @@ window"))))
 (use-package
   evil-surround
   :ensure t
-  :requires evil
+  :after evil
   :config                               ;
   (global-evil-surround-mode 1))
 
@@ -111,81 +112,97 @@ window"))))
   (evil-terminal-cursor-changer-activate))
 
 (use-package
-  general
+  evil-leader
   :ensure t
+  :after evil
+  :init                                 ;
+  (defmacro user/leader-key (KEY &optional DEFAULTS)
+    `(let* ((DEFAULTS  (if (commandp ,DEFAULTS)
+                           (list :command ,DEFAULTS)
+                         (if (commandp (car ,DEFAULTS))
+                             (cons :command ,DEFAULTS) ,DEFAULTS)))
+            (ignore (plist-get DEFAULTS
+                               :ignore))
+            (name (plist-get DEFAULTS
+                             :name))
+            (mode (plist-get DEFAULTS
+                             :mode))
+            (command (plist-get DEFAULTS
+                                :command)))
+       (when name (if mode (which-key-add-major-mode-key-based-replacements mode (concat "SPC" " "
+                                                                                         ,KEY) name)
+                    (which-key-add-key-based-replacements (concat "SPC" " " ,KEY) name)))
+       (when command (if mode (evil-leader/set-key-for-mode mode ,KEY command)
+                       (evil-leader/set-key ,KEY command)))))
   :config                               ;
-  (general-create-definer user/leader-key
-    :states '(normal insert visual emacs)
-    ;; :keymap 'override
-    :prefix "SPC"
-    :global-prefix "C-S-SPC")
-  (user/leader-key "SPC" '(counsel-M-x :which-key "command"))
-  (user/leader-key "RET" '(bookmark-jump :which-key ("return" . "bookmark")))
+  (evil-leader/set-leader "<SPC>")
+  (setq evil-leader/in-all-states t)
+  (global-evil-leader-mode t)
+  (evil-mode t) ; 为了让 scratch/message 等buffer 能够使用 evil-leader，必须在 evil-leader 后启用 evil
   (user/leader-key "f"
-    '(:ignore t
-              :which-key "file"))
-  (user/leader-key "ff" '(find-file :which-key "find file"))
-  (user/leader-key "fs" '(save-buffer :which-key "save file"))
-  (user/leader-key "fS" '(save-some-buffers :which-key "save all files"))
-  (user/leader-key "fr" '(recentf-open-files :which-key "recent file"))
+                   '(:ignore t
+                             :name "file"))
+  (user/leader-key "ff" '(find-file :name "find file"))
+  (user/leader-key "fs" '(save-buffer :name "save file"))
+  (user/leader-key "fS" '(save-some-buffers :name "save all files"))
+  (user/leader-key "fr" '(recentf-open-files :name "recent file"))
   (user/leader-key "f." '((lambda()
                             (interactive)
-                            (dired user-config-directory)) :which-key "open configuration"))
+                            (dired user-config-directory)) :name "open configuration"))
   (user/leader-key "b"
-    '(:ignore t
-              :which-key "buffer"))
-  (user/leader-key "bb" '(switch-to-buffer :which-key "switch buffer"))
-  (user/leader-key "bs" '(save-buffer :which-key "save buffer"))
-  (user/leader-key "bS" '(save-some-buffers :which-key "save all buffers"))
-  (user/leader-key "bk" '(kill-this-buffer :which-key "kill buffer"))
-  (user/leader-key "bK" '(kill-buffer-and-window :which-key "kill buffer&window"))
-  (user/leader-key "bc" '(kill-this-buffer :which-key "kill buffer"))
-  (user/leader-key "bC" '(kill-buffer-and-window :which-key "kill buffer&window"))
+                   '(:ignore t
+                             :name "buffer"))
+  (user/leader-key "bb" '(switch-to-buffer :name "switch buffer"))
+  (user/leader-key "bs" '(save-buffer :name "save buffer"))
+  (user/leader-key "bS" '(save-some-buffers :name "save all buffers"))
+  (user/leader-key "bk" '(kill-this-buffer :name "kill buffer"))
+  (user/leader-key "bK" '(kill-buffer-and-window :name "kill buffer&window"))
+  (user/leader-key "bc" '(kill-this-buffer :name "kill buffer"))
+  (user/leader-key "bC" '(kill-buffer-and-window :name "kill buffer&window"))
   (user/leader-key "c"
-    '(:ignore t
-              :which-key "content"))
-  (user/leader-key "cc" '(comment-line :which-key "comment"))
-  (user/leader-key "cr" '(comment-or-uncomment-region :which-key "comment region"))
+                   '(:ignore t
+                             :name "content"))
+  (user/leader-key "cc" '(comment-line :name "comment"))
+  (user/leader-key "cr" '(comment-or-uncomment-region :name "comment region"))
   (user/leader-key "w"
-    '(:ignore t
-              :which-key "window"))
-  (user/leader-key "ws" '(split-window-horizontally :which-key "split window horizontally"))
-  (user/leader-key "wv" '(split-window-vertically :which-key "split window vertically"))
-  (user/leader-key "wm" '(maximize-window :which-key "maximize window"))
-  (user/leader-key "wn" '(minimize-window :which-key "minimize window"))
-  (user/leader-key "wb" '(balance-windows :which-key "balance window"))
-  (user/leader-key "wd" '(delete-window :which-key "delete window"))
-  (user/leader-key "wD" '(delete-other-windows :which-key "delete other window"))
-  (user/leader-key "wc" '(delete-window :which-key "delete window"))
-  (user/leader-key "wC" '(delete-other-windows :which-key "delete other window"))
+                   '(:ignore t
+                             :name "window"))
+  (user/leader-key "ws" '(split-window-horizontally :name "split window horizontally"))
+  (user/leader-key "wv" '(split-window-vertically :name "split window vertically"))
+  (user/leader-key "wm" '(maximize-window :name "maximize window"))
+  (user/leader-key "wn" '(minimize-window :name "minimize window"))
+  (user/leader-key "wb" '(balance-windows :name "balance window"))
+  (user/leader-key "wd" '(delete-window :name "delete window"))
+  (user/leader-key "wD" '(delete-other-windows :name "delete other window"))
+  (user/leader-key "wc" '(delete-window :name "delete window"))
+  (user/leader-key "wC" '(delete-other-windows :name "delete other window"))
   (user/leader-key "h"
-    '(:ignore t
-              :which-key "help"))
-  ;; (user/leader-key "h <return>" '(view-order-manuals :which-key "manuals"))
-  (user/leader-key "h RET" '(view-order-manuals :which-key ("return" . "manuals")))
-  (user/leader-key "hf" '(describe-function :which-key "describe function"))
-  (user/leader-key "hv" '(describe-variable :which-key "describe variable"))
-  (user/leader-key "hk" '(describe-key :which-key "describe key"))
-  (user/leader-key "hc" '(describe-char :which-key "describe char"))
-  (user/leader-key "hm" '(describe-mode :which-key "describe mode"))
-  (user/leader-key "hp" '(describe-package :which-key "describe package"))
-  (user/leader-key "hs" '(describe-symbol :which-key "describe symbol"))
-  (user/leader-key "hw" '(where-is :which-key "where is"))
-  (user/leader-key "h?" '(about-emacs :which-key "about"))
+                   '(:ignore t
+                             :name "help"))
+  ;; (user/leader-key "h <return>" '(view-order-manuals :name "manuals"))
+  (user/leader-key "h RET" '(view-order-manuals :name ("return" . "manuals")))
+  (user/leader-key "hf" '(describe-function :name "describe function"))
+  (user/leader-key "hv" '(describe-variable :name "describe variable"))
+  (user/leader-key "hk" '(describe-key :name "describe key"))
+  (user/leader-key "hc" '(describe-char :name "describe char"))
+  (user/leader-key "hm" '(describe-mode :name "describe mode"))
+  (user/leader-key "hp" '(describe-package :name "describe package"))
+  (user/leader-key "hs" '(describe-symbol :name "describe symbol"))
+  (user/leader-key "hw" '(where-is :name "where is"))
+  (user/leader-key "h?" '(about-emacs :name "about"))
   (user/leader-key "g"
-    '(:ignore t
-              :which-key "goto"))
+                   '(:ignore t
+                             :name "goto"))
   (user/leader-key "p"
-    '(:ignore t
-              :which-key "project"))
+                   '(:ignore t
+                             :name "project"))
   (user/leader-key "n"
-    '(:ignore t
-              :which-key "note"))
-  (user/leader-key "na" '(org-agenda :which-key "agenda"))
+                   '(:ignore t
+                             :name "note"))
+  (user/leader-key "na" '(org-agenda :name "agenda"))
   (user/leader-key "m"
-    '(:ignore t
-              :which-key "mode")))
-
+                   '(:ignore t
+                             :name "mode")))
 
 (use-package
   minimap
@@ -219,19 +236,19 @@ window"))))
   :ensure t
   :defer t
   :init                                 ;
-  (user/leader-key "RET" '(counsel-bookmark :which-key ("return" . "bookmark")))
+  (user/leader-key "RET" '(counsel-bookmark :name "bookmark"))
   (user/leader-key "ff" '((lambda()
                             (interactive)
                             (let ((counsel-find-file-ignore-regexp "^\\."))
-                              (counsel-find-file))) :which-key "find file"))
-  (user/leader-key "fF" '(counsel-find-file :which-key "find all file"))
-  (user/leader-key "fr" '(counsel-recentf :which-key "recent file"))
+                              (counsel-find-file))) :name "find file"))
+  (user/leader-key "fF" '(counsel-find-file :name "find all file"))
+  (user/leader-key "fr" '(counsel-recentf :name "recent file"))
   (user/leader-key "bb" '((lambda()
                             (interactive)
                             (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
-                              (counsel-switch-buffer))) :which-key "switch buffer"))
-  (user/leader-key "bB" '(counsel-switch-buffer :which-key "switch all buffer"))
-  (user/leader-key "SPC" '(counsel-M-x :which-key ("␣" . "command")))
+                              (counsel-switch-buffer))) :name "switch buffer"))
+  (user/leader-key "bB" '(counsel-switch-buffer :name "switch all buffer"))
+  (user/leader-key "SPC" '(counsel-M-x :name "command"))
   :bind (("M-x" . counsel-M-x))
   :config)
 
@@ -258,8 +275,8 @@ window"))))
   :ensure t
   :defer t
   :init                                 ;
-  (user/leader-key "cs" '(swiper :which-key "swipe"))
-  (user/leader-key "cS" '(swiper-all :which-key "swipe in all buffers"))
+  (user/leader-key "cs" '(swiper :name "swipe"))
+  (user/leader-key "cS" '(swiper-all :name "swipe in all buffers"))
   :bind                                 ;
   ("C-S-s" . swiper-all)
   ("C-s" . swiper))
@@ -335,10 +352,10 @@ window"))))
   :ensure t
   :defer t
   :init                                 ;
-  (user/leader-key "b C-h" '(buf-move-left :which-key "move to left window"))
-  (user/leader-key "b C-j" '(buf-move-down :which-key "move to down window"))
-  (user/leader-key "b C-k" '(buf-move-up :which-key "move to up window"))
-  (user/leader-key "b C-l" '(buf-move-right :which-key "move to right window"))
+  (user/leader-key "b C-h" '(buf-move-left :name "move to left window"))
+  (user/leader-key "b C-j" '(buf-move-down :name "move to down window"))
+  (user/leader-key "b C-k" '(buf-move-up :name "move to up window"))
+  (user/leader-key "b C-l" '(buf-move-right :name "move to right window"))
   (setq buffer-move-stay-after-swap t)
   (setq buffer-move-behavior 'move))
 
@@ -347,21 +364,21 @@ window"))))
   :ensure t
   :defer t
   :init                                 ;
-  (user/leader-key "wr" '(windresize :which-key "resize window")))
+  (user/leader-key "wr" '(windresize :name "resize window")))
 
 (use-package
   ace-window                            ; 窗口跳转
   :ensure t
   :defer t
   :init                                 ;
-  (user/leader-key "ww" '(ace-window :which-key "select window"))
+  (user/leader-key "ww" '(ace-window :name "select window"))
   :config (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)))
 
 (use-package
   transpose-frame
   :ensure t
   :defer t
-  :init (user/leader-key "wt" '(transpose-frame :which-key "transpose")))
+  :init (user/leader-key "wt" '(transpose-frame :name "transpose")))
 
 (use-package
   projectile                            ;project 插件
@@ -372,8 +389,8 @@ window"))))
   (projectile-sort-order 'access-time)
   (projectile-find-dir-includes-top-level t)
   :init                                 ;
-  (user/leader-key "pk" '(project-kill-buffers :which-key "close all project buffers"))
-  (user/leader-key "pi" '(projectile-project-info :which-key "project info"))
+  (user/leader-key "pk" '(project-kill-buffers :name "close all project buffers"))
+  (user/leader-key "pi" '(projectile-project-info :name "project info"))
   :config (projectile-mode +1))
 
 (use-package
@@ -384,11 +401,11 @@ window"))))
   (counsel-projectile-sort-directories t)
   (counsel-projectile-sort-buffers t)
   (counsel-projectile-sort-projects t)
-  :init (user/leader-key "pp" '(counsel-projectile-switch-project :which-key "switch project"))
-  (user/leader-key "pf" '(counsel-projectile-find-file :which-key "find file in project"))
-  (user/leader-key "pd" '(counsel-projectile-find-dir :which-key "find directory in project"))
-  (user/leader-key "ps" '(counsel-projectile-git-grep :which-key "search in project by git"))
-  (user/leader-key "pS" '(counsel-projectile-grep :which-key "search in project"))
+  :init (user/leader-key "pp" '(counsel-projectile-switch-project :name "switch project"))
+  (user/leader-key "pf" '(counsel-projectile-find-file :name "find file in project"))
+  (user/leader-key "pd" '(counsel-projectile-find-dir :name "find directory in project"))
+  (user/leader-key "ps" '(counsel-projectile-git-grep :name "search in project by git"))
+  (user/leader-key "pS" '(counsel-projectile-grep :name "search in project"))
   :config (counsel-projectile-mode t))
 
 (use-package
@@ -398,22 +415,22 @@ window"))))
   :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   :init                                 ;
   (user/leader-key "pg"
-    '(:ignore t
-              :which-key "git"))
-  (user/leader-key "pgs" '(magit-status :which-key "status"))
-  (user/leader-key "pgd" '(magit-diff-unstaged :which-key "diff unstaged"))
-  (user/leader-key "pgr" '(magit-rebase :which-key "rebase"))
-  (user/leader-key "pgb" '(magit-barnch :which-key "barnch"))
-  (user/leader-key "pgP" '(magit-push-current :which-key "push"))
-  (user/leader-key "pgp" '(magit-pull-current :which-key "pull"))
-  (user/leader-key "pgf" '(magit-fetch :which-key "fetch"))
-  (user/leader-key "pgF" '(magit-fetch-all :which-key "fetch all"))
-  (user/leader-key "pgc" '(magit-branch-or-checkout :which-key "checkout"))
+                   '(:ignore t
+                             :name "git"))
+  (user/leader-key "pgs" '(magit-status :name "status"))
+  (user/leader-key "pgd" '(magit-diff-unstaged :name "diff unstaged"))
+  (user/leader-key "pgr" '(magit-rebase :name "rebase"))
+  (user/leader-key "pgb" '(magit-barnch :name "barnch"))
+  (user/leader-key "pgP" '(magit-push-current :name "push"))
+  (user/leader-key "pgp" '(magit-pull-current :name "pull"))
+  (user/leader-key "pgf" '(magit-fetch :name "fetch"))
+  (user/leader-key "pgF" '(magit-fetch-all :name "fetch all"))
+  (user/leader-key "pgc" '(magit-branch-or-checkout :name "checkout"))
   (user/leader-key "pgl"
-    '(:ignore t
-              :which-key "log"))
-  (user/leader-key "pglc" '(magit-log-current :which-key "log current"))
-  (user/leader-key "pglf" '(magit-log-buffer-file :which-key "log buffer file")))
+                   '(:ignore t
+                             :name "log"))
+  (user/leader-key "pglc" '(magit-log-current :name "log current"))
+  (user/leader-key "pglf" '(magit-log-buffer-file :name "log buffer file")))
 
 (use-package
   neotree
@@ -430,12 +447,13 @@ window"))))
   ("C-<tab>" . neotree-toggle)
   ("C-TAB" . neotree-toggle)
   :init                                 ;
-  (user/leader-key "fv" '(neotree-toggle :which-key "file view")))
+  (user/leader-key "fv" '(neotree-toggle :name "file view")))
 
 
 (use-package
   disable-mouse
   :ensure t
+  :disabled
   :config (mapc #'disable-mouse-in-keymap (list evil-motion-state-map evil-normal-state-map
                                                 evil-visual-state-map evil-insert-state-map))
   (global-disable-mouse-mode))
@@ -464,16 +482,16 @@ window"))))
   :ensure t
   :defer t
   :bind ("C-/" . smart-comment)
-  :init (user/leader-key "cc" '(smart-comment :which-key "comment")))
+  :init (user/leader-key "cc" '(smart-comment :name "comment")))
 
 (use-package
   avy
   :ensure t
   :defer t
   :init                                 ;
-  (user/leader-key "gg" '(avy-goto-char :which-key "goto char"))
-  (user/leader-key "gw" '(avy-goto-word-0 :which-key "goto word"))
-  (user/leader-key "gl" '(avy-goto-line :which-key "goto line")))
+  (user/leader-key "gg" '(avy-goto-char :name "goto char"))
+  (user/leader-key "gw" '(avy-goto-word-0 :name "goto word"))
+  (user/leader-key "gl" '(avy-goto-line :name "goto line")))
 
 (use-package
   hungry-delete                         ; 可以删除前面所有的空白字符
@@ -530,7 +548,7 @@ window"))))
   format-all                            ;格式化代码，支持多种格式
   :ensure t
   :defer t
-  :init (user/leader-key "cf" '(format-all-buffer :which-key "format")))
+  :init (user/leader-key "cf" '(format-all-buffer :name "format")))
 
 (use-package
   auto-sudoedit                         ;自动请求sudo权限
@@ -643,6 +661,8 @@ window"))))
   doom-themes
   :ensure t
   :init
+  :custom                               ;
+  (doom-themes-neotree-file-icons t)
   :custom-face                          ;
   (font-lock-comment-face ((t
                             (:slant italic))))
@@ -662,7 +682,8 @@ window"))))
   dashboard
   :ensure t
   :init                                 ;
-  (user/leader-key "bd" '(dashboard-refresh-buffer :which-key "dashboard"))
+  (user/leader-key "bd" '(dashboard-refresh-buffer :name "dashboard"))
+  (user/leader-key "bd" '(dashboard-refresh-buffer :name "dashboard"))
   :config                               ;
   (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
   (setq dashboard-center-content t)

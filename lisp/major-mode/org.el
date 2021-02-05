@@ -9,6 +9,8 @@
   :hook (org-mode . org-superstar-mode)
   :custom-face                          ;
   :init                                 ;
+  (setq org-preview-latex-image-directory (expand-file-name "ltximg/"
+                                                             user-emacs-directory))
   (setq org-hide-emphasis-markers t) ; 隐藏强调符号（加粗，下划线等等）
   (setq org-pretty-entities t)       ; 可以显示上标下标
   (setq org-ellipsis " ······▾")     ;设置折叠标识
@@ -93,15 +95,15 @@
                                          :unnarrowed t))
   (org-roam-dailies-capture-templates '(("d" "default" entry #'org-roam-capture--get-point "* %?"
                                          :file-name "Journal/%<%Y-%m-%d>"
-                                         :head "* %<%A, %d %B %Y> :Journal:\n")))
+                                         :head "* %<%Y/%m/%d %A> :Journal:\n")))
   :init                                 ;
-  (user/leader-key "nd" '(org-roam-dailies-today :which-key "today"))
-  (user/leader-key "nf" '(org-roam-find-file :which-key "find note"))
-  (user/leader-key "n DEL" '(org-roam-db-clear :which-key ("delete" . "delete cache")))
-  (user/leader-key "n RET" '(org-roam-db-build-cache :which-key ("return" . "build cache")))
-  (user/leader-key org-mode-map "nv" '(org-roam :which-key "view"))
-  (user/leader-key org-mode-map "ng" '(org-roam-graph :which-key "graph"))
-  (user/leader-key org-mode-map "ni" '(org-roam-insert :which-key "insert node"))
+  (user/leader-key "nd" '(org-roam-dailies-today :name "today"))
+  (user/leader-key "nf" '(org-roam-find-file :name "find note"))
+  (user/leader-key "n DEL" '(org-roam-db-clear :name ("delete" . "delete cache")))
+  (user/leader-key "n RET" '(org-roam-db-build-cache :name ("return" . "build cache")))
+  (user/leader-key "nv" '(org-roam :name "view" :mode org-mode))
+  (user/leader-key "ng" '(org-roam-graph :name "graph" :mode org-mode))
+  (user/leader-key "ni" '(org-roam-insert :name "insert node" :mode org-mode))
   :config                               ;
   (require 'org-roam-protocol))
 
@@ -114,7 +116,7 @@
   (deft-default-extension "org")
   (deft-directory user/note-directory)
   :init                                 ;
-  (user/leader-key "nn" '(deft :which-key "list")))
+  (user/leader-key "nn" '(deft :name "list")))
 
 (use-package
   org-roam-server
@@ -134,11 +136,11 @@
   (org-roam-server-network-label-wrap-length 20)
   :init                                 ;
   (user/leader-key "ns" '((lambda ()
-                           (interactive)
-                           (when (not (bound-and-true-p org-roam-server-mode))
-                             (org-roam-server-mode t))
-                           (browse-url (format "http://%s:%s" org-roam-server-host
-                                               org-roam-server-port))) :which-key "server"))
+                            (interactive)
+                            (when (not (bound-and-true-p org-roam-server-mode))
+                              (org-roam-server-mode t))
+                            (browse-url (format "http://%s:%s" org-roam-server-host
+                                                org-roam-server-port))) :name "server"))
   :config )
 
 (setq org-agenda-files (mapcar (lambda (file)
