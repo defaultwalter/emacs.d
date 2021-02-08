@@ -99,8 +99,8 @@
   :init                                 ;
   (user/leader-key "nd" '(org-roam-dailies-today :name "today"))
   (user/leader-key "nf" '(org-roam-find-file :name "find note"))
-  (user/leader-key "n DEL" '(org-roam-db-clear :name ("delete" . "delete cache")))
-  (user/leader-key "n RET" '(org-roam-db-build-cache :name ("return" . "build cache")))
+  (user/leader-key "n DEL" '(org-roam-db-clear :name "delete cache"))
+  (user/leader-key "n RET" '(org-roam-db-build-cache :name "build cache"))
   (user/leader-key "nv" '(org-roam :name "view" :mode org-mode))
   (user/leader-key "ng" '(org-roam-graph :name "graph" :mode org-mode))
   (user/leader-key "ni" '(org-roam-insert :name "insert node" :mode org-mode))

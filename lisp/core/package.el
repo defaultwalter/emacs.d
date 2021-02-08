@@ -23,18 +23,18 @@
   (which-key-idle-delay 0.3)
   (which-key-idle-secondary-delay 0)
   (which-key-sort-order 'which-key-prefix-then-key-order)
+  (which-key-allow-multiple-replacements t)
   :config                               ;
-(which-key-mode t)
+  (which-key-mode t)
   (add-to-list 'which-key-replacement-alist '(("ESC" . nil) . ("esc" . nil)))
   (add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("tab" . nil)))
   (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("return" . nil)))
   (add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("delete" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil))) ;
-  (add-to-list 'which-key-replacement-alist '(("left" . nil) . ("left" . nil))) ;
-  (add-to-list 'which-key-replacement-alist '(("right" . nil) . ("right" . nil))) ;
-  (add-to-list 'which-key-replacement-alist '(("up" . nil) . ("up" . nil))) ;
-  (add-to-list 'which-key-replacement-alist '(("down" . nil) . ("down" . nil))) ;
-  )
+  (add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("left" . nil) . ("left" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("right" . nil) . ("right" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("up" . nil) . ("up" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("down" . nil) . ("down" . nil))))
 
 (use-package
   evil
@@ -68,8 +68,7 @@
                                (user/leader-key "wh" '(evil-window-left :name "left window"))
                                (user/leader-key "wj" '(evil-window-down :name "down window"))
                                (user/leader-key "wk" '(evil-window-up :name "up window"))
-                               (user/leader-key "wl" '(evil-window-right :name "right
-window"))))
+                               (user/leader-key "wl" '(evil-window-right :name "right window"))))
   :config                               ;
   (defun user/evil-shift-left-visual ()
     (interactive)
@@ -391,6 +390,7 @@ window"))))
   :init                                 ;
   (user/leader-key "pk" '(project-kill-buffers :name "close all project buffers"))
   (user/leader-key "pi" '(projectile-project-info :name "project info"))
+  (user/leader-key "pd" '(projectile-remove-known-project :name "remove project"))
   :config (projectile-mode +1))
 
 (use-package
@@ -403,7 +403,6 @@ window"))))
   (counsel-projectile-sort-projects t)
   :init (user/leader-key "pp" '(counsel-projectile-switch-project :name "switch project"))
   (user/leader-key "pf" '(counsel-projectile-find-file :name "find file in project"))
-  (user/leader-key "pd" '(counsel-projectile-find-dir :name "find directory in project"))
   (user/leader-key "ps" '(counsel-projectile-git-grep :name "search in project by git"))
   (user/leader-key "pS" '(counsel-projectile-grep :name "search in project"))
   :config (counsel-projectile-mode t))
@@ -681,10 +680,8 @@ window"))))
 (use-package
   dashboard
   :ensure t
-  :init                                 ;
-  (user/leader-key "bd" '(dashboard-refresh-buffer :name "dashboard"))
-  (user/leader-key "bd" '(dashboard-refresh-buffer :name "dashboard"))
   :config                               ;
+  (user/leader-key "b d" '(dashboard-refresh-buffer :name "dashboard"))
   (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
   (setq dashboard-center-content t)
   (setq dashboard-set-heading-icons t)
