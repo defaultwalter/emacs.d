@@ -28,10 +28,13 @@
   (lsp-headerline-breadcrumb-enable nil)
   (lsp-auto-configure t)
   (lsp-log-io nil)
+  (lsp-print-performance t)
   (lsp-file-watch-threshold 2000)
-  (lsp-prefer-capf t)
+  (lsp-completion-provider :capf)
   (lsp-enable-snippet t)
-  (lsp-keymap-prefix "SPC m l")
+  (lsp-idle-delay 0.5)
+  ;; (lsp-keymap-prefix "SPC m l")
+  (lsp-eldoc-enable-hover nil)
   (lsp-enable-completion-at-point t)
   (lsp-keep-workspace-alive nil)
   (lsp-enable-file-watchers nil)
@@ -47,8 +50,10 @@
   :ensure t
   :after lsp-mode
   :custom                               ;
+  (lsp-ui-doc-delay 0.5)
   (lsp-ui-doc-position 'at-point)
   (lsp-ui-doc-use-webkit t)
+  (lsp-ui-sideline-delay 0.5)
   (lsp-ui-sideline-enable t)
   (lsp-ui-doc-enable t)
   (lsp-ui-doc-border "black")

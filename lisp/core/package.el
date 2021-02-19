@@ -15,7 +15,6 @@
 ;;;; 交互增强
 ;;;; ==============================================
 
-
 (use-package
   which-key
   :ensure t
@@ -35,6 +34,101 @@
   (add-to-list 'which-key-replacement-alist '(("right" . nil) . ("right" . nil)))
   (add-to-list 'which-key-replacement-alist '(("up" . nil) . ("up" . nil)))
   (add-to-list 'which-key-replacement-alist '(("down" . nil) . ("down" . nil))))
+
+
+;; (defun meow-setup ()
+;;   (setq meow-cheatsheet-layout meow-cheatsheet-layout-qwerty)
+;;   (meow-motion-overwrite-define-key '("j" . meow-next)
+;;                                     '("k" . meow-prev))
+;;   (meow-leader-define-key
+;;    ;; SPC j/k will run the original command in MOTION state.
+;;    '("j" . meow-motion-origin-command)
+;;    '("k" . meow-motion-origin-command)
+;;    ;; Use SPC (0-9) for digit arguments.
+;;    '("1" . meow-digit-argument)
+;;    '("2" . meow-digit-argument)
+;;    '("3" . meow-digit-argument)
+;;    '("4" . meow-digit-argument)
+;;    '("5" . meow-digit-argument)
+;;    '("6" . meow-digit-argument)
+;;    '("7" . meow-digit-argument)
+;;    '("8" . meow-digit-argument)
+;;    '("9" . meow-digit-argument)
+;;    '("0" . meow-digit-argument))
+;;   (meow-normal-define-key '("0" . meow-expand-0)
+;;                           '("9" . meow-expand-9)
+;;                           '("8" . meow-expand-8)
+;;                           '("7" . meow-expand-7)
+;;                           '("6" . meow-expand-6)
+;;                           '("5" . meow-expand-5)
+;;                           '("4" . meow-expand-4)
+;;                           '("3" . meow-expand-3)
+;;                           '("2" . meow-expand-2)
+;;                           '("1" . meow-expand-1)
+;;                           '("-" . negative-argument)
+;;                           '(";" . meow-reverse)
+;;                           '("," . meow-inner-of-thing)
+;;                           '("." . meow-bounds-of-thing)
+;;                           '("[" . meow-beginning-of-thing)
+;;                           '("]" . meow-end-of-thing)
+;;                           '("a" . meow-append)
+;;                           '("A" . meow-open-below)
+;;                           '("b" . meow-back-word)
+;;                           '("B" . meow-back-symbol)
+;;                           '("c" . meow-change)
+;;                           '("C" . meow-change-save)
+;;                           '("d" . meow-delete)
+;;                           '("x" . meow-line)
+;;                           '("f" . meow-find)
+;;                           '("F" . meow-find-expand)
+;;                           '("g" . meow-keyboard-quit)
+;;                           '("G" . meow-goto-line)
+;;                           '("h" . meow-left)
+;;                           '("H" . meow-left-expand)
+;;                           '("i" . meow-insert)
+;;                           '("I" . meow-open-above)
+;;                           '("m" . meow-join)
+;;                           '("M" . delete-indentation)
+;;                           '("s" . meow-kill)
+;;                           '("t" . meow-till)
+;;                           '("T" . meow-till-expand)
+;;                           '("w" . meow-mark-word)
+;;                           '("W" . meow-mark-symbol)
+;;                           '("j" . meow-next)
+;;                           '("J" . meow-next-expand)
+;;                           '("o" . meow-block)
+;;                           '("O" . meow-block-expand)
+;;                           '("k" . meow-prev)
+;;                           '("K" . meow-prev-expand)
+;;                           '("q" . meow-quit)
+;;                           '("r" . meow-replace)
+;;                           '("R" . meow-replace-save)
+;;                           '("n" . meow-search)
+;;                           '("N" . meow-pop-search)
+;;                           '("l" . meow-right)
+;;                           '("L" . meow-right-expand)
+;;                           '("u" . undo)
+;;                           '("v" . meow-visit)
+;;                           '("e" . meow-next-word)
+;;                           '("E" . meow-next-symbol)
+;;                           '("y" . meow-save)
+;;                           '("p" . meow-yank)
+;;                           '("z" . meow-pop-selection)
+;;                           '("Z" . meow-pop-all-selection)
+;;                           '("&" . meow-query-replace)
+;;                           '("%" . meow-query-replace-regexp)
+;;                           '("<escape>" . meow-last-buffer)))
+;; (use-package
+;;   meow
+;;   :ensure t
+;;   :init (meow-global-mode 1)
+;;   :config
+;;   ;; meow-setup is your custom function, see below
+;;   (meow-setup)
+;;   ;; If you want relative line number in NORMAL state(for display-line-numbers-mode)
+;;   (meow-setup-line-number)
+;;   ;; If you need setup indicator, see `meow-indicator' for customizing by hand.
+;;   (meow-setup-indicator))
 
 (use-package
   evil
@@ -56,11 +150,11 @@
         '("#fe9865"
           box))
   (setq evil-insert-state-cursor
-        '("#d698dd"
+        '("#f96060"
           bar))
   (setq evil-replace-state-cursor
         '("#fd6698"
-          hollow-rectangle))
+          hollow))
   (setq evil-operator-state-cursor
         '("#98ce65"
           hollow))
@@ -102,6 +196,14 @@
   :config                               ;
   (global-evil-surround-mode 1))
 
+
+(use-package
+  evil-exchange
+  :ensure t
+  :after evil
+  :config                               ;
+  (evil-exchange-cx-install))
+
 (use-package
   evil-terminal-cursor-changer
   :ensure t
@@ -110,13 +212,9 @@
   :config                               ;
   (evil-terminal-cursor-changer-activate))
 
-(use-package
-  evil-leader
-  :ensure t
-  :after evil
-  :init                                 ;
-  (defmacro user/leader-key (KEY &optional DEFAULTS)
-    `(let* ((DEFAULTS  (if (commandp ,DEFAULTS)
+(defmacro user/leader-key (KEY &optional DEFAULTS)
+  `(when (boundp 'evil-leader-mode)
+     (let* ((DEFAULTS  (if (commandp ,DEFAULTS)
                            (list :command ,DEFAULTS)
                          (if (commandp (car ,DEFAULTS))
                              (cons :command ,DEFAULTS) ,DEFAULTS)))
@@ -132,10 +230,14 @@
                                                                                          ,KEY) name)
                     (which-key-add-key-based-replacements (concat "SPC" " " ,KEY) name)))
        (when command (if mode (evil-leader/set-key-for-mode mode ,KEY command)
-                       (evil-leader/set-key ,KEY command)))))
+                       (evil-leader/set-key ,KEY command))))))
+(use-package
+  evil-leader
+  :ensure t
+  :after evil
   :config                               ;
   (evil-leader/set-leader "<SPC>")
-  (setq evil-leader/in-all-states t)
+  ;; (setq evil-leader/in-all-states t)
   (global-evil-leader-mode t)
   (evil-mode t) ; 为了让 scratch/message 等buffer 能够使用 evil-leader，必须在 evil-leader 后启用 evil
   (user/leader-key "f"
@@ -315,8 +417,8 @@
          ("RET" . company-complete-selection))     ; 终端下生效
   :custom                                          ;
   (company-minimum-prefix-length 2)
-  (company-idle-delay 0.01)
-  (company-echo-delay 0)
+  (company-idle-delay 0.5)
+  (company-echo-delay 0.2)
   (company-show-numbers t)
   :config                               ;
   (setq company-selection-default 0)
@@ -452,9 +554,10 @@
 (use-package
   disable-mouse
   :ensure t
-  :disabled
-  :config (mapc #'disable-mouse-in-keymap (list evil-motion-state-map evil-normal-state-map
-                                                evil-visual-state-map evil-insert-state-map))
+  ;; :disabled
+  :config (when (boundp 'evil-mode)
+            (mapc #'disable-mouse-in-keymap (list evil-motion-state-map evil-normal-state-map
+                                                  evil-visual-state-map evil-insert-state-map)))
   (global-disable-mouse-mode))
 
 
@@ -488,9 +591,7 @@
   :ensure t
   :defer t
   :init                                 ;
-  (user/leader-key "gg" '(avy-goto-char :name "goto char"))
-  (user/leader-key "gw" '(avy-goto-word-0 :name "goto word"))
-  (user/leader-key "gl" '(avy-goto-line :name "goto line")))
+  (with-eval-after-load "evil" (evil-define-key 'normal 'global "gc" 'avy-goto-char)))
 
 (use-package
   hungry-delete                         ; 可以删除前面所有的空白字符
