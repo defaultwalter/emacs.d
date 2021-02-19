@@ -516,23 +516,8 @@
   :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   :init                                 ;
   (user/leader-key "pg"
-                   '(:ignore t
-                             :name "git"))
-  (user/leader-key "pgs" '(magit-status :name "status"))
-  (user/leader-key "pgd" '(magit-diff-unstaged :name "diff unstaged"))
-  (user/leader-key "pgr" '(magit-rebase :name "rebase"))
-  (user/leader-key "pgb" '(magit-barnch :name "barnch"))
-  (user/leader-key "pgP" '(magit-push-current :name "push"))
-  (user/leader-key "pgp" '(magit-pull-current :name "pull"))
-  (user/leader-key "pgf" '(magit-fetch :name "fetch"))
-  (user/leader-key "pgF" '(magit-fetch-all :name "fetch all"))
-  (user/leader-key "pgc" '(magit-branch-or-checkout :name "checkout"))
-  (user/leader-key "pgl"
-                   '(:ignore t
-                             :name "log"))
-  (user/leader-key "pglc" '(magit-log-current :name "log current"))
-  (user/leader-key "pglf" '(magit-log-buffer-file :name "log buffer file")))
-
+                   '(magit-status
+                     :name "git")))
 (use-package
   neotree
   :ensure t
