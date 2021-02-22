@@ -34,7 +34,7 @@
   (lsp-enable-snippet t)
   (lsp-idle-delay 0.5)
   ;; (lsp-keymap-prefix "SPC m l")
-  (lsp-eldoc-enable-hover nil)
+  ;; (lsp-eldoc-enable-hover nil)
   (lsp-enable-completion-at-point t)
   (lsp-keep-workspace-alive nil)
   (lsp-enable-file-watchers nil)

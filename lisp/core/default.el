@@ -63,9 +63,9 @@
 ;; 滚动行为
 (setq scroll-conservatively 10000)               ; 滚动时保持光标位置
 (setq scroll-step 1)                             ; 滚动行数
-(setq scroll-margin 5)                           ; 滚动光标边距
+(setq scroll-margin 1)                           ; 滚动光标边距
 (setq hscroll-step 1)                            ; 水平滚动列数
-(setq hscroll-margin 10)                         ; 水平滚动光标边距
+(setq hscroll-margin 4)                          ; 水平滚动光标边距
 (setq-default mouse-wheel-progressive-speed nil) ; 设置鼠标滚动速度
 
 ;; Minibuffer
@@ -151,16 +151,18 @@
 
 (setq-default select-enable-clipboard t) ; 启用系统剪切板
 
-;; (global-display-line-numbers-mode)
-
-(setq display-line-numbers-type 'relative) ; 使用相对行号
-(setq display-line-numbers-width-start 5)  ; 行号宽度
-(setq-default display-line-numbers-width 5)
+(setq display-line-numbers-type t)                    ; 行号类型
+(setq-default display-line-numbers-width 5)           ; 行号宽度
 (add-hook 'prog-mode-hook 'display-line-numbers-mode) ; 显示行号
-;; (global-hl-line-mode t)                               ; 高亮当前的行
-(delete-selection-mode 1)               ; 插入时替换选区
+(add-hook 'text-mode-hook 'display-line-numbers-mode) ; 显示行号
+(add-hook 'conf-mode-hook 'display-line-numbers-mode) ; 显示行号
+(add-hook 'prog-mode-hook 'hl-line-mode)              ; 高亮当前行
+(add-hook 'text-mode-hook 'hl-line-mode)              ; 高亮当前行
+(add-hook 'conf-mode-hook 'hl-line-mode)              ; 高亮当前行
+(delete-selection-mode 1)                             ; 插入时替换选区
 
 (setq-default truncate-lines nil)
+
 (add-hook 'before-save-hook '(lambda ()
                                (when (derived-mode-p 'prog-mode)
                                  (whitespace-cleanup)
