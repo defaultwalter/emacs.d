@@ -20,10 +20,13 @@
   :ensure t
   :custom                               ;
   (which-key-show-early-on-C-h t)
-  (which-key-idle-delay 10000)
+  (which-key-idle-delay 2)
   (which-key-idle-secondary-delay 0.05)
   (which-key-sort-order 'which-key-prefix-then-key-order)
   (which-key-allow-multiple-replacements t)
+  (which-key-allow-evil-operators t)
+  (which-key-popup-type 'side-window)
+  (which-key-is-verbose t)
   :config                               ;
   (which-key-mode t)
   (add-to-list 'which-key-replacement-alist '(("ESC" . nil) . ("esc" . nil)))
@@ -33,9 +36,10 @@
   (add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil)))
   (add-to-list 'which-key-replacement-alist '(("left" . nil) . ("left" . nil)))
   (add-to-list 'which-key-replacement-alist '(("right" . nil) . ("right" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("<left>" . nil) . ("left" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("<right>" . nil) . ("right" . nil)))
   (add-to-list 'which-key-replacement-alist '(("up" . nil) . ("up" . nil)))
   (add-to-list 'which-key-replacement-alist '(("down" . nil) . ("down" . nil))))
-
 
 (use-package
   evil
@@ -91,8 +95,6 @@
   evil-collection
   :ensure t
   :after evil
-  :custom                               ;
-  (evil-collection-company-use-tng nil)
   :config                               ;
   (evil-collection-init))
 
@@ -311,26 +313,32 @@
   :hook ;; (prog-mode . company-mode)
   (after-init . global-company-mode)
   :init ;; Don't convert to downcase.
+  (defun user/complete()
+    (interactive)
+    (or (yas/expand)
+        (company-indent-or-complete-common nil)))
   (setq-default company-dabbrev-downcase nil)
-  :bind (;; ("C-TAB" . company-complete-common)
-         ("C-SPC" . company-complete-common)
-         ;;
-         :map company-active-map        ;
-         ("C-n" . company-select-next)
-         ("C-p" . company-select-previous)
-         ("C-s" . company-filter-candidates)
-         ("<tab>" . company-complete-selection)
-         ("TAB" . company-complete-selection)
-         ("<return>" . company-complete-selection) ; 终端下无效
-         ("RET" . company-complete-selection)      ; 终端下生效
-         :map company-search-map                   ;
-         ("C-n" . company-select-next)
-         ("C-p" . company-select-previous)
-         ("<tab>" . company-complete-selection)
-         ("TAB" . company-complete-selection)
-         ("<return>" . company-complete-selection) ; 终端下无效
-         ("RET" . company-complete-selection))     ; 终端下生效
-  :custom                                          ;
+
+  :bind (:map company-mode-map
+              ("<tab>" . user/complete)
+              ("TAB" . user/complete)
+              ;;
+              :map company-active-map   ;
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous)
+              ("C-s" . company-filter-candidates)
+              ("<tab>" . company-complete-selection)
+              ("TAB" . company-complete-selection)
+              ("<return>" . company-complete-selection) ; 终端下无效
+              ("RET" . company-complete-selection)      ; 终端下生效
+              :map company-search-map                   ;
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous)
+              ("<tab>" . company-complete-selection)
+              ("TAB" . company-complete-selection)
+              ("<return>" . company-complete-selection) ; 终端下无效
+              ("RET" . company-complete-selection))     ; 终端下生效
+  :custom                                               ;
   (company-minimum-prefix-length 2)
   (company-idle-delay 0.5)
   (company-echo-delay 0.2)
@@ -368,10 +376,10 @@
   :ensure t
   :defer t
   :init                                 ;
-  (user/leader-key "b C-h" '(buf-move-left :name "move to left window"))
-  (user/leader-key "b C-j" '(buf-move-down :name "move to down window"))
-  (user/leader-key "b C-k" '(buf-move-up :name "move to up window"))
-  (user/leader-key "b C-l" '(buf-move-right :name "move to right window"))
+  (user/leader-key "b <left>" '(buf-move-left :name "move to left window"))
+  (user/leader-key "b <down>" '(buf-move-down :name "move to down window"))
+  (user/leader-key "b <up>" '(buf-move-up :name "move to up window"))
+  (user/leader-key "b <right>" '(buf-move-right :name "move to right window"))
   (setq buffer-move-stay-after-swap t)
   (setq buffer-move-behavior 'move))
 
