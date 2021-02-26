@@ -52,7 +52,7 @@
   :custom                               ;
   (lsp-ui-doc-delay 0.5)
   (lsp-ui-doc-position 'at-point)
-  ;; (lsp-ui-doc-use-webkit t)
+  (lsp-ui-doc-use-webkit nil)
   (lsp-ui-sideline-delay 0.5)
   (lsp-ui-sideline-enable t)
   (lsp-ui-doc-enable t)

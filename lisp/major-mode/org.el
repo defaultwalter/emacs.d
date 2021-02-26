@@ -9,11 +9,10 @@
   :hook (org-mode . org-superstar-mode)
   :custom-face                          ;
   :init                                 ;
-  (setq org-preview-latex-image-directory (expand-file-name "ltximg/"
-                                                             user-emacs-directory))
+  (setq org-preview-latex-image-directory (expand-file-name "ltximg/" user-emacs-directory))
   (setq org-hide-emphasis-markers nil) ; 隐藏强调符号（加粗，下划线等等）
   (setq org-pretty-entities nil)       ; 可以显示上标下标
-  (setq org-ellipsis " ······▾")     ;设置折叠标识
+  (setq org-ellipsis " ······▾")       ;设置折叠标识
   (setq org-edit-src-content-indentation 0) ; 设置代码内容缩进
   (setq org-src-preserve-indentation nil)
   (setq org-src-tab-acts-natively t)
@@ -101,9 +100,12 @@
   (user/leader-key "nf" '(org-roam-find-file :name "find note"))
   (user/leader-key "n DEL" '(org-roam-db-clear :name "delete cache"))
   (user/leader-key "n RET" '(org-roam-db-build-cache :name "build cache"))
-  (user/leader-key "nv" '(org-roam :name "view" :mode org-mode))
-  (user/leader-key "ng" '(org-roam-graph :name "graph" :mode org-mode))
-  (user/leader-key "ni" '(org-roam-insert :name "insert node" :mode org-mode))
+  (user/leader-key "nv" '(org-roam :name "view"
+                                   :mode org-mode))
+  (user/leader-key "ng" '(org-roam-graph :name "graph"
+                                         :mode org-mode))
+  (user/leader-key "ni" '(org-roam-insert :name "insert node"
+                                          :mode org-mode))
   :config                               ;
   (require 'org-roam-protocol))
 

@@ -39,9 +39,9 @@
 ;;;; GC 设置
 ;;;;==================================================
 ;; 设置GC阈值，防止在启动时GC，影响启动速度。
-(setq gc-cons-threshold (* 1024 1024 126))
+(setq gc-cons-threshold (* 1024 1024 256))
+;; (setq gc-cons-percentage 0.6)          ;GC
 ;; (setq garbage-collection-messages t)    ;显示GC信息
-;; (setq gc-cons-percentage 0.1)          ;GC
 ;; 空闲15秒后进行GC
 (run-with-idle-timer 15 t #'garbage-collect)
 ;; 失去焦点后进行GC
@@ -49,7 +49,7 @@
 
 ;; 初始化后重新设置GC阈值
 (add-hook 'emacs-startup-hook (lambda()
-                                (setq gc-cons-threshold (* 1024 1024 2))))
+                                (setq gc-cons-threshold (* 1024 1024 8))))
 
 ;;;;==================================================
 ;;;; 其他设置

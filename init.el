@@ -26,9 +26,15 @@
 (require 'use-package)
 
 (use-package
+  gcmh                                  ; 优化GC
+  :ensure t
+  :config (gcmh-mode 1))
+
+(use-package
   restart-emacs
   :ensure t
   :disabled)
+
 ;; 性能统计
 (use-package
   benchmark-init
