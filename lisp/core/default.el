@@ -90,6 +90,8 @@
 
 ;; 显示当前所在的括号
 (show-paren-mode 1)
+(setq-default electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
+(electric-pair-mode 1)
 
 (defun user/set-font(fontsize)
   "Try to config font"

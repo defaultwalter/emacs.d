@@ -3,22 +3,22 @@
 ;;; Code:
 
 
-(use-package
-  yasnippet
-  :ensure t
-  :defer t
-  :hook (prog-mode . yas-minor-mode)
-  :config                               ;
-  (use-package
-    yasnippet-snippets
-    :ensure t
-    :config (yas-reload-all)))
+;; (use-package
+;;   yasnippet
+;;   :ensure t
+;;   :defer t
+;;   :hook (prog-mode . yas-minor-mode)
+;;   :config                               ;
+;;   (use-package
+;;     yasnippet-snippets
+;;     :ensure t
+;;     :config (yas-reload-all)))
 
-(use-package
-  ivy-yasnippet
-  :ensure t
-  :after (yasnippet ivy)
-  :defer t)
+;; (use-package
+;;   ivy-yasnippet
+;;   :ensure t
+;;   :after (yasnippet ivy)
+;;   :defer t)
 
 (use-package
   lsp-mode
