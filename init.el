@@ -25,6 +25,12 @@
 (setq use-package-compute-statistics t)
 (require 'use-package)
 
+;; 安装系统包
+(use-package
+  use-package-ensure-system-package
+  :ensure t
+  :defer t)
+
 (use-package
   gcmh                                  ; 优化GC
   :ensure t
@@ -44,11 +50,12 @@
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
-;; 安装系统包
 (use-package
-  use-package-ensure-system-package
+  memory-usage
   :ensure t
-  :defer t)
+  :defer t
+  :disabled)
+
 
 ;;;; 加载配置
 

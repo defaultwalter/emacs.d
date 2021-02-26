@@ -1,3 +1,6 @@
+;;;; ==============================================
+;;;; 基础
+;;;; ==============================================
 (use-package
   exec-path-from-shell
   ;; :if (memq window-system '(ns mac))
@@ -14,12 +17,6 @@
   :ensure t
   :if (not (display-graphic-p))
   :config (xclip-mode 1))
-
-(use-package
-  memory-usage
-  :ensure t
-  :defer t
-  :disabled)
 
 ;;;; ==============================================
 ;;;; 交互增强
@@ -298,70 +295,6 @@
   :defer t
   :config (global-command-log-mode))
 
-;; 自动完成
-(use-package
-  company
-  :ensure t
-  :defer t
-  :hook ;; (prog-mode . company-mode)
-  (after-init . global-company-mode)
-  :init ;; Don't convert to downcase.
-  (defun user/complete()
-    (interactive)
-    (or (yas/expand)
-        (company-indent-or-complete-common nil)))
-  (setq-default company-dabbrev-downcase nil)
-  :bind (:map company-mode-map
-              ("<tab>" . user/complete)
-              ("TAB" . user/complete)
-              ;;
-              :map company-active-map   ;
-              ("C-n" . company-select-next)
-              ("C-p" . company-select-previous)
-              ("C-s" . company-filter-candidates)
-              ("<tab>" . company-complete-selection)
-              ("TAB" . company-complete-selection)
-              ("<return>" . company-complete-selection) ; 终端下无效
-              ("RET" . company-complete-selection)      ; 终端下生效
-              :map company-search-map                   ;
-              ("C-n" . company-select-next)
-              ("C-p" . company-select-previous)
-              ("<tab>" . company-complete-selection)
-              ("TAB" . company-complete-selection)
-              ("<return>" . company-complete-selection) ; 终端下无效
-              ("RET" . company-complete-selection))     ; 终端下生效
-  :custom                                               ;
-  (company-minimum-prefix-length 2)
-  (company-idle-delay 0.5)
-  (company-echo-delay 0.2)
-  (company-show-numbers t)
-  :config                               ;
-  (setq company-selection-default 0)
-  (setq company-backends '(;; (:separate company-yasnippet
-                           ;;            company-capf)
-                           (company-capf company-dabbrev-code company-keywords company-files)
-                           (company-dabbrev)))
-  (setq company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend)))
-
-(use-package
-  company-box
-  :ensure t
-  :requires company
-  :hook (company-mode . company-box-mode)
-  :init                                 ;
-  (setq company-box-show-single-candidate t)
-  :config)
-
-(use-package
-  company-prescient
-  :ensure t
-  :after company
-  :hook (company-mode . company-prescient-mode))
-
-(use-package
-  undo-tree                             ;撤销重做可视化
-  :ensure t
-  :config (global-undo-tree-mode))
 
 (use-package
   buffer-move                           ; 交换两个window的buffer
@@ -431,7 +364,6 @@
   :defer t
   :custom                               ;
   (neo-smart-open t)
-  (neo-autorefresh t)
   (neo-window-width 35)
   (neo-mode-line-type 'none)
   ;; (neo-vc-integration 'face); 和doom主题冲突
@@ -460,17 +392,6 @@
   :config                               ;
   (global-diff-hl-mode))
 
-;; ;;;; ==============================================
-;; ;;;; 编辑增强
-;; ;;;; ==============================================
-
-(use-package
-  smart-comment                         ;注释插件
-  :ensure t
-  :defer t
-  :bind ("C-/" . smart-comment)
-  :init (user/leader-key "cc" '(smart-comment :name "comment")))
-
 (use-package
   avy
   :ensure t
@@ -478,12 +399,6 @@
   :init                                 ;
   (with-eval-after-load "evil" (evil-define-key 'normal 'global "gc" 'avy-goto-char)))
 
-(use-package
-  hungry-delete                         ; 可以删除前面所有的空白字符
-  :ensure t
-  :defer t
-  :custom (hungry-delete-join-reluctantly t)
-  :hook (prog-mode . hungry-delete-mode))
 
 (use-package
   beacon                                ; 跳转后,显示光标位置
@@ -504,36 +419,6 @@
   :custom (hl-paren-highlight-adjacent t)
   (hl-paren-colors '("cyan"))           ; 设置高亮括号颜色
   :hook (prog-mode . highlight-parentheses-mode))
-
-
-(use-package
-  drag-stuff
-  :ensure t
-  :defer t
-  :after evil
-  :bind (:map evil-visual-state-map
-              ("K" . drag-stuff-up)
-              ("J" . drag-stuff-down)
-              :map evil-normal-state-map
-              ("K" . drag-stuff-up)
-              ("J" . drag-stuff-down))
-  :config                               ;
-  (drag-stuff-global-mode 1))
-
-(use-package
-  expand-region                         ;选择区域
-  :ensure t
-  :defer t
-  :after evil
-  :bind (:map evil-normal-state-map
-              ("<S-return>" . er/expand-region)
-              ("S-RET" . er/expand-region)))
-
-(use-package
-  format-all                            ;格式化代码，支持多种格式
-  :ensure t
-  :defer t
-  :init (user/leader-key "cf" '(format-all-buffer :name "format")))
 
 (use-package
   auto-sudoedit                         ;自动请求sudo权限
@@ -599,13 +484,162 @@
   :config                                  ;
   (setq sis-respect-prefix-and-buffer nil) ;开启会导致 which-key 翻页失效
   (cond ((eq system-type 'darwin)
-         (if (executable-find "macism")
+
+       (if (executable-find "macism")
              (sis-ism-lazyman-config "com.apple.keylayout.ABC" "com.apple.inputmethod.SCIM.ITABC")
            (message
             "SIS need to install macism. use ‘brew tap laishulu/macism;brew install macism’ to install it.")))
         ((eq system-type 'gnu/linux)
          (sis-ism-lazyman-config "1" "2" 'fcitx)))
   (sis-global-respect-mode t))
+
+(use-package
+  multi-vterm
+  :ensure t
+  :config (add-hook 'vterm-mode-hook (lambda ()
+                                       (setq-local evil-insert-state-cursor 'box)
+                                       (evil-insert-state)))
+  (define-key vterm-mode-map [return]                      #'vterm-send-return)
+  (setq vterm-keymap-exceptions nil)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-e")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-f")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-a")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-v")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-b")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-w")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-n")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-m")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-p")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-j")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-k")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-r")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-g")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-c")      #'vterm--self-insert)
+  (evil-define-key 'insert vterm-mode-map (kbd "C-SPC")    #'vterm--self-insert)
+  (evil-define-key 'normal vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
+  (evil-define-key 'normal vterm-mode-map (kbd ",c")       #'multi-vterm)
+  (evil-define-key 'normal vterm-mode-map (kbd ",n")       #'multi-vterm-next)
+  (evil-define-key 'normal vterm-mode-map (kbd ",p")       #'multi-vterm-prev)
+  (evil-define-key 'normal vterm-mode-map (kbd "i")        #'evil-insert-resume)
+  (evil-define-key 'normal vterm-mode-map (kbd "o")        #'evil-insert-resume)
+  (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume))
+
+;; ;;;; ==============================================
+;; ;;;; 编辑增强
+;; ;;;; ==============================================
+
+;; 自动完成
+(use-package
+  company
+  :ensure t
+  :defer t
+  :hook ;; (prog-mode . company-mode)
+  (after-init . global-company-mode)
+  :init ;; Don't convert to downcase.
+  (defun user/complete()
+    (interactive)
+    (or (yas/expand)
+        (company-indent-or-complete-common nil)))
+  (setq-default company-dabbrev-downcase nil)
+  :bind (:map company-mode-map
+              ("<tab>" . user/complete)
+              ("TAB" . user/complete)
+              ;;
+              :map company-active-map   ;
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous)
+              ("C-s" . company-filter-candidates)
+              ("<tab>" . company-complete-selection)
+              ("TAB" . company-complete-selection)
+              ("<return>" . company-complete-selection) ; 终端下无效
+              ("RET" . company-complete-selection)      ; 终端下生效
+              :map company-search-map                   ;
+              ("C-n" . company-select-next)
+              ("C-p" . company-select-previous)
+              ("<tab>" . company-complete-selection)
+              ("TAB" . company-complete-selection)
+              ("<return>" . company-complete-selection) ; 终端下无效
+              ("RET" . company-complete-selection))     ; 终端下生效
+  :custom                                               ;
+  (company-minimum-prefix-length 2)
+  (company-idle-delay 0.5)
+  (company-echo-delay 0.2)
+  (company-show-numbers t)
+  :config                               ;
+  (setq company-selection-default 0)
+  (setq company-backends '(;; (:separate company-yasnippet
+                           ;;            company-capf)
+                           (company-capf company-dabbrev-code company-keywords company-files)
+                           (company-dabbrev)))
+  (setq company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend)))
+
+(use-package
+  company-box
+  :ensure t
+  :requires company
+  :hook (company-mode . company-box-mode)
+  :init                                 ;
+  (setq company-box-show-single-candidate t)
+  :config)
+
+(use-package
+  company-prescient
+  :ensure t
+  :after company
+  :hook (company-mode . company-prescient-mode))
+
+(use-package
+  undo-tree                             ;撤销重做可视化
+  :ensure t
+  :config (global-undo-tree-mode))
+
+(use-package
+  smart-comment                         ;注释插件
+  :ensure t
+  :defer t
+  :bind ("C-/" . smart-comment)
+  :init (user/leader-key "cc" '(smart-comment :name "comment")))
+
+(use-package
+  hungry-delete                         ; 可以删除前面所有的空白字符
+  :ensure t
+  :defer t
+  :custom (hungry-delete-join-reluctantly t)
+  :hook (prog-mode . hungry-delete-mode))
+
+
+(use-package
+  drag-stuff
+  :ensure t
+  :defer t
+  :after evil
+  :bind (:map evil-visual-state-map
+              ("K" . drag-stuff-up)
+              ("J" . drag-stuff-down)
+              :map evil-normal-state-map
+              ("K" . drag-stuff-up)
+              ("J" . drag-stuff-down))
+  :config                               ;
+  (drag-stuff-global-mode 1))
+
+(use-package
+  expand-region                         ;选择区域
+  :ensure t
+  :defer t
+  :after evil
+  :bind (:map evil-normal-state-map
+              ("<S-return>" . er/expand-region)
+              ("S-RET" . er/expand-region)))
+
+(use-package
+  format-all                            ;格式化代码，支持多种格式
+  :ensure t
+  :defer t
+  :init (user/leader-key "cf" '(format-all-buffer :name "format")))
+
 
 ;; ;;;; ==============================================
 ;; ;;;; 主题外观
