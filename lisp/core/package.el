@@ -15,22 +15,26 @@
   :if (not (display-graphic-p))
   :config (xclip-mode 1))
 
+(use-package
+  memory-usage
+  :ensure t
+  :defer t
+  :disabled)
+
 ;;;; ==============================================
 ;;;; 交互增强
 ;;;; ==============================================
-
 (use-package
   which-key
   :ensure t
   :custom                               ;
   (which-key-show-early-on-C-h t)
-  (which-key-idle-delay 2)
+  (which-key-idle-delay 5)
   (which-key-idle-secondary-delay 0.05)
   (which-key-sort-order 'which-key-prefix-then-key-order)
   (which-key-allow-multiple-replacements t)
   (which-key-allow-evil-operators t)
   (which-key-popup-type 'side-window)
-  (which-key-is-verbose t)
   :config                               ;
   (which-key-mode t)
   (add-to-list 'which-key-replacement-alist '(("ESC" . nil) . ("esc" . nil)))
@@ -218,21 +222,6 @@
                    '(:ignore t
                              :name "mode")))
 
-(use-package
-  mini-frame                            ; 居中显示 minibuffer
-  :ensure t
-  :disabled
-  :custom                               ;
-  (mini-frame-show-parameters '((top . 0.15)
-                                (width . 0.7)
-                                (left . 0.5))))
-(use-package
-  minimap                               ; VSCode 类似的滚动条
-  :ensure t
-  :disabled
-  :if (display-graphic-p)
-  :custom (minimap-window-location 'right)
-  :config (minimap-mode 1))
 
 (use-package
   ivy
@@ -402,12 +391,6 @@
   :config (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)))
 
 (use-package
-  transpose-frame
-  :ensure t
-  :defer t
-  :init (user/leader-key "wt" '(transpose-frame :name "transpose")))
-
-(use-package
   projectile                            ;project 插件
   :ensure t
   :custom       ;
@@ -477,16 +460,9 @@
   :config                               ;
   (global-diff-hl-mode))
 
-;;;; ==============================================
-;;;; 编辑增强
-;;;; ==============================================
-
-(use-package
-  smartparens
-  :ensure t
-  :config                               ;
-  (require 'smartparens-config)
-  (smartparens-global-strict-mode))
+;; ;;;; ==============================================
+;; ;;;; 编辑增强
+;; ;;;; ==============================================
 
 (use-package
   smart-comment                         ;注释插件
@@ -567,35 +543,10 @@
   :config (auto-sudoedit-mode 1))
 
 (use-package
-  memory-usage
-  :ensure t
-  :defer t)
-(use-package
   popwin                                ; 使用弹出窗口显示部分Buffer
   :ensure t
   :config                               ;
   (popwin-mode 1))
-
-(use-package
-  evil-multiedit                        ; 多光标
-  :ensure t
-  :bind (:map evil-normal-state-map
-              ("C-M-*" . evil-multiedit-match-all)
-              ("C-M-]" . evil-multiedit-match-and-next)
-              ("C-M-[" . evil-multiedit-match-and-prev)
-              :map evil-visual-state-map
-              ("M-*" . evil-multiedit-match-all)
-              ("C-M-]" . evil-multiedit-match-and-next)
-              ("C-M-[" . evil-multiedit-match-and-prev)
-              :map  evil-multiedit-state-map
-              ("RET" . evil-multiedit-toggle-or-restrict-region)
-              ("<return>" . evil-multiedit-toggle-or-restrict-region)
-              :map evil-multiedit-state-map
-              ("C-n" . evil-multiedit-next)
-              ("C-p" . evil-multiedit-prev)
-              :map evil-multiedit-insert-state-map
-              ("C-n" . evil-multiedit-next)
-              ("C-p" . evil-multiedit-prev)))
 
 (use-package
   rainbow-mode
@@ -634,9 +585,19 @@
     (set-face-foreground 'highlight-indent-guides-character-face "black")))
 
 (use-package
+  visual-fill-column                    ;设置正文宽度
+  :ensure t
+  :defer t
+  :commands (visual-fill-column-mode)
+  :config                               ;
+  (setq-default visual-fill-column-width 100)
+  (setq-default visual-fill-column-center-text t))
+
+(use-package
   sis                                   ; 自动切换输入法
   :ensure t
-  :config                               ;
+  :config                                  ;
+  (setq sis-respect-prefix-and-buffer nil) ;开启会导致 which-key 翻页失效
   (cond ((eq system-type 'darwin)
          (if (executable-find "macism")
              (sis-ism-lazyman-config "com.apple.keylayout.ABC" "com.apple.inputmethod.SCIM.ITABC")
@@ -646,9 +607,9 @@
          (sis-ism-lazyman-config "1" "2" 'fcitx)))
   (sis-global-respect-mode t))
 
-;;;; ==============================================
-;;;; 主题外观
-;;;; ==============================================
+;; ;;;; ==============================================
+;; ;;;; 主题外观
+;; ;;;; ==============================================
 
 (use-package
   doom-modeline
@@ -790,14 +751,5 @@
   :ensure t
   :init (setq all-the-icons-scale-factor 0.9))
 
-
-(use-package
-  visual-fill-column                    ;设置正文宽度
-  :ensure t
-  :defer t
-  :commands (visual-fill-column-mode)
-  :config                               ;
-  (setq-default visual-fill-column-width 100)
-  (setq-default visual-fill-column-center-text t))
 
 (provide 'core/package)
