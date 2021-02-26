@@ -704,7 +704,7 @@
   dashboard
   :ensure t
   :config                               ;
-  (user/leader-key "b d" '(dashboard-refresh-buffer :name "dashboard"))
+  (user/leader-key "b <home>" '(dashboard-refresh-buffer :name "dashboard"))
   (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
   (setq dashboard-center-content t)
   (setq dashboard-set-heading-icons t)
