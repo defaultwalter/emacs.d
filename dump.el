@@ -20,17 +20,6 @@
 (delete 'multi-vterm user/dump-packages)
 (delete 'vterm user/dump-packages)
 (delete 'org-plus-contrib user/dump-packages)
-;; (defvar user/dump-packages
-;;   '(use-package
-;;      ivy
-;;      counsel
-;;      evil
-;;      general
-;;      which-key
-;;      doom-themes
-;;      doom-modeline)
-;;   "需要dump的package")
-
 
 (setq evil-want-keybinding nil)
 (dolist (package user/dump-packages)

@@ -2,8 +2,12 @@
   exec-path-from-shell
   ;; :if (memq window-system '(ns mac))
   :ensure t
-  :custom (exec-path-from-shell-check-startup-files nil)
-  :config (exec-path-from-shell-initialize))
+  :custom                               ;
+  (exec-path-from-shell-arguments '("-l"))
+  (exec-path-from-shell-check-startup-files nil)
+  :config (when (or (memq window-system '(mac ns x))
+                    (daemonp))
+            (exec-path-from-shell-initialize)))
 
 (use-package
   xclip
@@ -318,7 +322,6 @@
     (or (yas/expand)
         (company-indent-or-complete-common nil)))
   (setq-default company-dabbrev-downcase nil)
-
   :bind (:map company-mode-map
               ("<tab>" . user/complete)
               ("TAB" . user/complete)
@@ -664,11 +667,25 @@
   (doom-modeline-mode 1))
 
 (use-package
+  solaire-mode
+  :ensure t
+  :if (display-graphic-p)
+  :hook                                 ;
+  ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
+  (minibuffer-setup . solaire-mode-in-minibuffer)
+  :config                               ;
+  (set-face-background 'solaire-mode-line-face nil)
+  (set-face-background 'solaire-mode-line-inactive-face nil)
+  (solaire-global-mode +1)
+  (solaire-mode-swap-bg))
+
+(use-package
   doom-themes
   :ensure t
   :init
   :custom                               ;
   (doom-themes-neotree-file-icons t)
+  (doom-themes-treemacs-theme "doom-colors")
   :custom-face                          ;
   (font-lock-comment-face ((t
                             (:slant italic))))
@@ -678,7 +695,6 @@
                                      (load-theme 'doom-one t)))
   :config                               ;
   (load-theme 'doom-one t)
-  (setq doom-themes-treemacs-theme "doom-colors") ; use the colorful treemacs theme
   ;; (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config)
   (doom-themes-neotree-config)
@@ -767,19 +783,6 @@
   (setq dashboard-items-default-length 20)
   ;; C/S mode use dashboard as default buffer
   (dashboard-setup-startup-hook))
-
-(use-package
-  solaire-mode
-  :ensure t
-  :if (display-graphic-p)
-  :hook                                 ;
-  ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
-  (minibuffer-setup . solaire-mode-in-minibuffer)
-  :config                               ;
-  (set-face-background 'solaire-mode-line-face nil)
-  (set-face-background 'solaire-mode-line-inactive-face nil)
-  (solaire-global-mode +1)
-  (solaire-mode-swap-bg))
 
 
 (use-package
