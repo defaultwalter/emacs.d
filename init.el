@@ -25,40 +25,7 @@
 (setq use-package-compute-statistics t)
 (require 'use-package)
 
-;; 安装系统包
-(use-package
-  use-package-ensure-system-package
-  :ensure t
-  :defer t)
-
-(use-package
-  gcmh                                  ; 优化GC
-  :ensure t
-  :config (gcmh-mode 1))
-
-(use-package
-  restart-emacs
-  :ensure t
-  :disabled)
-
-;; 性能统计
-(use-package
-  benchmark-init
-  :ensure t
-  :disabled
-  :config
-  ;; To disable collection of benchmark data after init is done.
-  (add-hook 'after-init-hook 'benchmark-init/deactivate))
-
-(use-package
-  memory-usage
-  :ensure t
-  :defer t
-  :disabled)
-
-
 ;;;; 加载配置
-
 (require 'core)
 (require 'major-mode)
 

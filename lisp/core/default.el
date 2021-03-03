@@ -133,9 +133,9 @@
   ;; 设置垂直窗口边框(目前发现只在终端有效)
   (set-face-inverse-video-p 'vertical-border nil)
   (set-face-background 'vertical-border (face-background 'default))
+  (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?┊))
   (when (display-graphic-p)
     (set-face-foreground 'vertical-border (face-background 'default)))
-  (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?┊))
   ;; Modeline
   (set-face-background 'mode-line-inactive nil)
   (set-face-background 'mode-line nil)

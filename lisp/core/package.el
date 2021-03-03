@@ -2,6 +2,31 @@
 ;;;; 基础
 ;;;; ==============================================
 (use-package
+  gcmh                                  ; 优化GC
+  :ensure t
+  :config (gcmh-mode 1))
+
+(use-package
+  restart-emacs
+  :ensure t
+  :disabled)
+
+;; 性能统计
+(use-package
+  benchmark-init
+  :ensure t
+  :disabled
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
+
+(use-package
+  memory-usage
+  :ensure t
+  :defer t
+  :disabled)
+
+(use-package
   exec-path-from-shell
   ;; :if (memq window-system '(ns mac))
   :ensure t
@@ -174,6 +199,7 @@
   (user/leader-key "bK" '(kill-buffer-and-window :name "kill buffer&window"))
   (user/leader-key "bc" '(kill-this-buffer :name "kill buffer"))
   (user/leader-key "bC" '(kill-buffer-and-window :name "kill buffer&window"))
+  (user/leader-key "b <end>" '((lambda() (interactive)(switch-to-buffer "*scratch*")) :name "scratch buffer"))
   (user/leader-key "c"
                    '(:ignore t
                              :name "content"))
