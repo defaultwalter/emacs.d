@@ -77,6 +77,7 @@
   :ensure t
   :defer t
   :commands (org-roam org-roam-dailies-today org-roam-db-clear org-roam-db-build-cache)
+  :hook(org-mode . org-roam-mode)
   :custom                               ;
   (org-roam-buffer "*Relationship*")
   (org-roam-directory user/note-directory)

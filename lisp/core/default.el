@@ -143,6 +143,8 @@
 
 (add-hook 'after-init-hook 'user/gui-ajust)
 (add-hook 'server-after-make-frame-hook 'user/gui-ajust)
+;; 自动结束子进程
+(setq confirm-kill-processes nil)
 ;;;;==================================================
 ;;;; 编辑行为
 ;;;;==================================================

@@ -32,7 +32,7 @@
   (lsp-file-watch-threshold 2000)
   (lsp-completion-provider :capf)
   (lsp-enable-snippet t)
-  (lsp-idle-delay 0.5)
+  (lsp-idle-delay 0.01)
   ;; (lsp-keymap-prefix "SPC m l")
   ;; (lsp-eldoc-enable-hover nil)
   (lsp-enable-completion-at-point t)

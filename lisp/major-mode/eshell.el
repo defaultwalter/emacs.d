@@ -1,7 +1,6 @@
 ;;; package -- eshell
 ;;; Commentary:
 ;;; Code:
-
 (setq eshell-history-size 1024)
 (setq eshell-hist-ignoredups t)
 (setq eshell-cmpl-ignore-case t)
@@ -10,19 +9,17 @@
 (setq eshell-mv-interactive-query t)
 (setq eshell-rm-interactive-query t)
 (setq eshell-mv-overwrite-files nil)
-
 (use-package
   eshell-toggle
   :ensure t
   :defer t
-  :bind ("C-`" . eshell-toggle))
-
+  :bind ;; ("C-`" . eshell-toggle)
+  )
 (use-package
   esh-autosuggest
   :ensure t
   :defer t
   :hook (eshell-mode . esh-autosuggest-mode))
-
 (use-package
   eshell-syntax-highlighting
   :ensure t

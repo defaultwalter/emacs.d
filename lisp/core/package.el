@@ -199,7 +199,9 @@
   (user/leader-key "bK" '(kill-buffer-and-window :name "kill buffer&window"))
   (user/leader-key "bc" '(kill-this-buffer :name "kill buffer"))
   (user/leader-key "bC" '(kill-buffer-and-window :name "kill buffer&window"))
-  (user/leader-key "b <end>" '((lambda() (interactive)(switch-to-buffer "*scratch*")) :name "scratch buffer"))
+  (user/leader-key "b <end>" '((lambda()
+                                 (interactive)
+                                 (switch-to-buffer "*scratch*")) :name "scratch buffer"))
   (user/leader-key "c"
                    '(:ignore t
                              :name "content"))
@@ -510,8 +512,7 @@
   :config                                  ;
   (setq sis-respect-prefix-and-buffer nil) ;开启会导致 which-key 翻页失效
   (cond ((eq system-type 'darwin)
-
-       (if (executable-find "macism")
+         (if (executable-find "macism")
              (sis-ism-lazyman-config "com.apple.keylayout.ABC" "com.apple.inputmethod.SCIM.ITABC")
            (message
             "SIS need to install macism. use ‘brew tap laishulu/macism;brew install macism’ to install it.")))
@@ -521,38 +522,47 @@
 
 (use-package
   multi-vterm
-  :ensure t
-  :config (add-hook 'vterm-mode-hook (lambda ()
-                                       (setq-local evil-insert-state-cursor 'box)
-                                       (evil-insert-state)))
-  (define-key vterm-mode-map [return]                      #'vterm-send-return)
-  (setq vterm-keymap-exceptions nil)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-e")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-f")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-a")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-v")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-b")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-w")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-u")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-n")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-m")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-p")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-j")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-k")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-r")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-t")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-g")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-c")      #'vterm--self-insert)
-  (evil-define-key 'insert vterm-mode-map (kbd "C-SPC")    #'vterm--self-insert)
-  (evil-define-key 'normal vterm-mode-map (kbd "C-d")      #'vterm--self-insert)
-  (evil-define-key 'normal vterm-mode-map (kbd ",c")       #'multi-vterm)
-  (evil-define-key 'normal vterm-mode-map (kbd ",n")       #'multi-vterm-next)
-  (evil-define-key 'normal vterm-mode-map (kbd ",p")       #'multi-vterm-prev)
-  (evil-define-key 'normal vterm-mode-map (kbd "i")        #'evil-insert-resume)
-  (evil-define-key 'normal vterm-mode-map (kbd "o")        #'evil-insert-resume)
-  (evil-define-key 'normal vterm-mode-map (kbd "<return>") #'evil-insert-resume))
+  :ensure t)
 
+(use-package
+  vterm-toggle
+  :ensure t
+  :bind                                 ;
+  ("C-`" . vterm-toggle)
+  ("C-~" . vterm-toggle-cd)
+  :init                                 ;
+  (add-to-list 'display-buffer-alist '((lambda(bufname _)
+                                         (with-current-buffer bufname (equal major-mode
+                                                                             'vterm-mode)))
+                                       (display-buffer-reuse-window display-buffer-in-direction)
+                                       (direction . bottom)
+                                       (dedicated . t) ;dedicated is supported in emacs27
+                                       (reusable-frames . visible)
+                                       (window-height . 0.3))))
+(use-package
+  centaur-tabs
+  :ensure t
+  :demand
+  :disabled
+  :custom                               ;
+  (centaur-tabs-style "bar")
+  (centaur-tabs-height 32)
+  (centaur-tabs-set-icons t)
+  ;; (centaur-tabs-plain-icons t)
+  (centaur-tabs-gray-out-icons 'buffer)
+  (centaur-tabs-set-bar 'over)
+  (centaur-tabs-set-modified-marker t)
+  (centaur-tabs-show-navigation-buttons t)
+  (centaur-tabs-cycle-scope 'tabs)
+  :bind                                 ;
+  (:map evil-normal-state-map
+        ("g t" . centaur-tabs-forward)
+        ("g T" . centaur-tabs-backward))
+  :config (centaur-tabs-mode t)
+  :bind ("C-<prior>" . centaur-tabs-backward)
+  ("C-<next>" . centaur-tabs-forward)
+  :config;
+  (centaur-tabs-group-by-projectile-project))
 ;; ;;;; ==============================================
 ;; ;;;; 编辑增强
 ;; ;;;; ==============================================
@@ -591,7 +601,7 @@
               ("RET" . company-complete-selection))     ; 终端下生效
   :custom                                               ;
   (company-minimum-prefix-length 2)
-  (company-idle-delay 0.5)
+  (company-idle-delay 0.01)
   (company-echo-delay 0.2)
   (company-show-numbers t)
   :config                               ;
