@@ -86,11 +86,11 @@
                                                                                       (make-glyph-code
                                                                                        c
                                                                                        'font-lock-comment-face))
-                                                                                    " ······▾")))
+                                                                                    " ✚")))
 
 ;; 显示当前所在的括号
 (show-paren-mode 1)
-(setq-default electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit)
+(setq-default electric-pair-inhibit-predicate 'electric-pair-default-inhibit) ; 抑制策略
 (electric-pair-mode 1)
 
 (defun user/set-font(fontsize)
@@ -141,8 +141,8 @@
   (set-face-background 'mode-line nil)
   (setq underline-minimum-offset 5))
 
-(add-hook 'after-init-hook 'user/gui-ajust)
-(add-hook 'server-after-make-frame-hook 'user/gui-ajust)
+;; (add-hook 'after-init-hook 'user/gui-ajust)
+;; (add-hook 'server-after-make-frame-hook 'user/gui-ajust)
 ;; 自动结束子进程
 (setq confirm-kill-processes nil)
 ;;;;==================================================
@@ -158,12 +158,12 @@
 (setq display-line-numbers-type t)                    ; 行号类型
 (setq-default display-line-numbers-width 5)           ; 行号宽度
 (add-hook 'prog-mode-hook 'display-line-numbers-mode) ; 显示行号
-(add-hook 'text-mode-hook 'display-line-numbers-mode) ; 显示行号
+;; (add-hook 'text-mode-hook 'display-line-numbers-mode) ; 显示行号
 (add-hook 'conf-mode-hook 'display-line-numbers-mode) ; 显示行号
 (add-hook 'prog-mode-hook 'hl-line-mode)              ; 高亮当前行
-(add-hook 'text-mode-hook 'hl-line-mode)              ; 高亮当前行
-(add-hook 'conf-mode-hook 'hl-line-mode)              ; 高亮当前行
-(delete-selection-mode 1)                             ; 插入时替换选区
+;; (add-hook 'text-mode-hook 'hl-line-mode)              ; 高亮当前行
+(add-hook 'conf-mode-hook 'hl-line-mode) ; 高亮当前行
+(delete-selection-mode 1)                ; 插入时替换选区
 
 (setq-default truncate-lines nil)
 

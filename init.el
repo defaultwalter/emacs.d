@@ -25,7 +25,7 @@
 (setq use-package-compute-statistics t)
 (require 'use-package)
 
-;;;; 加载配置
+;;; 加载配置
 (require 'core)
 (require 'major-mode)
 

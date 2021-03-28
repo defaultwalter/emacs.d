@@ -1,18 +1,71 @@
 ;;; package -- org-config
 ;;; Commentary:
 ;;; Code:
-
 (use-package
   org
   :ensure org-plus-contrib
   :defer t
   :hook (org-mode . org-superstar-mode)
   :custom-face                          ;
+  (org-level-1 ((t
+                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
+                              :slant italic
+                              :inherit 'outline-1))))
+  (org-level-2 ((t
+                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
+                              :slant italic
+                              :inherit 'outline-2))))
+  (org-level-3 ((t
+                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
+                              :slant italic
+                              :inherit 'outline-3))))
+  (org-level-4 ((t
+                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
+                              :slant italic
+                              :inherit 'outline-4))))
+  (org-level-5 ((t
+                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
+                              :slant italic
+                              :inherit 'outline-5))))
+  (org-level-6 ((t
+                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
+                              :slant italic
+                              :inherit 'outline-6))))
+  (org-level-7 ((t
+                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
+                              :slant italic
+                              :inherit 'outline-7))))
+  (org-level-8 ((t
+                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
+                              :slant italic
+                              :inherit 'outline-8))))
+  (org-link ((t
+              (:foreground ,(color-darken-name (face-foreground 'default) 20)
+                           :slant italic
+                           :inherit 'link))))
+  (org-list-dt ((t
+                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)))))
+  (org-table ((t
+               (:foreground ,(face-foreground 'default)))))
+  (org-code ((t
+              (:foreground ,(color-darken-name (face-foreground 'default) 20)))))
+  (org-verbatim ((t
+                  (:foreground ,(color-darken-name (face-foreground 'default) 20)))))
+  (org-block-begin-line ((t
+                          (:background nil
+                                       :box (:line-width -1
+                                                         :color  ,(color-lighten-name
+                                                                   (face-background 'default) 5))))))
+  (org-block ((t
+               (:background ,(color-lighten-name (face-background 'default) 5)))))
+  (org-block-end-line ((t
+                        (:background nil
+                                     :inherit 'org-block-begin-line))))
   :init                                 ;
   (setq org-preview-latex-image-directory (expand-file-name "ltximg/" user-emacs-directory))
   (setq org-hide-emphasis-markers nil) ; 隐藏强调符号（加粗，下划线等等）
   (setq org-pretty-entities nil)       ; 可以显示上标下标
-  (setq org-ellipsis " ······▾")       ;设置折叠标识
+  (setq org-ellipsis " ✚")             ;设置折叠标识
   (setq org-edit-src-content-indentation 0) ; 设置代码内容缩进
   (setq org-src-preserve-indentation nil)
   (setq org-src-tab-acts-natively t)
@@ -22,10 +75,21 @@
   (setq org-cycle-separator-lines 2)
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
   (add-hook 'org-mode-hook (lambda ()
+                             ;; (setq prettify-symbols-alist '(("#+BEGIN_SRC" . "▿")
+                             ;;                                ("#+END_SRC" . "▵")
+                             ;;                                ("#+begin_src" . "▿")
+                             ;;                                ("#+end_src" . "▵")
+                             ;;                                ("#+BEGIN_QUOTE" . "▿")
+                             ;;                                ("#+END_QUOTE" . "▵")
+                             ;;                                ("#+begin_quote" . "▿")
+                             ;;                                ("#+end_quote" . "▵")))
+                             ;; (setq prettify-symbols-unprettify-at-point 'right-edge)
+                             ;; (prettify-symbols-mode 1)
                              (setq truncate-lines nil)
                              (org-display-inline-images t t) ; 显示图片
                              (org-indent-mode 1) ; 缩进模式
                              (visual-fill-column-mode 1)
+                             (org-align-tags t)
                              (add-hook 'before-save-hook (lambda()
                                                            ;; 保存时 对齐 tag
                                                            (org-align-tags t)) nil 'local)))
@@ -43,6 +107,15 @@
   (require 'ox-freemind)
   (require 'org-tempo))
 
+
+(use-package
+  visual-fill-column                    ;设置正文宽度
+  :ensure t
+  :defer t
+  :commands (visual-fill-column-mode)
+  :config                               ;
+  (setq-default visual-fill-column-width 100)
+  (setq-default visual-fill-column-center-text t))
 
 (use-package
   ob-plantuml
@@ -67,46 +140,74 @@
   :defer t
   :custom                               ;
   (org-superstar-remove-leading-stars t)
-  (org-superstar-headline-bullets-list '("◉" "○" "●" "○" "●" "○" "●"))
+  (org-superstar-headline-bullets-list '("✿" "❖" "●" "◉" "◍" "◎" "○" "◌"))
+  (org-superstar-prettify-item-bullets t)
+  (org-superstar-item-bullet-alist '((?* . ?*)
+                                     (?+ . ?◆)
+                                     (?- . ?◈)))
+  (org-superstar-special-todo-items t)
+  (org-superstar-todo-bullet-alist '(("TODO" . ?☐)
+                                     ("DONE" . ?☑)))
   :hook (org-mode . org-superstar-mode)
   :init                                 ;
-  (setq org-superstar-prettify-item-bullets nil))
+  (setq org-superstar-prettify-item-bullets t))
+
+
 
 (use-package
   org-roam
   :ensure t
   :defer t
-  :commands (org-roam org-roam-dailies-today org-roam-db-clear org-roam-db-build-cache)
+  :commands (org-roam-buffer-toggle-display org-roam-dailies-find-today org-roam-db-clear
+                                            org-roam-db-build-cache)
   :hook(org-mode . org-roam-mode)
   :custom                               ;
-  (org-roam-buffer "*Relationship*")
+  (org-roam-title-to-slug-function (lambda (title)
+                                     (upcase (org-roam--title-to-slug title))))
+  ;; (org-roam-db-update-method 'immediate)
+  (org-roam-buffer "*Backlink*")
+  ;; (org-roam-buffer-position 'bottom)
+  ;; (org-roam-buffer-width 0.3)
+  ;; (org-roam-buffer-window-parameters '((no-delete-other-windows . t)
+  ;;                                      (mode-line-format "")
+  ;;                                      (window-slot . 0)
+  ;;                                      (window-side . bottom)))
   (org-roam-directory user/note-directory)
   (org-roam-index-file "Index.org")
-  (org-roam-dailies-directory "Journal")
+  (org-roam-dailies-directory "Journals")
   (org-roam-title-sources '(headline))
   (org-roam-tag-sources '(vanilla))
   (org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
-                                 :file-name "%<%y%m%d%H%M%S>-${slug}"
-                                 :head "* ${title} :Default:\n"
+                                 :file-name "${slug}-%<%Y-%m-%d %H:%M:%S>"
+                                 :head "* ${title} :Default:\n\n"
                                  :unnarrowed t)))
   (org-roam-capture-immediate-template '("d" "default" plain #'org-roam-capture--get-point "%?"
-                                         :file-name "%<%y%m%d%H%M%S>-${slug}"
-                                         :head "* ${title} :Default:\n"
-                                         :unnarrowed t))
-  (org-roam-dailies-capture-templates '(("d" "default" entry #'org-roam-capture--get-point "* %?"
-                                         :file-name "Journal/%<%Y-%m-%d>"
-                                         :head "* %<%Y/%m/%d %A> :Journal:\n")))
+                                         :file-name "${slug}-%<%Y%m%d%H%M%S>"
+                                         :head "* ${title} :Default:\n\n"
+                                         :unnarrowed t
+                                         :immediate-finish t))
+  (org-roam-dailies-capture-templates '(("d" "default" entry #'org-roam-capture--get-point "%?"
+                                         :file-name "Journals/%<%Y-%m-%d>"
+                                         :head
+                                         "* %<%d %B, %Y> :Journal:%<%A>:\n\n** 🍀 晨间日记\n\n*** 昨天发生的事\n\n*** 今天要做的事\n\n*** 一些想法\n\n** 🌟 随手记\n\n"
+                                         :unnarrowed t)))
+  :custom-face                          ;
+  (org-roam-link ((t
+                   (:foreground ,(color-lighten-name (face-foreground 'default) 10)
+                                :inherit 'org-link))))
+  (org-roam-link-current ((t
+                           (:inherit 'org-roam-link))))
   :init                                 ;
-  (user/leader-key "nd" '(org-roam-dailies-today :name "today"))
-  (user/leader-key "nf" '(org-roam-find-file :name "find note"))
+  (user/leader-key "n d" '(org-roam-dailies-find-today :name "today"))
+  (user/leader-key "n f" '(org-roam-find-file :name "find note"))
   (user/leader-key "n DEL" '(org-roam-db-clear :name "delete cache"))
   (user/leader-key "n RET" '(org-roam-db-build-cache :name "build cache"))
-  (user/leader-key "nv" '(org-roam :name "view"
-                                   :mode org-mode))
-  (user/leader-key "ng" '(org-roam-graph :name "graph"
-                                         :mode org-mode))
-  (user/leader-key "ni" '(org-roam-insert :name "insert node"
+  (user/leader-key "n b" '(org-roam-buffer-toggle-display :name "backlink"
+                                                          :mode org-mode))
+  (user/leader-key "n g" '(org-roam-graph :name "graph"
                                           :mode org-mode))
+  (user/leader-key "n i" '(org-roam-insert :name "insert node"
+                                           :mode org-mode))
   :config                               ;
   (require 'org-roam-protocol))
 
@@ -119,7 +220,7 @@
   (deft-default-extension "org")
   (deft-directory user/note-directory)
   :init                                 ;
-  (user/leader-key "nn" '(deft :name "list")))
+  (user/leader-key "n n" '(deft :name "list")))
 
 (use-package
   org-roam-server
@@ -146,6 +247,8 @@
                                                 org-roam-server-port))) :name "server"))
   :config )
 
+(unless (file-exists-p user/agenda-directory)
+  (mkdir user/agenda-directory))
 (setq org-agenda-files (mapcar (lambda (file)
                                  (expand-file-name file user/agenda-directory))
                                (directory-files user/agenda-directory nil ".*\.org")))

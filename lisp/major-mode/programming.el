@@ -3,22 +3,22 @@
 ;;; Code:
 
 
-;; (use-package
-;;   yasnippet
-;;   :ensure t
-;;   :defer t
-;;   :hook (prog-mode . yas-minor-mode)
-;;   :config                               ;
-;;   (use-package
-;;     yasnippet-snippets
-;;     :ensure t
-;;     :config (yas-reload-all)))
+(use-package
+  yasnippet
+  :ensure t
+  :defer t
+  :hook (prog-mode . yas-minor-mode)
+  :config                               ;
+  (use-package
+    yasnippet-snippets
+    :ensure t
+    :config (yas-reload-all)))
 
-;; (use-package
-;;   ivy-yasnippet
-;;   :ensure t
-;;   :after (yasnippet ivy)
-;;   :defer t)
+(use-package
+  ivy-yasnippet
+  :ensure t
+  :after (yasnippet ivy)
+  :defer t)
 
 (use-package
   lsp-mode
@@ -32,18 +32,18 @@
   (lsp-file-watch-threshold 2000)
   (lsp-completion-provider :capf)
   (lsp-enable-snippet t)
-  (lsp-idle-delay 0.01)
+  (lsp-idle-delay 0.5)
   ;; (lsp-keymap-prefix "SPC m l")
   ;; (lsp-eldoc-enable-hover nil)
   (lsp-enable-completion-at-point t)
   (lsp-keep-workspace-alive nil)
-  (lsp-enable-file-watchers nil)
+  (lsp-enable-file-watchers t)
   (lsp-enable-semantic-highlighting nil)
   (lsp-enable-symbol-highlighting nil)
-  (lsp-enable-text-document-color nil)
+  (lsp-enable-text-document-color t)
   (lsp-enable-folding nil)
-  (lsp-enable-indentation nil)
-  (lsp-enable-on-type-formatting nil)
+  (lsp-enable-indentation t)
+  (lsp-enable-on-type-formatting t)
   :hook ((lsp-mode . lsp-enable-which-key-integration)))
 (use-package
   lsp-ui

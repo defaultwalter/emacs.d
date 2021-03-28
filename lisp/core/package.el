@@ -1,10 +1,9 @@
-;;;; ==============================================
-;;;; 基础
-;;;; ==============================================
+;;; 基础
 (use-package
   gcmh                                  ; 优化GC
   :ensure t
-  :config (gcmh-mode 1))
+  :config;
+  (gcmh-mode 1))
 
 (use-package
   restart-emacs
@@ -43,9 +42,7 @@
   :if (not (display-graphic-p))
   :config (xclip-mode 1))
 
-;;;; ==============================================
-;;;; 交互增强
-;;;; ==============================================
+;;; 交互增强
 (use-package
   which-key
   :ensure t
@@ -117,9 +114,9 @@
     (evil-visual-restore))
   (evil-define-key 'visual 'global ">" 'user/evil-shift-right-visual)
   (evil-define-key 'visual 'global "<" 'user/evil-shift-left-visual)
-  (evil-define-key 'normal 'global (kbd "C-S-v") 'evil-visual-block)
+  (evil-define-key 'normal 'global (kbd "C-S-v") 'evil-visual-block))
   ;; (evil-mode 1)
-  )
+
 
 (use-package
   evil-collection
@@ -676,10 +673,7 @@
   :defer t
   :init (user/leader-key "cf" '(format-all-buffer :name "format")))
 
-
-;; ;;;; ==============================================
-;; ;;;; 主题外观
-;; ;;;; ==============================================
+;;; 主题外观
 
 (use-package
   doom-modeline
