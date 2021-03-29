@@ -198,16 +198,13 @@
   (org-roam-link-current ((t
                            (:inherit 'org-roam-link))))
   :init                                 ;
-  (user/leader-key "n d" '(org-roam-dailies-find-today :name "today"))
-  (user/leader-key "n f" '(org-roam-find-file :name "find note"))
-  (user/leader-key "n DEL" '(org-roam-db-clear :name "delete cache"))
-  (user/leader-key "n RET" '(org-roam-db-build-cache :name "build cache"))
-  (user/leader-key "n b" '(org-roam-buffer-toggle-display :name "backlink"
-                                                          :mode org-mode))
-  (user/leader-key "n g" '(org-roam-graph :name "graph"
-                                          :mode org-mode))
-  (user/leader-key "n i" '(org-roam-insert :name "insert node"
-                                           :mode org-mode))
+  (modal-set-leader-key "n d" '(org-roam-dailies-find-today :which-key "today"))
+  (modal-set-leader-key "n f" '(org-roam-find-file :which-key "find note"))
+  (modal-set-leader-key "n DEL" '(org-roam-db-clear :which-key "delete cache"))
+  (modal-set-leader-key "n RET" '(org-roam-db-build-cache :which-key "build cache"))
+  (modal-set-leader-key org-mode-map "n b" '(org-roam-buffer-toggle-display :which-key "backlink"))
+  (modal-set-leader-key org-mode-map "n g" '(org-roam-graph :which-key "graph"))
+  (modal-set-leader-key org-mode-map "n i" '(org-roam-insert :which-key "insert node"))
   :config                               ;
   (require 'org-roam-protocol))
 
@@ -220,7 +217,7 @@
   (deft-default-extension "org")
   (deft-directory user/note-directory)
   :init                                 ;
-  (user/leader-key "n n" '(deft :name "list")))
+  (modal-set-leader-key "n n" '(deft :which-key "list")))
 
 (use-package
   org-roam-server
@@ -239,12 +236,12 @@
   (org-roam-server-network-label-truncate-length 60 )
   (org-roam-server-network-label-wrap-length 20)
   :init                                 ;
-  (user/leader-key "ns" '((lambda ()
-                            (interactive)
-                            (when (not (bound-and-true-p org-roam-server-mode))
-                              (org-roam-server-mode t))
-                            (browse-url (format "http://%s:%s" org-roam-server-host
-                                                org-roam-server-port))) :name "server"))
+  (modal-set-leader-key "ns" '((lambda ()
+                                 (interactive)
+                                 (when (not (bound-and-true-p org-roam-server-mode))
+                                   (org-roam-server-mode t))
+                                 (browse-url (format "http://%s:%s" org-roam-server-host
+                                                     org-roam-server-port))) :which-key "server"))
   :config )
 
 (unless (file-exists-p user/agenda-directory)

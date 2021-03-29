@@ -2,13 +2,12 @@
 (use-package
   gcmh                                  ; 优化GC
   :ensure t
-  :config;
+  :config                               ;
   (gcmh-mode 1))
 
 (use-package
   restart-emacs
-  :ensure t
-  :disabled)
+  :ensure t)
 
 ;; 性能统计
 (use-package
@@ -43,207 +42,6 @@
   :config (xclip-mode 1))
 
 ;;; 交互增强
-(use-package
-  which-key
-  :ensure t
-  :custom                               ;
-  (which-key-show-early-on-C-h t)
-  (which-key-idle-delay 5)
-  (which-key-idle-secondary-delay 0.05)
-  (which-key-sort-order 'which-key-prefix-then-key-order)
-  (which-key-allow-multiple-replacements t)
-  (which-key-allow-evil-operators t)
-  (which-key-popup-type 'side-window)
-  :config                               ;
-  (which-key-mode t)
-  (add-to-list 'which-key-replacement-alist '(("ESC" . nil) . ("esc" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("tab" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("return" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("delete" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("left" . nil) . ("left" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("right" . nil) . ("right" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("<left>" . nil) . ("left" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("<right>" . nil) . ("right" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("up" . nil) . ("up" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("down" . nil) . ("down" . nil))))
-
-(use-package
-  evil
-  :ensure t
-  :custom                               ;
-  (evil-want-minibuffer nil)
-  (evil-want-keybinding nil)
-  (evil-want-integration t)
-  :init (setq evil-undo-system 'undo-tree)
-  (setq evil-want-C-i-jump nil)
-  (when evil-want-C-i-jump (define-key evil-motion-state-map (kbd "C-i") 'evil-jump-forward))
-  (setq evil-emacs-state-cursor
-        '("#51afef"
-          bar))
-  (setq evil-normal-state-cursor
-        '("#51afef"
-          box))
-  (setq evil-visual-state-cursor
-        '("#fe9865"
-          box))
-  (setq evil-insert-state-cursor
-        '("#f96060"
-          bar))
-  (setq evil-replace-state-cursor
-        '("#fd6698"
-          hollow))
-  (setq evil-operator-state-cursor
-        '("#98ce65"
-          hollow))
-  (add-hook 'after-init-hook (lambda ()
-                               (user/leader-key "wh" '(evil-window-left :name "left window"))
-                               (user/leader-key "wj" '(evil-window-down :name "down window"))
-                               (user/leader-key "wk" '(evil-window-up :name "up window"))
-                               (user/leader-key "wl" '(evil-window-right :name "right window"))))
-  :config                               ;
-  (defun user/evil-shift-left-visual ()
-    (interactive)
-    (call-interactively 'evil-shift-left)
-    (evil-normal-state)
-    (evil-visual-restore))
-  (defun user/evil-shift-right-visual ()
-    (interactive)
-    (call-interactively 'evil-shift-right)
-    (evil-normal-state)
-    (evil-visual-restore))
-  (evil-define-key 'visual 'global ">" 'user/evil-shift-right-visual)
-  (evil-define-key 'visual 'global "<" 'user/evil-shift-left-visual)
-  (evil-define-key 'normal 'global (kbd "C-S-v") 'evil-visual-block))
-  ;; (evil-mode 1)
-
-
-(use-package
-  evil-collection
-  :ensure t
-  :after evil
-  :config                               ;
-  (evil-collection-init))
-
-(use-package
-  evil-surround
-  :ensure t
-  :after evil
-  :config                               ;
-  (global-evil-surround-mode 1))
-
-
-(use-package
-  evil-exchange
-  :ensure t
-  :after evil
-  :config                               ;
-  (evil-exchange-cx-install))
-
-(use-package
-  evil-terminal-cursor-changer
-  :ensure t
-  :after evil
-  :unless (display-graphic-p)
-  :config                               ;
-  (evil-terminal-cursor-changer-activate))
-
-(defmacro user/leader-key (KEY &optional DEFAULTS)
-  `(when (boundp 'evil-leader-mode)
-     (let* ((DEFAULTS  (if (commandp ,DEFAULTS)
-                           (list :command ,DEFAULTS)
-                         (if (commandp (car ,DEFAULTS))
-                             (cons :command ,DEFAULTS) ,DEFAULTS)))
-            (ignore (plist-get DEFAULTS
-                               :ignore))
-            (name (plist-get DEFAULTS
-                             :name))
-            (mode (plist-get DEFAULTS
-                             :mode))
-            (command (plist-get DEFAULTS
-                                :command)))
-       (when name (if mode (which-key-add-major-mode-key-based-replacements mode (concat "SPC" " "
-                                                                                         ,KEY) name)
-                    (which-key-add-key-based-replacements (concat "SPC" " " ,KEY) name)))
-       (when command (if mode (evil-leader/set-key-for-mode mode ,KEY command)
-                       (evil-leader/set-key ,KEY command))))))
-(use-package
-  evil-leader
-  :ensure t
-  :after evil
-  :config                               ;
-  (evil-leader/set-leader "<SPC>")
-  ;; (setq evil-leader/in-all-states t)
-  (global-evil-leader-mode t)
-  (evil-mode t) ; 为了让 scratch/message 等buffer 能够使用 evil-leader，必须在 evil-leader 后启用 evil
-  (user/leader-key "f"
-                   '(:ignore t
-                             :name "file"))
-  (user/leader-key "ff" '(find-file :name "find file"))
-  (user/leader-key "fs" '(save-buffer :name "save file"))
-  (user/leader-key "fS" '(save-some-buffers :name "save all files"))
-  (user/leader-key "fr" '(recentf-open-files :name "recent file"))
-  (user/leader-key "f." '((lambda()
-                            (interactive)
-                            (dired user-config-directory)) :name "open configuration"))
-  (user/leader-key "b"
-                   '(:ignore t
-                             :name "buffer"))
-  (user/leader-key "bb" '(switch-to-buffer :name "switch buffer"))
-  (user/leader-key "bs" '(save-buffer :name "save buffer"))
-  (user/leader-key "bS" '(save-some-buffers :name "save all buffers"))
-  (user/leader-key "bk" '(kill-this-buffer :name "kill buffer"))
-  (user/leader-key "bK" '(kill-buffer-and-window :name "kill buffer&window"))
-  (user/leader-key "bc" '(kill-this-buffer :name "kill buffer"))
-  (user/leader-key "bC" '(kill-buffer-and-window :name "kill buffer&window"))
-  (user/leader-key "b <end>" '((lambda()
-                                 (interactive)
-                                 (switch-to-buffer "*scratch*")) :name "scratch buffer"))
-  (user/leader-key "c"
-                   '(:ignore t
-                             :name "content"))
-  (user/leader-key "cc" '(comment-line :name "comment"))
-  (user/leader-key "cr" '(comment-or-uncomment-region :name "comment region"))
-  (user/leader-key "w"
-                   '(:ignore t
-                             :name "window"))
-  (user/leader-key "ws" '(split-window-horizontally :name "split window horizontally"))
-  (user/leader-key "wv" '(split-window-vertically :name "split window vertically"))
-  (user/leader-key "wm" '(maximize-window :name "maximize window"))
-  (user/leader-key "wn" '(minimize-window :name "minimize window"))
-  (user/leader-key "wb" '(balance-windows :name "balance window"))
-  (user/leader-key "wd" '(delete-window :name "delete window"))
-  (user/leader-key "wD" '(delete-other-windows :name "delete other window"))
-  (user/leader-key "wc" '(delete-window :name "delete window"))
-  (user/leader-key "wC" '(delete-other-windows :name "delete other window"))
-  (user/leader-key "h"
-                   '(:ignore t
-                             :name "help"))
-  ;; (user/leader-key "h <return>" '(view-order-manuals :name "manuals"))
-  (user/leader-key "h RET" '(view-order-manuals :name ("return" . "manuals")))
-  (user/leader-key "hf" '(describe-function :name "describe function"))
-  (user/leader-key "hv" '(describe-variable :name "describe variable"))
-  (user/leader-key "hk" '(describe-key :name "describe key"))
-  (user/leader-key "hc" '(describe-char :name "describe char"))
-  (user/leader-key "hm" '(describe-mode :name "describe mode"))
-  (user/leader-key "hp" '(describe-package :name "describe package"))
-  (user/leader-key "hs" '(describe-symbol :name "describe symbol"))
-  (user/leader-key "hw" '(where-is :name "where is"))
-  (user/leader-key "h?" '(about-emacs :name "about"))
-  (user/leader-key "g"
-                   '(:ignore t
-                             :name "goto"))
-  (user/leader-key "p"
-                   '(:ignore t
-                             :name "project"))
-  (user/leader-key "n"
-                   '(:ignore t
-                             :name "note"))
-  (user/leader-key "na" '(org-agenda :name "agenda"))
-  (user/leader-key "m"
-                   '(:ignore t
-                             :name "mode")))
-
 
 (use-package
   ivy
@@ -269,19 +67,19 @@
   :ensure t
   :defer t
   :init                                 ;
-  (user/leader-key "RET" '(counsel-bookmark :name "bookmark"))
-  (user/leader-key "ff" '((lambda()
+  (modal-set-leader-key "RET" '(counsel-bookmark :which-key "bookmark"))
+  (modal-set-leader-key "ff" '((lambda()
                             (interactive)
                             (let ((counsel-find-file-ignore-regexp "^\\."))
-                              (counsel-find-file))) :name "find file"))
-  (user/leader-key "fF" '(counsel-find-file :name "find all file"))
-  (user/leader-key "fr" '(counsel-recentf :name "recent file"))
-  (user/leader-key "bb" '((lambda()
+                              (counsel-find-file))) :which-key "find file"))
+  (modal-set-leader-key "fF" '(counsel-find-file :which-key "find all file"))
+  (modal-set-leader-key "fr" '(counsel-recentf :which-key "recent file"))
+  (modal-set-leader-key "bb" '((lambda()
                             (interactive)
                             (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
-                              (counsel-switch-buffer))) :name "switch buffer"))
-  (user/leader-key "bB" '(counsel-switch-buffer :name "switch all buffer"))
-  (user/leader-key "SPC" '(counsel-M-x :name "command"))
+                              (counsel-switch-buffer))) :which-key "switch buffer"))
+  (modal-set-leader-key "bB" '(counsel-switch-buffer :which-key "switch all buffer"))
+  (modal-set-leader-key "SPC" '(counsel-M-x :which-key "command"))
   :bind (("M-x" . counsel-M-x))
   :config)
 
@@ -308,8 +106,8 @@
   :ensure t
   :defer t
   :init                                 ;
-  (user/leader-key "cs" '(swiper :name "swipe"))
-  (user/leader-key "cS" '(swiper-all :name "swipe in all buffers"))
+  (modal-set-leader-key "cs" '(swiper :which-key "swipe"))
+  (modal-set-leader-key "cS" '(swiper-all :which-key "swipe in all buffers"))
   :bind                                 ;
   ("C-S-s" . swiper-all)
   ("C-s" . swiper))
@@ -326,10 +124,10 @@
   :ensure t
   :defer t
   :init                                 ;
-  (user/leader-key "b <left>" '(buf-move-left :name "move to left window"))
-  (user/leader-key "b <down>" '(buf-move-down :name "move to down window"))
-  (user/leader-key "b <up>" '(buf-move-up :name "move to up window"))
-  (user/leader-key "b <right>" '(buf-move-right :name "move to right window"))
+  (modal-set-leader-key "b <left>" '(buf-move-left :which-key "move to left window"))
+  (modal-set-leader-key "b <down>" '(buf-move-down :which-key "move to down window"))
+  (modal-set-leader-key "b <up>" '(buf-move-up :which-key "move to up window"))
+  (modal-set-leader-key "b <right>" '(buf-move-right :which-key "move to right window"))
   (setq buffer-move-stay-after-swap t)
   (setq buffer-move-behavior 'move))
 
@@ -338,14 +136,14 @@
   :ensure t
   :defer t
   :init                                 ;
-  (user/leader-key "wr" '(windresize :name "resize window")))
+  (modal-set-leader-key "wr" '(windresize :which-key "resize window")))
 
 (use-package
   ace-window                            ; 窗口跳转
   :ensure t
   :defer t
   :init                                 ;
-  (user/leader-key "ww" '(ace-window :name "select window"))
+  (modal-set-leader-key "ww" '(ace-window :which-key "select window"))
   :config (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)))
 
 (use-package
@@ -357,9 +155,9 @@
   (projectile-sort-order 'access-time)
   (projectile-find-dir-includes-top-level t)
   :init                                 ;
-  (user/leader-key "pk" '(project-kill-buffers :name "close all project buffers"))
-  (user/leader-key "pi" '(projectile-project-info :name "project info"))
-  (user/leader-key "pd" '(projectile-remove-known-project :name "remove project"))
+  (modal-set-leader-key "pk" '(project-kill-buffers :which-key "close all project buffers"))
+  (modal-set-leader-key "pi" '(projectile-project-info :which-key "project info"))
+  (modal-set-leader-key "pd" '(projectile-remove-known-project :which-key "remove project"))
   :config (projectile-mode +1))
 
 (use-package
@@ -370,10 +168,10 @@
   (counsel-projectile-sort-directories t)
   (counsel-projectile-sort-buffers t)
   (counsel-projectile-sort-projects t)
-  :init (user/leader-key "pp" '(counsel-projectile-switch-project :name "switch project"))
-  (user/leader-key "pf" '(counsel-projectile-find-file :name "find file in project"))
-  (user/leader-key "ps" '(counsel-projectile-git-grep :name "search in project by git"))
-  (user/leader-key "pS" '(counsel-projectile-grep :name "search in project"))
+  :init (modal-set-leader-key "pp" '(counsel-projectile-switch-project :which-key "switch project"))
+  (modal-set-leader-key "pf" '(counsel-projectile-find-file :which-key "find file in project"))
+  (modal-set-leader-key "ps" '(counsel-projectile-git-grep :which-key "search in project by git"))
+  (modal-set-leader-key "pS" '(counsel-projectile-grep :which-key "search in project"))
   :config (counsel-projectile-mode t))
 
 (use-package
@@ -382,7 +180,7 @@
   :commands (magit-status magit-get-current-branch)
   :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   :init                                 ;
-  (user/leader-key "pg" '(magit-status :name "git")))
+  (modal-set-leader-key "pg" '(magit-status :which-key "git")))
 (use-package
   neotree
   :ensure t
@@ -397,7 +195,7 @@
   ("C-<tab>" . neotree-toggle)
   ("C-TAB" . neotree-toggle)
   :init                                 ;
-  (user/leader-key "fv" '(neotree-toggle :name "file view")))
+  (modal-set-leader-key "fv" '(neotree-toggle :which-key "file view")))
 
 
 (use-package
@@ -422,7 +220,7 @@
   :ensure t
   :defer t
   :init                                 ;
-  (with-eval-after-load "evil" (evil-define-key 'normal 'global "gc" 'avy-goto-char)))
+  )
 
 
 (use-package
@@ -539,6 +337,7 @@
 (use-package
   centaur-tabs
   :ensure t
+
   :demand
   :disabled
   :custom                               ;
@@ -558,7 +357,7 @@
   :config (centaur-tabs-mode t)
   :bind ("C-<prior>" . centaur-tabs-backward)
   ("C-<next>" . centaur-tabs-forward)
-  :config;
+  :config                               ;
   (centaur-tabs-group-by-projectile-project))
 ;; ;;;; ==============================================
 ;; ;;;; 编辑增强
@@ -572,14 +371,14 @@
   :hook ;; (prog-mode . company-mode)
   (after-init . global-company-mode)
   :init ;; Don't convert to downcase.
-  (defun user/complete()
+  (defun modal-set-complete()
     (interactive)
     (or (yas/expand)
         (company-indent-or-complete-common nil)))
   (setq-default company-dabbrev-downcase nil)
   :bind (:map company-mode-map
-              ("<tab>" . user/complete)
-              ("TAB" . user/complete)
+              ("<tab>" . modal-set-complete)
+              ("TAB" . modal-set-complete)
               ;;
               :map company-active-map   ;
               ("C-n" . company-select-next)
@@ -634,7 +433,7 @@
   :ensure t
   :defer t
   :bind ("C-/" . smart-comment)
-  :init (user/leader-key "cc" '(smart-comment :name "comment")))
+  :init (modal-set-leader-key "cc" '(smart-comment :which-key "comment")))
 
 (use-package
   hungry-delete                         ; 可以删除前面所有的空白字符
@@ -671,7 +470,7 @@
   format-all                            ;格式化代码，支持多种格式
   :ensure t
   :defer t
-  :init (user/leader-key "cf" '(format-all-buffer :name "format")))
+  :init (modal-set-leader-key "cf" '(format-all-buffer :which-key "format")))
 
 ;;; 主题外观
 
@@ -729,7 +528,7 @@
   dashboard
   :ensure t
   :config                               ;
-  (user/leader-key "b <home>" '(dashboard-refresh-buffer :name "dashboard"))
+  (modal-set-leader-key "b <home>" '(dashboard-refresh-buffer :which-key "dashboard"))
   (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
   (setq dashboard-center-content t)
   (setq dashboard-set-heading-icons t)
