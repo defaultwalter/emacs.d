@@ -1,6 +1,33 @@
 ;;; modal.el --- My modal edit -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;;; Code:
+
+;;;; which-key
+(unless (package-installed-p 'which-key)
+  (package-install 'which-key))
+(require 'which-key)
+
+(custom-set-variables '(which-key-idle-delay 0)
+                      '(which-key-idle-secondary-delay 0.05)
+                      '(which-key-sort-order 'which-key-prefix-then-key-order)
+                      '(which-key-allow-multiple-replacements t)
+                      '(which-key-allow-evil-operators t)
+                      '(which-key-popup-type 'side-window))
+
+(add-to-list 'which-key-replacement-alist '(("ESC" . nil) . ("esc" . nil)))
+(add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("tab" . nil)))
+(add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("return" . nil)))
+(add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("delete" . nil)))
+(add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil)))
+(add-to-list 'which-key-replacement-alist '(("left" . nil) . ("left" . nil)))
+(add-to-list 'which-key-replacement-alist '(("right" . nil) . ("right" . nil)))
+(add-to-list 'which-key-replacement-alist '(("<left>" . nil) . ("left" . nil)))
+(add-to-list 'which-key-replacement-alist '(("<right>" . nil) . ("right" . nil)))
+(add-to-list 'which-key-replacement-alist '(("up" . nil) . ("up" . nil)))
+(add-to-list 'which-key-replacement-alist '(("down" . nil) . ("down" . nil)))
+(which-key-mode t)
+
+;;;; mode
 (defgroup modal nil
   "Introduce modal editing"
   :tag "Modal"
@@ -15,16 +42,16 @@
     keymap)
   "Keymap for Modal insert state.")
 
-
-(defvar modal-motion-state-map
-  (let ((keymap (make-keymap)))
-    ;; (define-key keymap (kbd "<escape>") 'meow-insert-exit)
-    keymap)
-  "Keymap for Modal motion state.")
-
 (defvar modal-normal-state-map (let ((keymap (make-keymap)))
                                  (suppress-keymap keymap t) keymap)
   "Keymap for Modal normal state.")
+
+(defvar modal-motion-state-map
+  (let ((keymap (make-keymap)))
+    (suppress-keymap keymap t)
+    (set-keymap-parent keymap modal-normal-state-map) keymap)
+  "Keymap for Modal motion state.")
+
 
 (define-minor-mode modal-normal-mode "Modal normal state."
   nil
@@ -33,7 +60,7 @@
   (when modal-normal-mode               ;
     (modal-insert-mode -1)
     (modal-motion-mode -1)
-    (setq-local cursor-type 'hollow)))
+    (setq-local cursor-type 'box)))
 
 (define-minor-mode modal-insert-mode "Modal insert state."
   nil
@@ -42,7 +69,7 @@
   (when modal-insert-mode               ;
     (modal-normal-mode -1)
     (modal-motion-mode -1)
-    (setq-local cursor-type '(bar . 1))))
+    (setq-local cursor-type 'bar)))
 
 (define-minor-mode modal-motion-mode "Modal motion state."
   nil
@@ -96,46 +123,189 @@
   (if modal-mode (modal--global-enable)
     (modal--global-disable )))
 
+;;;; leader
+(defgroup modal-leader nil
+  "<leader> support for modal."
+  :group 'modal
+  :prefix 'modal-leader-)
 
-;;; command
-(defun modal-insert-quit()
+(defcustom modal-leader-key "SPC"
+  "Leader key"
+  :type 'string
+  :group 'modal-leader)
+
+(defvar modal--normal-mode-maps nil
+  "Modal map for mode")
+
+(defvar modal--motion-mode-maps nil
+  "Modal map for mode")
+
+(defvar modal-leader--mode-maps nil
+  "Leader map for mode")
+
+(defvar modal-leader--default-map (make-sparse-keymap)
+  "Keymap used for mode-independent leader bindings.")
+
+(define-key modal-normal-state-map (read-kbd-macro modal-leader-key) modal-leader--default-map)
+(define-key modal-motion-state-map (read-kbd-macro modal-leader-key) modal-leader--default-map)
+
+(defun modal-leader--apply-mode-map()
+  "Apply mode map"
+  (let ((normal-mode-map (or (cdr (assoc major-mode modal--normal-mode-maps))
+                             modal-normal-state-map))
+        (motion-mode-map (or (cdr (assoc major-mode modal--motion-mode-maps))
+                             modal-motion-state-map)))
+    (push `(modal-normal-mode . ,normal-mode-map) minor-mode-overriding-map-alist)
+    (push `(modal-motion-mode . ,motion-mode-map) minor-mode-overriding-map-alist)))
+
+(add-hook 'after-change-major-mode-hook #'modal-leader--apply-mode-map)
+
+(defun modal-leader--define-key(map key def)
+  "Leader define key."
+  (let* ((def (if (commandp def)
+                  (list :command def)
+                (if (commandp (car def))
+                    (cons :command def) def)))
+         (ignore (plist-get def
+                            :ignore))
+         (command (plist-get def
+                             :command))
+         (which-key (plist-get def
+                               :which-key)))
+    (unless ignore (define-key map (read-kbd-macro key) command))
+    (when which-key (which-key-add-keymap-based-replacements map key which-key))))
+
+(defun modal-leader-set-key(key def)
+  "Set key for leader."
+  (modal-leader--define-key modal-leader--default-map key def))
+
+(defun modal-leader-set-key-for-mode (mode key def)
+  "Set key for leader."
+  (let* ((normal-mode-map (cdr (assoc mode modal--normal-mode-maps)))
+         (motion-mode-map (cdr (assoc mode modal--motion-mode-maps)))
+         (leader-map (cdr (assoc mode modal-leader--mode-maps))))
+    (unless normal-mode-map
+      (setq normal-mode-map (make-sparse-keymap))
+      (set-keymap-parent normal-mode-map modal-normal-state-map)
+      (push (cons mode normal-mode-map) modal--normal-mode-maps))
+    (unless motion-mode-map
+      (setq motion-mode-map (make-sparse-keymap))
+      (set-keymap-parent motion-mode-map modal-motion-state-map)
+      (push (cons mode motion-mode-map) modal--motion-mode-maps))
+    (unless leader-map
+      (setq leader-map (make-sparse-keymap))
+      (set-keymap-parent leader-map modal-leader--default-map)
+      (push (cons mode leader-map) modal-leader--mode-maps)
+      (define-key normal-mode-map (read-kbd-macro modal-leader-key) leader-map)
+      (define-key motion-mode-map (read-kbd-macro modal-leader-key) leader-map))
+    (modal-leader--define-key leader-map key def)))
+
+;;;; function
+(defun modal--set-mark()
+  (when (not (region-active-p))
+    (set-mark-command nil)))
+
+;;;; command
+
+(defun modal-insert()
+  (interactive)
+  (when (region-active-p)
+    (goto-char (region-beginning))
+    (deactivate-mark t))
+  (modal-insert-mode 1))
+
+(defun modal-append()
+  (interactive)
+  (when (region-active-p)
+    (goto-char (region-end))
+    (deactivate-mark t))
+  (modal-forward-char 1)
+  (modal-insert-mode 1))
+
+(defun modal-line-insert()
+  (interactive)
+  (when (region-active-p)
+    (deactivate-mark t))
+  (goto-char (line-beginning-position))
+  (modal-insert-mode 1))
+
+(defun modal-line-append()
+  (interactive)
+  (when (region-active-p)
+    (deactivate-mark t))
+  (goto-char (line-end-position))
+  (modal-insert-mode 1))
+
+(defun modal-quit-insert-mode()
   (interactive)
   (if (derived-mode-p 'special-mode)
       (modal-motion-mode 1)
     (modal-normal-mode 1)))
 
-(defun modal--set-mark()
-  (when (not (region-active-p))
-    (set-mark-command nil)))
+(defun modal--temporary-insert-callback()
+  (unless (eq this-command #'modal-temporary-insert)
+    (remove-hook 'post-command-hook #'modal--temporary-insert-callback t)
+    (modal-quit-insert-mode)))
 
-(defun modal-mark-and-forward-char(arg)
+(defun modal-temporary-insert()
+  (interactive)
+  (modal-insert-mode 1)
+  (add-hook 'post-command-hook #'modal--temporary-insert-callback 0 t))
+
+(defun modal-previous-line (arg)
   (interactive "p")
-  (call-interactively #'forward-char))
+  (previous-line arg))
 
-(defun modal-mark-and-backward-char(arg)
+(defun modal-next-line (arg)
+  (interactive "p")
+  (next-line arg))
+
+(defun modal-forward-char (arg)
+  (interactive "p")
+  (let ((boundary-position (line-end-position)))
+    (forward-char arg)
+    (when (> (point) boundary-position)
+      (goto-char boundary-position))))
+
+(defun modal-backward-char (arg)
+  (interactive "p")
+  (let ((boundary-position (line-beginning-position)))
+    (backward-char arg)
+    (when (< (point) boundary-position)
+      (goto-char boundary-position))))
+
+
+(defun modal-previous-line-expand (arg)
   (interactive "p")
   (modal--set-mark)
-  (call-interactively #'backward-char))
+  (if (= (point)
+         (region-beginning))
+      (previous-line arg)
+    (exchange-point-and-mark)))
 
-(defun modal-mark-and-forward-char(arg)
+(defun modal-next-line-expand (arg)
   (interactive "p")
   (modal--set-mark)
-  (call-interactively #'forward-char))
+  (if (= (point)
+         (region-end))
+      (next-line arg)
+    (exchange-point-and-mark)))
 
-(defun modal-mark-and-previous-line(arg)
+(defun modal-forward-char-expand (arg)
   (interactive "p")
   (modal--set-mark)
-  (call-interactively #'previous-line))
+  (if (= (point)
+         (region-end))
+      (modal-forward-char arg)
+    (exchange-point-and-mark)))
 
-(defun modal-mark-and-next-line(arg)
+(defun modal-backward-char-expand (arg)
   (interactive "p")
   (modal--set-mark)
-  (call-interactively #'next-line))
-
-(defun modal-mark-and-next-line(arg)
-  (interactive "p")
-  (modal--set-mark)
-  (call-interactively #'next-line))
+  (if (= (point)
+         (region-beginning))
+      (modal-backward-char arg)
+    (exchange-point-and-mark)))
 
 (defun modal-mark-word(arg)
   (interactive "p")
@@ -155,8 +325,73 @@
 
 (defun modal-backward-word(arg)
   (interactive "p")
-  (let ((arg (- 0 arg)))
-    (forward-thing 'word arg)))
+  (forward-thing 'word (- arg)))
+
+(defun modal-forward-word-expand(arg)
+  (interactive "p")
+  (modal--set-mark)
+  (if (= (point)
+         (region-end))
+      (forward-thing 'word arg)
+    (exchange-point-and-mark)))
+
+(defun modal-backward-word-expand(arg)
+  (interactive "p")
+  (modal--set-mark)
+  (if (= (point)
+         (region-beginning))
+      (forward-thing 'word (- arg))
+    (exchange-point-and-mark)))
+
+
+(defun modal-open-line-above(arg)
+  (interactive "p")
+  (goto-char (line-beginning-position))
+  (newline arg)
+  (backward-char arg)
+  (indent-for-tab-command)
+  (modal-insert-mode 1))
+
+(defun modal-open-line-below(arg)
+  (interactive "p")
+  (goto-char (line-end-position))
+  (newline arg)
+  (indent-for-tab-command)
+  (modal-insert-mode 1))
+
+(defun modal-delete ()
+  (interactive)
+  (if (region-active-p)
+      (delete-region (region-beginning)
+                     (region-end))
+    (delete-char 1)))
+
+(defun modal-save-and-delete ()
+  (interactive)
+  (if (region-active-p)
+      (clipboard-kill-region (region-beginning)
+                             (region-end))
+    (clipboard-kill-region (point)
+                           (1+ (point)))))
+
+(defun modal-change()
+  (interactive)
+  (if (region-active-p)
+      (delete-region (region-beginning)
+                     (region-end))
+    (delete-region (point)
+                   (1+ (point))))
+  (modal-insert-mode 1))
+
+
+(defun modal-save-and-change()
+  (interactive)
+  (if (region-active-p)
+      (clipboard-kill-region (region-beginning)
+                             (region-end))
+    (clipboard-kill-region (point)
+                           (1+ (point))))
+  (modal-insert-mode 1))
 
 
 (defun modal-diagnose()
@@ -165,30 +400,5 @@
    "modal global state: %s\nmodal state: %s\nnormal state: %s\ninsert state: %s\nmotion state: %s"
    modal-global-mode modal-mode modal-normal-mode modal-insert-mode modal-motion-mode))
 
-;;; bind map
-(define-key modal-normal-state-map (kbd "j") #'next-line)
-(define-key modal-normal-state-map (kbd "k") #'previous-line)
-(define-key modal-normal-state-map (kbd "h") #'backward-char)
-(define-key modal-normal-state-map (kbd "l") #'forward-char)
-(define-key modal-normal-state-map (kbd "L") #'modal-mark-and-forward-char)
-(define-key modal-normal-state-map (kbd "K") #'modal-mark-and-previous-line)
-(define-key modal-normal-state-map (kbd "J") #'modal-mark-and-next-line)
-(define-key modal-normal-state-map (kbd "H") #'modal-mark-and-backward-char)
-
-
-(define-key modal-normal-state-map (kbd "w") #'modal-mark-word)
-(define-key modal-normal-state-map (kbd "W") #'backward-word)
-(define-key modal-normal-state-map (kbd "s") #'modal-mark-symbol)
-(define-key modal-normal-state-map (kbd "S") #'backward-symbol)
-
-(define-key modal-normal-state-map (kbd "i") #'modal-insert-mode)
-(define-key modal-insert-state-map (kbd "<escape>") #'modal-normal-mode)
-
-;;; leader key
-
-
-;;; misc
-(modal-global-mode 1)
-(cua-mode 1)
 (provide 'core/modal)
 ;;; modal.el ends here

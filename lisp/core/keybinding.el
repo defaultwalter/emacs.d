@@ -24,104 +24,112 @@
 
 ;;; Code:
 
-(unless (package-installed-p 'which-key)
-  (package-install 'which-key))
-(require 'which-key)
+;;;; bind map
 
-(custom-set-variables '(which-key-idle-delay 0)
-                      '(which-key-idle-secondary-delay 0.05)
-                      '(which-key-sort-order 'which-key-prefix-then-key-order)
-                      '(which-key-allow-multiple-replacements t)
-                      '(which-key-allow-evil-operators t)
-                      '(which-key-popup-type 'side-window))
+(define-key modal-normal-state-map (kbd "j") #'modal-next-line)
+(define-key modal-normal-state-map (kbd "k") #'modal-previous-line)
+(define-key modal-normal-state-map (kbd "h") #'modal-backward-char)
+(define-key modal-normal-state-map (kbd "l") #'modal-forward-char)
+(define-key modal-normal-state-map (kbd "J") #'modal-next-line-expand)
+(define-key modal-normal-state-map (kbd "K") #'modal-previous-line-expand)
+(define-key modal-normal-state-map (kbd "H") #'modal-backward-char-expand)
+(define-key modal-normal-state-map (kbd "L") #'modal-forward-char-expand)
 
-(add-to-list 'which-key-replacement-alist '(("ESC" . nil) . ("esc" . nil)))
-(add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("tab" . nil)))
-(add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("return" . nil)))
-(add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("delete" . nil)))
-(add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil)))
-(add-to-list 'which-key-replacement-alist '(("left" . nil) . ("left" . nil)))
-(add-to-list 'which-key-replacement-alist '(("right" . nil) . ("right" . nil)))
-(add-to-list 'which-key-replacement-alist '(("<left>" . nil) . ("left" . nil)))
-(add-to-list 'which-key-replacement-alist '(("<right>" . nil) . ("right" . nil)))
-(add-to-list 'which-key-replacement-alist '(("up" . nil) . ("up" . nil)))
-(add-to-list 'which-key-replacement-alist '(("down" . nil) . ("down" . nil)))
-(which-key-mode t)
 
-(unless (package-installed-p 'use-package)
-  (package-install 'general))
-(require 'general)
+(define-key modal-normal-state-map (kbd "w") #'modal-mark-word)
+(define-key modal-normal-state-map (kbd "W") #'backward-word)
+(define-key modal-normal-state-map (kbd "e") #'modal-forward-word)
+(define-key modal-normal-state-map (kbd "b") #'modal-backward-word)
+(define-key modal-normal-state-map (kbd "E") #'modal-forward-word-expand)
+(define-key modal-normal-state-map (kbd "B") #'modal-backward-word-expand)
+(define-key modal-normal-state-map (kbd "s") #'modal-mark-symbol)
+(define-key modal-normal-state-map (kbd "S") #'backward-symbol)
 
-(general-create-definer modal-set-leader-key
-  :keymaps '(modal-normal-state-map modal-motion-state-map)
-  :prefix "SPC")
+(define-key modal-normal-state-map (kbd "i") #'modal-insert)
+(define-key modal-normal-state-map (kbd "a") #'modal-append)
+(define-key modal-normal-state-map (kbd "I") #'modal-line-insert)
+(define-key modal-normal-state-map (kbd "A") #'modal-line-append)
 
-(modal-set-leader-key "SPC" '(counsel-M-x :which-key "command"))
-(modal-set-leader-key "f"
+(define-key modal-normal-state-map (kbd "c") #'modal-change)
+(define-key modal-normal-state-map (kbd "C") #'modal-save-and-change)
+(define-key modal-normal-state-map (kbd "d") #'modal-delete)
+(define-key modal-normal-state-map (kbd "D") #'modal-save-and-delete)
+
+
+(define-key modal-normal-state-map (kbd "o") #'modal-open-line-below)
+(define-key modal-normal-state-map (kbd "O") #'modal-open-line-above)
+
+(define-key modal-insert-state-map (kbd "<escape>") #'modal-quit-insert-mode)
+(define-key modal-motion-state-map (kbd "<escape>") #'modal-temporary-insert)
+
+;;;; leader key
+
+(modal-leader-set-key "SPC" '(counsel-M-x :which-key "command"))
+(modal-leader-set-key "f"
                       '(:ignore t
                                 :which-key "file"))
-(modal-set-leader-key "ff" '(find-file :which-key "find file"))
-(modal-set-leader-key "fs" '(save-buffer :which-key "save file"))
-(modal-set-leader-key "fS" '(save-some-buffers :which-key "save all files"))
-(modal-set-leader-key "fr" '(recentf-open-files :which-key "recent file"))
-(modal-set-leader-key "f." '((lambda()
+(modal-leader-set-key "ff" '(find-file :which-key "find file"))
+(modal-leader-set-key "fs" '(save-buffer :which-key "save file"))
+(modal-leader-set-key "fS" '(save-some-buffers :which-key "save all files"))
+(modal-leader-set-key "fr" '(recentf-open-files :which-key "recent file"))
+(modal-leader-set-key "f." '((lambda()
                                (interactive)
                                (dired user-config-directory)) :which-key "open configuration"))
-(modal-set-leader-key "b"
+(modal-leader-set-key "b"
                       '(:ignore t
                                 :which-key "buffer"))
-(modal-set-leader-key "bb" '(switch-to-buffer :which-key "switch buffer"))
-(modal-set-leader-key "bs" '(save-buffer :which-key "save buffer"))
-(modal-set-leader-key "bS" '(save-some-buffers :which-key "save all buffers"))
-(modal-set-leader-key "bk" '(kill-this-buffer :which-key "kill buffer"))
-(modal-set-leader-key "bK" '(kill-buffer-and-window :which-key "kill buffer&window"))
-(modal-set-leader-key "bc" '(kill-this-buffer :which-key "kill buffer"))
-(modal-set-leader-key "bC" '(kill-buffer-and-window :which-key "kill buffer&window"))
-(modal-set-leader-key "b <end>" '((lambda()
+(modal-leader-set-key "bb" '(switch-to-buffer :which-key "switch buffer"))
+(modal-leader-set-key "bs" '(save-buffer :which-key "save buffer"))
+(modal-leader-set-key "bS" '(save-some-buffers :which-key "save all buffers"))
+(modal-leader-set-key "bk" '(kill-this-buffer :which-key "kill buffer"))
+(modal-leader-set-key "bK" '(kill-buffer-and-window :which-key "kill buffer&window"))
+(modal-leader-set-key "bc" '(kill-this-buffer :which-key "kill buffer"))
+(modal-leader-set-key "bC" '(kill-buffer-and-window :which-key "kill buffer&window"))
+(modal-leader-set-key "b <end>" '((lambda()
                                     (interactive)
                                     (switch-to-buffer "*scratch*")) :which-key "scratch buffer"))
-(modal-set-leader-key "c"
+(modal-leader-set-key "c"
                       '(:ignore t
                                 :which-key "content"))
-(modal-set-leader-key "cc" '(comment-line :which-key "comment"))
-(modal-set-leader-key "cr" '(comment-or-uncomment-region :which-key "comment region"))
-(modal-set-leader-key "w"
+(modal-leader-set-key "cc" '(comment-line :which-key "comment"))
+(modal-leader-set-key "cr" '(comment-or-uncomment-region :which-key "comment region"))
+(modal-leader-set-key "w"
                       '(:ignore t
                                 :which-key "window"))
-(modal-set-leader-key "ws" '(split-window-horizontally :which-key "split window horizontally"))
-(modal-set-leader-key "wv" '(split-window-vertically :which-key "split window vertically"))
-(modal-set-leader-key "wm" '(maximize-window :which-key "maximize window"))
-(modal-set-leader-key "wn" '(minimize-window :which-key "minimize window"))
-(modal-set-leader-key "wb" '(balance-windows :which-key "balance window"))
-(modal-set-leader-key "wd" '(delete-window :which-key "delete window"))
-(modal-set-leader-key "wD" '(delete-other-windows :which-key "delete other window"))
-(modal-set-leader-key "wc" '(delete-window :which-key "delete window"))
-(modal-set-leader-key "wC" '(delete-other-windows :which-key "delete other window"))
-(modal-set-leader-key "h"
+(modal-leader-set-key "ws" '(split-window-horizontally :which-key "split window horizontally"))
+(modal-leader-set-key "wv" '(split-window-vertically :which-key "split window vertically"))
+(modal-leader-set-key "wm" '(maximize-window :which-key "maximize window"))
+(modal-leader-set-key "wn" '(minimize-window :which-key "minimize window"))
+(modal-leader-set-key "wb" '(balance-windows :which-key "balance window"))
+(modal-leader-set-key "wd" '(delete-window :which-key "delete window"))
+(modal-leader-set-key "wD" '(delete-other-windows :which-key "delete other window"))
+(modal-leader-set-key "wc" '(delete-window :which-key "delete window"))
+(modal-leader-set-key "wC" '(delete-other-windows :which-key "delete other window"))
+(modal-leader-set-key "h"
                       '(:ignore t
                                 :which-key "help"))
-;; (modal-set-leader-key "h <return>" '(view-order-manuals :which-key "manuals"))
-(modal-set-leader-key "h RET" '(view-order-manuals :which-key ("return" . "manuals")))
-(modal-set-leader-key "hf" '(describe-function :which-key "describe function"))
-(modal-set-leader-key "hv" '(describe-variable :which-key "describe variable"))
-(modal-set-leader-key "hk" '(describe-key :which-key "describe key"))
-(modal-set-leader-key "hc" '(describe-char :which-key "describe char"))
-(modal-set-leader-key "hm" '(describe-mode :which-key "describe mode"))
-(modal-set-leader-key "hp" '(describe-package :which-key "describe package"))
-(modal-set-leader-key "hs" '(describe-symbol :which-key "describe symbol"))
-(modal-set-leader-key "hw" '(where-is :which-key "where is"))
-(modal-set-leader-key "h?" '(about-emacs :which-key "about"))
-(modal-set-leader-key "g"
+;; (modal-leader-set-key "h <return>" '(view-order-manuals :which-key "manuals"))
+(modal-leader-set-key "h RET" '(view-order-manuals :which-key ("return" . "manuals")))
+(modal-leader-set-key "hf" '(describe-function :which-key "describe function"))
+(modal-leader-set-key "hv" '(describe-variable :which-key "describe variable"))
+(modal-leader-set-key "hk" '(describe-key :which-key "describe key"))
+(modal-leader-set-key "hc" '(describe-char :which-key "describe char"))
+(modal-leader-set-key "hm" '(describe-mode :which-key "describe mode"))
+(modal-leader-set-key "hp" '(describe-package :which-key "describe package"))
+(modal-leader-set-key "hs" '(describe-symbol :which-key "describe symbol"))
+(modal-leader-set-key "hw" '(where-is :which-key "where is"))
+(modal-leader-set-key "h?" '(about-emacs :which-key "about"))
+(modal-leader-set-key "g"
                       '(:ignore t
                                 :which-key "goto"))
-(modal-set-leader-key "p"
+(modal-leader-set-key "p"
                       '(:ignore t
                                 :which-key "project"))
-(modal-set-leader-key "n"
+(modal-leader-set-key "n"
                       '(:ignore t
                                 :which-key "note"))
-(modal-set-leader-key "na" '(org-agenda :which-key "agenda"))
-(modal-set-leader-key "m"
+(modal-leader-set-key "na" '(org-agenda :which-key "agenda"))
+(modal-leader-set-key "m"
                       '(:ignore t
                                 :which-key "mode"))
 

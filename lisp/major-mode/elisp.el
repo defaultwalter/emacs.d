@@ -6,6 +6,9 @@
   :ensure t
   :defer t
   :init                                 ;
-  (modal-set-leader-key emacs-lisp-mode-map "cf" '(elisp-format-buffer :name "format elisp")))
+  (modal-leader-set-key "cf" '(elisp-format-buffer :which-key "format elisp"))
+  )
+
+
 (provide 'major-mode/elisp)
 ;;; java-config.el ends here

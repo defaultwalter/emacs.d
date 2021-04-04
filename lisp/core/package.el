@@ -67,19 +67,19 @@
   :ensure t
   :defer t
   :init                                 ;
-  (modal-set-leader-key "RET" '(counsel-bookmark :which-key "bookmark"))
-  (modal-set-leader-key "ff" '((lambda()
+  (modal-leader-set-key "RET" '(counsel-bookmark :which-key "bookmark"))
+  (modal-leader-set-key "ff" '((lambda()
                             (interactive)
                             (let ((counsel-find-file-ignore-regexp "^\\."))
                               (counsel-find-file))) :which-key "find file"))
-  (modal-set-leader-key "fF" '(counsel-find-file :which-key "find all file"))
-  (modal-set-leader-key "fr" '(counsel-recentf :which-key "recent file"))
-  (modal-set-leader-key "bb" '((lambda()
+  (modal-leader-set-key "fF" '(counsel-find-file :which-key "find all file"))
+  (modal-leader-set-key "fr" '(counsel-recentf :which-key "recent file"))
+  (modal-leader-set-key "bb" '((lambda()
                             (interactive)
                             (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
                               (counsel-switch-buffer))) :which-key "switch buffer"))
-  (modal-set-leader-key "bB" '(counsel-switch-buffer :which-key "switch all buffer"))
-  (modal-set-leader-key "SPC" '(counsel-M-x :which-key "command"))
+  (modal-leader-set-key "bB" '(counsel-switch-buffer :which-key "switch all buffer"))
+  (modal-leader-set-key "SPC" '(counsel-M-x :which-key "command"))
   :bind (("M-x" . counsel-M-x))
   :config)
 
@@ -106,8 +106,8 @@
   :ensure t
   :defer t
   :init                                 ;
-  (modal-set-leader-key "cs" '(swiper :which-key "swipe"))
-  (modal-set-leader-key "cS" '(swiper-all :which-key "swipe in all buffers"))
+  (modal-leader-set-key "cs" '(swiper :which-key "swipe"))
+  (modal-leader-set-key "cS" '(swiper-all :which-key "swipe in all buffers"))
   :bind                                 ;
   ("C-S-s" . swiper-all)
   ("C-s" . swiper))
@@ -124,10 +124,10 @@
   :ensure t
   :defer t
   :init                                 ;
-  (modal-set-leader-key "b <left>" '(buf-move-left :which-key "move to left window"))
-  (modal-set-leader-key "b <down>" '(buf-move-down :which-key "move to down window"))
-  (modal-set-leader-key "b <up>" '(buf-move-up :which-key "move to up window"))
-  (modal-set-leader-key "b <right>" '(buf-move-right :which-key "move to right window"))
+  (modal-leader-set-key "b <left>" '(buf-move-left :which-key "move to left window"))
+  (modal-leader-set-key "b <down>" '(buf-move-down :which-key "move to down window"))
+  (modal-leader-set-key "b <up>" '(buf-move-up :which-key "move to up window"))
+  (modal-leader-set-key "b <right>" '(buf-move-right :which-key "move to right window"))
   (setq buffer-move-stay-after-swap t)
   (setq buffer-move-behavior 'move))
 
@@ -136,14 +136,14 @@
   :ensure t
   :defer t
   :init                                 ;
-  (modal-set-leader-key "wr" '(windresize :which-key "resize window")))
+  (modal-leader-set-key "wr" '(windresize :which-key "resize window")))
 
 (use-package
   ace-window                            ; 窗口跳转
   :ensure t
   :defer t
   :init                                 ;
-  (modal-set-leader-key "ww" '(ace-window :which-key "select window"))
+  (modal-leader-set-key "ww" '(ace-window :which-key "select window"))
   :config (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)))
 
 (use-package
@@ -155,9 +155,9 @@
   (projectile-sort-order 'access-time)
   (projectile-find-dir-includes-top-level t)
   :init                                 ;
-  (modal-set-leader-key "pk" '(project-kill-buffers :which-key "close all project buffers"))
-  (modal-set-leader-key "pi" '(projectile-project-info :which-key "project info"))
-  (modal-set-leader-key "pd" '(projectile-remove-known-project :which-key "remove project"))
+  (modal-leader-set-key "pk" '(project-kill-buffers :which-key "close all project buffers"))
+  (modal-leader-set-key "pi" '(projectile-project-info :which-key "project info"))
+  (modal-leader-set-key "pd" '(projectile-remove-known-project :which-key "remove project"))
   :config (projectile-mode +1))
 
 (use-package
@@ -168,10 +168,10 @@
   (counsel-projectile-sort-directories t)
   (counsel-projectile-sort-buffers t)
   (counsel-projectile-sort-projects t)
-  :init (modal-set-leader-key "pp" '(counsel-projectile-switch-project :which-key "switch project"))
-  (modal-set-leader-key "pf" '(counsel-projectile-find-file :which-key "find file in project"))
-  (modal-set-leader-key "ps" '(counsel-projectile-git-grep :which-key "search in project by git"))
-  (modal-set-leader-key "pS" '(counsel-projectile-grep :which-key "search in project"))
+  :init (modal-leader-set-key "pp" '(counsel-projectile-switch-project :which-key "switch project"))
+  (modal-leader-set-key "pf" '(counsel-projectile-find-file :which-key "find file in project"))
+  (modal-leader-set-key "ps" '(counsel-projectile-git-grep :which-key "search in project by git"))
+  (modal-leader-set-key "pS" '(counsel-projectile-grep :which-key "search in project"))
   :config (counsel-projectile-mode t))
 
 (use-package
@@ -180,7 +180,7 @@
   :commands (magit-status magit-get-current-branch)
   :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   :init                                 ;
-  (modal-set-leader-key "pg" '(magit-status :which-key "git")))
+  (modal-leader-set-key "pg" '(magit-status :which-key "git")))
 (use-package
   neotree
   :ensure t
@@ -195,7 +195,7 @@
   ("C-<tab>" . neotree-toggle)
   ("C-TAB" . neotree-toggle)
   :init                                 ;
-  (modal-set-leader-key "fv" '(neotree-toggle :which-key "file view")))
+  (modal-leader-set-key "fv" '(neotree-toggle :which-key "file view")))
 
 
 (use-package
@@ -433,7 +433,7 @@
   :ensure t
   :defer t
   :bind ("C-/" . smart-comment)
-  :init (modal-set-leader-key "cc" '(smart-comment :which-key "comment")))
+  :init (modal-leader-set-key "cc" '(smart-comment :which-key "comment")))
 
 (use-package
   hungry-delete                         ; 可以删除前面所有的空白字符
@@ -470,7 +470,7 @@
   format-all                            ;格式化代码，支持多种格式
   :ensure t
   :defer t
-  :init (modal-set-leader-key "cf" '(format-all-buffer :which-key "format")))
+  :init (modal-leader-set-key "cf" '(format-all-buffer :which-key "format")))
 
 ;;; 主题外观
 
@@ -528,7 +528,7 @@
   dashboard
   :ensure t
   :config                               ;
-  (modal-set-leader-key "b <home>" '(dashboard-refresh-buffer :which-key "dashboard"))
+  (modal-leader-set-key "b <home>" '(dashboard-refresh-buffer :which-key "dashboard"))
   (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
   (setq dashboard-center-content t)
   (setq dashboard-set-heading-icons t)

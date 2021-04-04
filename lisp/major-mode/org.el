@@ -198,13 +198,14 @@
   (org-roam-link-current ((t
                            (:inherit 'org-roam-link))))
   :init                                 ;
-  (modal-set-leader-key "n d" '(org-roam-dailies-find-today :which-key "today"))
-  (modal-set-leader-key "n f" '(org-roam-find-file :which-key "find note"))
-  (modal-set-leader-key "n DEL" '(org-roam-db-clear :which-key "delete cache"))
-  (modal-set-leader-key "n RET" '(org-roam-db-build-cache :which-key "build cache"))
-  (modal-set-leader-key org-mode-map "n b" '(org-roam-buffer-toggle-display :which-key "backlink"))
-  (modal-set-leader-key org-mode-map "n g" '(org-roam-graph :which-key "graph"))
-  (modal-set-leader-key org-mode-map "n i" '(org-roam-insert :which-key "insert node"))
+  (modal-leader-set-key "n d" '(org-roam-dailies-find-today :which-key "today"))
+  (modal-leader-set-key "n f" '(org-roam-find-file :which-key "find note"))
+  (modal-leader-set-key "n DEL" '(org-roam-db-clear :which-key "delete cache"))
+  (modal-leader-set-key "n RET" '(org-roam-db-build-cache :which-key "build cache"))
+  (modal-leader-set-key-for-mode 'org-mode "n b" '(org-roam-buffer-toggle-display :which-key
+                                                                                  "backlink"))
+  (modal-leader-set-key-for-mode 'org-mode "n g" '(org-roam-graph :which-key "graph"))
+  (modal-leader-set-key-for-mode 'org-mode "n i" '(org-roam-insert :which-key "insert node"))
   :config                               ;
   (require 'org-roam-protocol))
 
@@ -217,7 +218,7 @@
   (deft-default-extension "org")
   (deft-directory user/note-directory)
   :init                                 ;
-  (modal-set-leader-key "n n" '(deft :which-key "list")))
+  (modal-leader-set-key "n n" '(deft :which-key "list")))
 
 (use-package
   org-roam-server
@@ -236,7 +237,7 @@
   (org-roam-server-network-label-truncate-length 60 )
   (org-roam-server-network-label-wrap-length 20)
   :init                                 ;
-  (modal-set-leader-key "ns" '((lambda ()
+  (modal-leader-set-key "ns" '((lambda ()
                                  (interactive)
                                  (when (not (bound-and-true-p org-roam-server-mode))
                                    (org-roam-server-mode t))
@@ -260,8 +261,7 @@
   :hook (org-tree-slide-mode . (lambda()
                                  (read-only-mode 1)))
   :config                               ;
-  (evil-define-key 'normal 'org-tree-slide-mode-map (kbd "C-k") 'org-tree-slide-move-previous-tree)
-  (evil-define-key 'normal 'org-tree-slide-mode-map (kbd "C-j") 'org-tree-slide-move-next-tree))
+  )
 
 (provide 'major-mode/org)
 ;;; org-config.el ends here
