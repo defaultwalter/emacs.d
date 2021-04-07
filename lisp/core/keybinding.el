@@ -37,13 +37,13 @@
 
 
 (define-key modal-normal-state-map (kbd "w") #'modal-mark-word)
-(define-key modal-normal-state-map (kbd "W") #'backward-word)
+(define-key modal-normal-state-map (kbd "W") #'modal-mark-symbol)
+(define-key modal-normal-state-map (kbd "s") #'modal-mark)
+(define-key modal-normal-state-map (kbd "S") #'modal-mark-line)
 (define-key modal-normal-state-map (kbd "e") #'modal-forward-word)
 (define-key modal-normal-state-map (kbd "b") #'modal-backward-word)
 (define-key modal-normal-state-map (kbd "E") #'modal-forward-word-expand)
 (define-key modal-normal-state-map (kbd "B") #'modal-backward-word-expand)
-(define-key modal-normal-state-map (kbd "s") #'modal-mark-symbol)
-(define-key modal-normal-state-map (kbd "S") #'backward-symbol)
 
 (define-key modal-normal-state-map (kbd "i") #'modal-insert)
 (define-key modal-normal-state-map (kbd "a") #'modal-append)
@@ -58,10 +58,19 @@
 
 (define-key modal-normal-state-map (kbd "o") #'modal-open-line-below)
 (define-key modal-normal-state-map (kbd "O") #'modal-open-line-above)
+(define-key modal-normal-state-map (read-kbd-macro "g l") #'move-end-of-line)
+(define-key modal-normal-state-map (read-kbd-macro "g h") #'move-beginning-of-line)
 
 (define-key modal-insert-state-map (kbd "<escape>") #'modal-quit-insert-mode)
 (define-key modal-motion-state-map (kbd "<escape>") #'modal-temporary-insert)
 
+(define-key modal-normal-state-map (kbd "M-h") #'windmove-left)
+(define-key modal-normal-state-map (kbd "M-l") #'windmove-right)
+(define-key modal-normal-state-map (kbd "M-j") #'windmove-down)
+(define-key modal-normal-state-map (kbd "M-k") #'windmove-up)
+
+(define-key modal-normal-state-map (kbd "`") #'exchange-point-and-mark)
+(define-key modal-normal-state-map (kbd "~") #'exchange-point-and-mark)
 ;;;; leader key
 
 (modal-leader-set-key "SPC" '(counsel-M-x :which-key "command"))

@@ -69,15 +69,15 @@
   :init                                 ;
   (modal-leader-set-key "RET" '(counsel-bookmark :which-key "bookmark"))
   (modal-leader-set-key "ff" '((lambda()
-                            (interactive)
-                            (let ((counsel-find-file-ignore-regexp "^\\."))
-                              (counsel-find-file))) :which-key "find file"))
+                                 (interactive)
+                                 (let ((counsel-find-file-ignore-regexp "^\\."))
+                                   (counsel-find-file))) :which-key "find file"))
   (modal-leader-set-key "fF" '(counsel-find-file :which-key "find all file"))
   (modal-leader-set-key "fr" '(counsel-recentf :which-key "recent file"))
   (modal-leader-set-key "bb" '((lambda()
-                            (interactive)
-                            (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
-                              (counsel-switch-buffer))) :which-key "switch buffer"))
+                                 (interactive)
+                                 (let ((ivy-ignore-buffers '("\\` " "\\`\\*")))
+                                   (counsel-switch-buffer))) :which-key "switch buffer"))
   (modal-leader-set-key "bB" '(counsel-switch-buffer :which-key "switch all buffer"))
   (modal-leader-set-key "SPC" '(counsel-M-x :which-key "command"))
   :bind (("M-x" . counsel-M-x))
@@ -201,7 +201,7 @@
 (use-package
   disable-mouse
   :ensure t
-  ;; :disabled
+  :disabled
   :config (when (boundp 'evil-mode)
             (mapc #'disable-mouse-in-keymap (list evil-motion-state-map evil-normal-state-map
                                                   evil-visual-state-map evil-insert-state-map)))
@@ -227,6 +227,7 @@
   beacon                                ; 跳转后,显示光标位置
   :if (display-graphic-p)
   :ensure t
+  :disabled
   :config (beacon-mode t))
 
 (use-package
@@ -462,9 +463,8 @@
   :ensure t
   :defer t
   :after evil
-  :bind (:map evil-normal-state-map
-              ("<S-return>" . er/expand-region)
-              ("S-RET" . er/expand-region)))
+  :bind (("<S-return>" . er/expand-region)
+         ("S-RET" . er/expand-region)))
 
 (use-package
   format-all                            ;格式化代码，支持多种格式
@@ -478,6 +478,7 @@
   doom-modeline
   :ensure t
   :defer t
+  :disabled
   :init (doom-modeline-init)
   (setq doom-modeline-height 20)
   (setq doom-modeline-bar-width 3)
@@ -489,6 +490,84 @@
   (setq doom-modeline-major-mode-color-icon t)
   (setq doom-modeline-modal-icon t)
   (doom-modeline-mode 1))
+
+(use-package
+  mini-modeline
+  :ensure t
+  :hook (after-init . mini-modeline-mode)
+  :custom (mini-modeline-right-padding 1)
+  (mini-modeline-face-attr nil)
+  (mini-modeline-enhance-visual t)
+  (mini-modeline-display-gui-line nil)
+  (mini-modeline-l-format '("%e"
+                            (:eval (modal-indicator))))
+  (mini-modeline-r-format '("%e" " %l:%C "
+                            (:eval (mode-line-buffer-encoding))
+                            (:eval (mode-line-buffer-major-mode))
+                            (:eval (mode-line-buffer-name))))
+  :init                                 ;
+  (defface mode-line-buffer-name '((t
+                                    (:inherit bold
+                                              :background nil)))
+    "")
+  (defface mode-line-buffer-name-modified '((t
+                                             (:inherit (error
+                                                        bold)
+                                                       :background nil)))
+    "")
+  (defface mode-line-buffer-project '((t
+                                       (:inherit (font-lock-keyword-face bold)
+                                                 :background nil)))
+    "")
+  (defface mode-line-buffer-encoding '((t
+                                        (:inherit default
+                                                  :background nil)))
+    "")
+  (defface mode-line-buffer-major-mode
+    '((t
+       (:inherit (font-lock-keyword-face bold)
+                 :background nil)))
+    "")
+  (defun mode-line-buffer-name ()
+    (propertize " %b " 'face (cond ((and
+                                     buffer-file-name
+                                     (buffer-modified-p)) 'mode-line-buffer-name-modified)
+                                   (t 'mode-line-buffer-name))))
+  (defun mode-line-buffer-major-mode ()
+    (propertize " %m " 'face 'mode-line-buffer-major-mode))
+  (defun mode-line-buffer-project ()
+    (when-let ((project-root (or (when (fboundp 'projectile-project-root)
+                                   (projectile-project-root))
+                                 (when (fboundp 'project-current)
+                                   (when-let ((project (project-current)))
+                                     (car (project-roots project)))))))
+      (propertize (format " %s "  (file-name-nondirectory (directory-file-name project-root))) 'face
+                  'mode-line-buffer-project)))
+  (defun mode-line-buffer-encoding ()
+    "Displays the eol and the encoding style of the buffer the same way Atom does."
+    (concat
+     ;; eol type
+     (let ((eol (coding-system-eol-type buffer-file-coding-system)))
+       (propertize (pcase eol (0 "LF ")
+                          (1 "CRLF ")
+                          (2 "CR ")
+                          (_ "")) 'face 'mode-line-buffer-encoding ))
+     ;; coding system
+     (propertize (let ((sys (coding-system-plist buffer-file-coding-system)))
+                   (cond ((memq (plist-get sys
+                                           :category)
+                                '(coding-category-undecided coding-category-utf-8)) "UTF-8")
+                         (t (upcase (symbol-name (plist-get sys
+                                                            :name)))))) 'face
+                                                            'mode-line-buffer-encoding )))
+  (defun mode-line-buffer-name-with-project()
+    (let ((project-root (mode-line-buffer-project))
+          (buffer-name (mode-line-buffer-name)))
+      (if project-root (format "[%s:%s]" project-root buffer-name)
+        (format "[%s] buffer"))))
+  :config                               ;
+  ;; (mini-modeline-mode t)
+  )
 
 (use-package
   solaire-mode
