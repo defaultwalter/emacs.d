@@ -60,6 +60,18 @@
     (set-keymap-parent keymap modal-normal-state-map) keymap)
   "Keymap for Modal visual state.")
 
+
+(defvar modal--normal-mode-maps nil
+  "Modal map for mode")
+
+(defvar modal--motion-mode-maps nil
+  "Modal map for mode")
+
+(defvar modal--visual-mode-maps nil
+  "Modal map for mode")
+
+
+
 (define-minor-mode modal-normal-mode "Modal normal state."
   nil
   " ModalNormal"
@@ -88,7 +100,29 @@
     (modal-insert-mode -1)
     (modal-normal-mode -1)
     (modal-motion-mode -1)
-    (setq-local cursor-type 'box)))
+    (setq-local cursor-type 'box))
+  (if modal-visual-mode (progn (add-hook 'post-command-hook
+                                         #'modal--visual-mode-post-command-handler nil t)
+                               (add-hook 'deactivate-mark-hook #'modal--exit-visual nil t))
+    (remove-hook 'post-command-hook #'modal--visual-mode-post-command-handler t)
+    (remove-hook 'deactivate-mark-hook #'modal--exit-visual t)))
+(add-hook 'activate-mark-hook (lambda()
+                                (modal--switch-state 'visual)))
+
+(defun modal--exit-visual()
+  (deactivate-mark)
+  (modal--quit-edit))
+
+(defun modal--visual-mode-post-command-handler
+    (&optional
+     command)
+  (when modal-visual-mode (let ((command (or command
+                                             this-command)))
+                            (when (or (eq command #'keyboard-quit)
+                                      deactivate-mark
+                                      (not (region-active-p)))
+                              (deactivate-mark)
+                              (modal--quit-edit) ))))
 
 (define-minor-mode modal-insert-mode "Modal insert state."
   nil
@@ -105,8 +139,7 @@
 (defun modal--enable ()
   "Enable Modal mode"
   (if (derived-mode-p 'special-mode)
-      (progn (message "special mode")
-             (modal-motion-mode 1))
+      (modal-motion-mode 1)
     (modal-normal-mode 1)))
 
 (defun modal--disable ()
@@ -180,15 +213,6 @@
   :type 'string
   :group 'modal-leader)
 
-(defvar modal--normal-mode-maps nil
-  "Modal map for mode")
-
-(defvar modal--motion-mode-maps nil
-  "Modal map for mode")
-
-(defvar modal--visual-mode-maps nil
-  "Modal map for mode")
-
 (defvar modal-leader--mode-maps nil
   "Leader map for mode")
 
@@ -260,9 +284,11 @@
     (modal-leader--define-key leader-map key def)))
 
 ;;;; indicator
-(defvar modal-indicator-alist '((normal . "NORMAL")
-                                (motion . "MOTION")
-                                (insert . "INSERT")))
+(defvar modal-indicator-alist
+  '((normal . "<N>")
+    (motion . "<M>")
+    (visual . "<V>")
+    (insert . "<I>")))
 (defface modal-indicator-normal
   '((((class color)
       (background dark))
@@ -274,7 +300,20 @@
                :weight bold)))
   "Normal state indicator."
   :group 'modal)
+
 (defface modal-indicator-motion
+  '((((class color)
+      (background dark))
+     (:inherit font-lock-string-face
+               :weight bold))
+    (((class color)
+      (background light))
+     (:inherit font-lock-string-face
+               :weight bold)))
+  "Motion state indicator."
+  :group 'modal)
+
+(defface modal-indicator-visual
   '((((class color)
       (background dark))
      (:inherit font-lock-type-face
@@ -285,6 +324,7 @@
                :weight bold)))
   "Motion state indicator."
   :group 'modal)
+
 (defface modal-indicator-insert
   '((((class color)
       (background dark))
@@ -308,9 +348,14 @@
 
 (defun modal--set-mark()
   (when (not (region-active-p))
-    (set-mark-command nil)))
+    (push-mark (point) t t)))
 
 ;;;; command
+(defun modal-quit-insert-mode()
+  (interactive)
+  (if (derived-mode-p 'special-mode)
+      (modal-motion-mode 1)
+    (modal-normal-mode 1)))
 (defun modal-insert()
   (interactive)
   (when (region-active-p)
@@ -323,7 +368,6 @@
   (when (region-active-p)
     (goto-char (region-end))
     (deactivate-mark t))
-  (forward-char 1)
   (modal-insert-mode 1))
 
 (defun modal-line-insert()
@@ -339,32 +383,37 @@
     (deactivate-mark t))
   (goto-char (line-end-position))
   (modal-insert-mode 1))
-
-(defun modal-quit-insert-mode()
-  (interactive)
-  (if (derived-mode-p 'special-mode)
-      (modal-motion-mode 1)
-    (modal-normal-mode 1)))
-
 (defun modal--temporary-insert-callback()
   (unless (eq this-command #'modal-temporary-insert)
     (remove-hook 'post-command-hook #'modal--temporary-insert-callback t)
     (modal-quit-insert-mode)))
-
 (defun modal-temporary-insert()
   (interactive)
   (modal-insert-mode 1)
   (add-hook 'post-command-hook #'modal--temporary-insert-callback 0 t))
 
+(defun modal-diagnose()
+  (interactive)
+  (message
+   "modal global state: %s\nmodal state: %s\nnormal state: %s\nvisual state: %s\ninsert state: %s\nmotion state: %s"
+   modal-global-mode modal-mode modal-normal-mode modal-visual-mode modal-insert-mode
+   modal-motion-mode))
+
+
+;;;;; motion
 (defun modal-previous-line (arg)
   (interactive "p")
   (setq this-command #'previous-line)
-  (previous-line arg))
+  (call-interactively #'previous-line t)
+  ;; (previous-line arg)
+  )
 
 (defun modal-next-line (arg)
   (interactive "p")
   (setq this-command #'next-line)
-  (next-line arg))
+  (call-interactively #'next-line t)
+  ;; (next-line arg)
+  )
 
 (defun modal-forward-char (arg)
   (interactive "p")
@@ -380,6 +429,17 @@
     (when (< (point) boundary-position)
       (goto-char boundary-position))))
 
+(defun modal-forward-word(arg)
+  (interactive "p")
+  (forward-thing 'word arg))
+
+(defun modal-backward-word(arg)
+  (interactive "p")
+  (forward-thing 'word (- arg)))
+
+
+;;;;; select
+
 (defun modal-mark ()
   (interactive)
   (set-mark-command nil))
@@ -394,73 +454,93 @@
     (goto-char (line-beginning-position)))
   (set-mark-command nil))
 
-(defun modal-previous-line-expand (arg)
-  (interactive "p")
-  (modal--set-mark)
-  (if (= (point)
-         (region-beginning))
-      (modal-previous-line arg)
-    (exchange-point-and-mark)))
 
-(defun modal-next-line-expand (arg)
+(defun modal-select-forward-word(arg)
   (interactive "p")
-  (modal--set-mark)
-  (if (= (point)
-         (region-end))
-      (modal-next-line arg)
-    (exchange-point-and-mark)))
+  (forward-thing 'word arg)
+  (let ((position (bounds-of-thing-at-point 'word)))
+    (goto-char (cdr position))
+    (push-mark (car position) t t)))
+(defun modal-select-backward-word(arg)
+  (interactive "p")
+  (forward-thing 'word (- arg))
+  (let ((position (bounds-of-thing-at-point 'word)))
+    (goto-char (car position))
+    (push-mark (cdr position) t t)))
 
-(defun modal-forward-char-expand (arg)
+(defun modal-select-forward-symbol(arg)
   (interactive "p")
-  (modal--set-mark)
-  (if (= (point)
-         (region-end))
-      (modal-forward-char arg)
-    (exchange-point-and-mark)))
+  (forward-thing 'word arg)
+  (let ((position (bounds-of-thing-at-point 'symbol)))
+    (goto-char (cdr position))
+    (push-mark (car position) t t)))
+(defun modal-select-backward-symbol(arg)
+  (interactive "p")
+  (forward-thing 'word (- arg))
+  (let ((position (bounds-of-thing-at-point 'symbol)))
+    (goto-char (car position))
+    (push-mark (cdr position) t t)))
 
-(defun modal-backward-char-expand (arg)
-  (interactive "p")
-  (modal--set-mark)
-  (if (= (point)
-         (region-beginning))
-      (modal-backward-char arg)
-    (exchange-point-and-mark)))
+(defun modal-select-inner-parentheses()
+  (interactive)
+  (when-let ((position (bounds-of-thing-at-point 'parentheses)))
+    (goto-char (1- (cdr position)))
+    (push-mark (1+ (car position)) t t)))
+(defun modal-select-whole-parentheses()
+  (interactive)
+  (when-let ((position (bounds-of-thing-at-point 'parentheses)))
+    (goto-char (cdr position))
+    (push-mark (car position) t t)))
 
-(defun modal-mark-word(arg)
-  (interactive "p")
-  (let ((point (bounds-of-thing-at-point 'word)))
-    (goto-char (cdr point))
-    (push-mark (car point) t t)))
+(defun modal-select-inner-square-brackets()
+  (interactive)
+  (when-let ((position (bounds-of-thing-at-point 'square-brackets)))
+    (goto-char (1- (cdr position)))
+    (push-mark (1+ (car position)) t t)))
+(defun modal-select-whole-square-brackets()
+  (interactive)
+  (when-let ((position (bounds-of-thing-at-point 'square-brackets)))
+    (goto-char (cdr position))
+    (push-mark (car position) t t)))
 
-(defun modal-mark-symbol(arg)
-  (interactive "p")
-  (let ((point (bounds-of-thing-at-point 'symbol)))
-    (goto-char (cdr point))
-    (push-mark (car point) t t)))
+(defun modal-select-inner-curly-brackets()
+  (interactive)
+  (when-let ((position (bounds-of-thing-at-point 'curly-brackets)))
+    (goto-char (1- (cdr position)))
+    (push-mark (1+ (car position)) t t)))
 
-(defun modal-forward-word(arg)
+(defun modal-select-whole-curly-brackets()
+  (interactive)
+  (when-let ((position (bounds-of-thing-at-point 'curly-brackets)))
+    (goto-char (cdr position))
+    (push-mark (car position) t t)))
+
+(defun modal-select-inner-string()
+  (interactive)
+  (when-let ((position (bounds-of-thing-at-point 'string)))
+    (goto-char (1- (cdr position)))
+    (push-mark (1+ (car position)) t t)))
+
+(defun modal-select-whole-string()
+  (interactive)
+  (when-let ((position (bounds-of-thing-at-point 'string)))
+    (goto-char (cdr position))
+    (push-mark (car position) t t)))
+
+
+(defun modal-select-to-forward-word(arg)
   (interactive "p")
+  (push-mark (point) t t)
   (forward-thing 'word arg))
 
-(defun modal-backward-word(arg)
+(defun modal-select-to-backward-word(arg)
   (interactive "p")
+  (push-mark (point) t t)
   (forward-thing 'word (- arg)))
 
-(defun modal-forward-word-expand(arg)
-  (interactive "p")
-  (modal--set-mark)
-  (if (= (point)
-         (region-end))
-      (forward-thing 'word arg)
-    (exchange-point-and-mark)))
 
-(defun modal-backward-word-expand(arg)
-  (interactive "p")
-  (modal--set-mark)
-  (if (= (point)
-         (region-beginning))
-      (forward-thing 'word (- arg))
-    (exchange-point-and-mark)))
+
+;;;;; modify
 
 
 (defun modal-open-line-above(arg)
@@ -502,7 +582,6 @@
                    (1+ (point))))
   (modal-insert-mode 1))
 
-
 (defun modal-save-and-change()
   (interactive)
   (if (region-active-p)
@@ -512,13 +591,15 @@
                            (1+ (point))))
   (modal-insert-mode 1))
 
+(defun modal--suround-insert (begin end)
+  (when (region-active-p)
+    (save-excursion (goto-char (region-end))
+                    (insert end)
+                    (goto-char (region-beginning))
+                    (insert begin))))
 
-(defun modal-diagnose()
-  (interactive)
-  (message
-   "modal global state: %s\nmodal state: %s\nnormal state: %s\nvisual state: %s\ninsert state: %s\nmotion state: %s"
-   modal-global-mode modal-mode modal-normal-mode modal-visual-mode modal-insert-mode
-   modal-motion-mode))
+(defun modal-suround-insert-par()
+  (interactive))
 
 (provide 'core/modal)
 ;;; modal.el ends here

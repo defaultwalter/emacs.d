@@ -30,20 +30,24 @@
 (define-key modal-normal-state-map (kbd "k") #'modal-previous-line)
 (define-key modal-normal-state-map (kbd "h") #'modal-backward-char)
 (define-key modal-normal-state-map (kbd "l") #'modal-forward-char)
-(define-key modal-normal-state-map (kbd "J") #'modal-next-line-expand)
-(define-key modal-normal-state-map (kbd "K") #'modal-previous-line-expand)
-(define-key modal-normal-state-map (kbd "H") #'modal-backward-char-expand)
-(define-key modal-normal-state-map (kbd "L") #'modal-forward-char-expand)
+(define-key modal-normal-state-map (kbd "J") #'forward-paragraph)
+(define-key modal-normal-state-map (kbd "K") #'backward-paragraph)
+(define-key modal-normal-state-map (kbd "H") #'move-beginning-of-line)
+(define-key modal-normal-state-map (kbd "L") #'move-end-of-line)
 
 
-(define-key modal-normal-state-map (kbd "w") #'modal-mark-word)
-(define-key modal-normal-state-map (kbd "W") #'modal-mark-symbol)
-(define-key modal-normal-state-map (kbd "s") #'modal-mark)
-(define-key modal-normal-state-map (kbd "S") #'modal-mark-line)
+(define-key modal-normal-state-map (kbd "w") #'modal-select-forward-word)
+(define-key modal-normal-state-map (kbd "W") #'modal-select-backward-word)
+(define-key modal-normal-state-map (kbd "s") #'modal-select-forward-symbol)
+(define-key modal-normal-state-map (kbd "S") #'modal-select-backward-symbol)
+
+(define-key modal-normal-state-map (kbd "v") #'modal-mark)
+(define-key modal-normal-state-map (kbd "V") #'modal-mark-line)
+
 (define-key modal-normal-state-map (kbd "e") #'modal-forward-word)
 (define-key modal-normal-state-map (kbd "b") #'modal-backward-word)
-(define-key modal-normal-state-map (kbd "E") #'modal-forward-word-expand)
-(define-key modal-normal-state-map (kbd "B") #'modal-backward-word-expand)
+(define-key modal-normal-state-map (kbd "E") #'modal-select-to-forward-word)
+(define-key modal-normal-state-map (kbd "B") #'modal-select-to-backward-word)
 
 (define-key modal-normal-state-map (kbd "i") #'modal-insert)
 (define-key modal-normal-state-map (kbd "a") #'modal-append)
@@ -71,6 +75,8 @@
 
 (define-key modal-normal-state-map (kbd "`") #'exchange-point-and-mark)
 (define-key modal-normal-state-map (kbd "~") #'exchange-point-and-mark)
+
+(define-key modal-normal-state-map (kbd "z") #'outline-toggle-children)
 ;;;; leader key
 
 (modal-leader-set-key "SPC" '(counsel-M-x :which-key "command"))
