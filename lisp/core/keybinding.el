@@ -58,12 +58,15 @@
 (define-key modal-normal-state-map (kbd "C") #'modal-save-and-change)
 (define-key modal-normal-state-map (kbd "d") #'modal-delete)
 (define-key modal-normal-state-map (kbd "D") #'modal-save-and-delete)
+(define-key modal-normal-state-map (kbd "y") #'kill-ring-save)
+(define-key modal-normal-state-map (kbd "p") #'yank)
+(define-key modal-normal-state-map (kbd "u") #'undo)
 
 
 (define-key modal-normal-state-map (kbd "o") #'modal-open-line-below)
 (define-key modal-normal-state-map (kbd "O") #'modal-open-line-above)
-(define-key modal-normal-state-map (read-kbd-macro "g l") #'move-end-of-line)
-(define-key modal-normal-state-map (read-kbd-macro "g h") #'move-beginning-of-line)
+(define-key modal-normal-state-map (read-kbd-macro "g g") #'beginning-of-buffer)
+(define-key modal-normal-state-map (read-kbd-macro "G") #'end-of-buffer)
 
 (define-key modal-insert-state-map (kbd "<escape>") #'modal-quit-insert-mode)
 (define-key modal-motion-state-map (kbd "<escape>") #'modal-temporary-insert)

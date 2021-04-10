@@ -44,8 +44,9 @@
     keymap)
   "Keymap for Modal insert state.")
 
-(defvar modal-normal-state-map (let ((keymap (make-keymap)))
-                                 (suppress-keymap keymap t) keymap)
+(defvar modal-normal-state-map
+  (let ((keymap (make-sparse-keymap)))
+    (suppress-keymap keymap t) keymap)
   "Keymap for Modal normal state.")
 
 (defvar modal-motion-state-map
@@ -343,6 +344,17 @@
          (state-face (intern (format "modal-indicator-%s" (symbol-name current-state)))))
     (propertize (format "%s " state-text) 'face state-face)))
 
+(defvar-local modal--match-indicator nil)
+
+(defface modal-match-indicator '((t
+                                  (:inherit font-lock-comment-face)))
+  "Match indicator face"
+  :group 'modal)
+
+(defun modal-match-indicator()
+  (when modal--match-indicator (propertize (format " [%d/%d] " (car modal--match-indicator)
+                                                   (cdr modal--match-indicator)) 'face
+                                                   'modal-match-indicator)))
 
 ;;;; function
 
@@ -404,16 +416,12 @@
 (defun modal-previous-line (arg)
   (interactive "p")
   (setq this-command #'previous-line)
-  (call-interactively #'previous-line t)
-  ;; (previous-line arg)
-  )
+  (previous-line arg))
 
 (defun modal-next-line (arg)
   (interactive "p")
   (setq this-command #'next-line)
-  (call-interactively #'next-line t)
-  ;; (next-line arg)
-  )
+  (next-line arg))
 
 (defun modal-forward-char (arg)
   (interactive "p")
@@ -528,6 +536,28 @@
     (push-mark (car position) t t)))
 
 
+(defun modal--match-indicator(point index count)
+  (save-excursion (goto-char point)
+                  (let ((ov (make-overlay (line-end-position)
+                                          (line-end-position))))
+                    (overlay-put ov 'display (propertize (format " [%d/%d] \n" index count) 'face
+                                                         'font-lock-comment-face)))  ))
+
+
+(defun modal-match(key)
+  )
+
+(defun modal-match-word()
+  (interactive)
+  (when-let* ((position (bounds-of-thing-at-point 'word))
+              (beginning (car position))
+              (end (cdr position))
+              (key (format "\<%s\>" (regexp-quote
+                                            (buffer-substring-no-properties
+                                             beginning
+                                             end)))))
+    (modal-match key)))
+
 (defun modal-select-to-forward-word(arg)
   (interactive "p")
   (push-mark (point) t t)
@@ -538,7 +568,15 @@
   (push-mark (point) t t)
   (forward-thing 'word (- arg)))
 
-
+(defun modal-select-to-line(arg)
+  (interactive "p")
+  (if (region-active-p)
+      (progn (if (> (region-end)
+                    (region-beginning))
+                 (goto-char (line-end-position))
+               (goto-char (line-beginning-position))))
+    (goto-char (line-end-position))
+    (push-mark (line-beginning-position) t t)))
 
 ;;;;; modify
 
@@ -568,10 +606,10 @@
 (defun modal-save-and-delete ()
   (interactive)
   (if (region-active-p)
-      (clipboard-kill-region (region-beginning)
-                             (region-end))
-    (clipboard-kill-region (point)
-                           (1+ (point)))))
+      (kill-region (region-beginning)
+                   (region-end))
+    (kill-region (point)
+                 (1+ (point)))))
 
 (defun modal-change()
   (interactive)
@@ -585,11 +623,17 @@
 (defun modal-save-and-change()
   (interactive)
   (if (region-active-p)
-      (clipboard-kill-region (region-beginning)
-                             (region-end))
-    (clipboard-kill-region (point)
-                           (1+ (point))))
+      (kill-region (region-beginning)
+                   (region-end))
+    (kill-region (point)
+                 (1+ (point))))
   (modal-insert-mode 1))
+
+(defun modal-delete-boundary()
+  (interactive)
+  (when (region-active-p)
+    (delete-char 1)))
+
 
 (defun modal--suround-insert (begin end)
   (when (region-active-p)

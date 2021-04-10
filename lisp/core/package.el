@@ -505,6 +505,7 @@
                             (:eval (mode-line-buffer-encoding))
                             (:eval (mode-line-buffer-name-with-project))
                             (:eval (mode-line-buffer-major-mode))
+                            (:eval (modal-match-indicator))
                             (:eval (modal-indicator))))
   :init                                 ;
   :config                               ;

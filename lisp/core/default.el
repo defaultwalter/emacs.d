@@ -28,7 +28,7 @@
 (setq-default frame-title-format " %b ") ; 设置窗口标题格式
 (setq-default use-dialog-box nil)        ; 不显示对话框
 (set-frame-parameter nil 'alpha 100)     ; 设置窗口透明度
-(cua-mode 1)                             ; 开启CUA模式
+;; (cua-mode 1)                             ; 开启CUA模式
 ;; 开启窗口UNDO-REDO
 (winner-mode t)
 ;; 编辑备份设置
