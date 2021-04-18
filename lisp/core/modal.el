@@ -35,6 +35,22 @@
   :tag "Modal"
   :prefix "modal-")
 
+(defcustom modal-normal-cursor nil
+  "Modal normal state cursor style."
+  :group 'modal)
+(defcustom modal-motion-cursor nil
+  "Modal normal state cursor style."
+  :group 'modal)
+(defcustom modal-visual-cursor nil
+  "Modal normal state cursor style."
+  :group 'modal)
+(defcustom modal-insert-cursor nil
+  "Modal normal state cursor style."
+  :group 'modal)
+
+(eval-when-compile (message "%s" (face-foreground 'default)))
+
+
 (defvar modal-mode-map (make-sparse-keymap)
   "Global keymap for Modal")
 
@@ -81,7 +97,7 @@
     (modal-insert-mode -1)
     (modal-motion-mode -1)
     (modal-visual-mode -1)
-    (setq-local cursor-type 'box)))
+    (set-cursor-color (face-foreground 'default))))
 
 (define-minor-mode modal-motion-mode "Modal motion state."
   nil
@@ -90,8 +106,7 @@
   (when modal-motion-mode               ;
     (modal-insert-mode -1)
     (modal-normal-mode -1)
-    (modal-visual-mode -1)
-    (setq-local cursor-type 'box)))
+    (modal-visual-mode -1)))
 
 (define-minor-mode modal-visual-mode "Modal motion state."
   nil
@@ -101,7 +116,6 @@
     (modal-insert-mode -1)
     (modal-normal-mode -1)
     (modal-motion-mode -1)
-    (setq-local cursor-type 'box)
     (add-hook 'post-command-hook #'modal--visual-mode-post-command-handler nil t)
     (add-hook 'deactivate-mark-hook #'modal--exit-visual nil t))
   (unless modal-visual-mode (remove-hook 'post-command-hook
@@ -132,7 +146,6 @@
     (modal-normal-mode -1)
     (modal-motion-mode -1)
     (modal-visual-mode -1)
-    (setq-local cursor-type 'bar)
     (add-hook 'post-command-hook #'modal--insert-mode-post-command-handler nil t))
   (unless modal-insert-mode             ;
     (remove-hook 'post-command-hook #'modal--insert-mode-post-command-handler t)))
@@ -148,13 +161,38 @@
 
 (defun modal--switch-visual-state()
   (modal--switch-state 'visual))
+
+(defun modal--change-cursor()
+  "Change cursor color."
+  (let ((cursor-style (cond ((bound-and-true-p modal-normal-mode)
+                             (or modal-normal-cursor
+                                 `(box . ,(face-foreground 'default))))
+                            ((bound-and-true-p modal-motion-mode)
+                             (or modal-motion-cursor
+                                 `(hbar . ,(face-foreground 'font-lock-string-face))))
+                            ((bound-and-true-p modal-visual-mode)
+                             (or modal-visual-cursor
+                                 `(hollow . ,(face-foreground 'font-lock-type-face))))
+                            ((bound-and-true-p modal-insert-mode)
+                             (or modal-insert-cursor
+                                 `(bar . ,(face-foreground 'font-lock-function-name-face))))
+                            (t '(bar . "#ff0000")))))
+
+    (alert (format "cursor style %s %s" cursor-style modal-motion-mode))
+    (setq-local cursor-type (car cursor-style))
+    (set-cursor-color (cdr cursor-style))))
+
 ;;;; define mode
 (defun modal--enable ()
   "Enable Modal mode"
   (if (derived-mode-p 'special-mode)
       (modal-motion-mode 1)
     (modal-normal-mode 1))
-  (add-hook 'activate-mark-hook #'modal--switch-visual-state nil t))
+  (add-hook 'activate-mark-hook #'modal--switch-visual-state nil t)
+  (message "=====================%s" major-mode)
+  (modal-diagnose)
+  (modal--change-cursor)
+  (add-hook 'post-command-hook #' modal--change-cursor nil t))
 
 (defun modal--disable ()
   "Disable Modal mode"
@@ -162,14 +200,18 @@
   (modal-motion-mode -1)
   (modal-insert-mode -1)
   (modal-visual-mode -1)
-  (remove-hook 'activate-mark-hook #'modal--switch-visual-state t))
+  (remove-hook 'activate-mark-hook #'modal--switch-visual-state t)
+  (remove-hook 'post-command-hook #'modal--change-cursor t))
+
 
 (define-minor-mode modal-mode "Toggle `modal-mode` minor mode."
   nil
   " Modal"
   modal-mode-map
-  (if modal-mode (modal--enable)
+  (if modal-mode                        ;
+      (modal--enable)
     (modal--disable)))
+
 (defun modal--current-state ()
   "Current state."
   (cond ((bound-and-true-p modal-insert-mode) 'insert)
@@ -188,6 +230,7 @@
         ((equal state 'visual)
          (modal-visual-mode 1))))
 
+
 (defun modal--quit-edit ()
   "Quit edit mode,"
   (if (derived-mode-p 'special-mode)
@@ -200,20 +243,21 @@
 
 (defun modal--global-enable()
   "Enable Modal global mode"
-  (setq-default modal-normal-mode t)
-  (setq-default modal-mode t)
+  ;; (setq-default modal-normal-mode t)
+  ;; (setq-default modal-mode t)
   (add-hook 'minibuffer-setup-hook #'modal-mode--minibuffer-setup))
 
 (defun modal--global-disable()
   "Disable Modal global mode"
-  (setq-default meow-normal-mode nil)
-  (setq-default modal-mode nil)
+  ;; (setq-default meow-normal-mode nil)
+  ;; (setq-default modal-mode nil)
   (remove-hook 'minibuffer-setup-hook #'modal-mode--minibuffer-setup))
 
+(defun modal--turn-on()
+  (unless (minibufferp)
+    (modal-mode 1)))
 (define-globalized-minor-mode modal-global-mode modal-mode
-  (lambda ()
-    (unless (minibufferp)
-      (modal-mode 1)))
+  modal--turn-on
   (if modal-mode (modal--global-enable)
     (modal--global-disable )))
 
@@ -449,7 +493,7 @@
 ;;;;; select
 (defun modal-select-word()
   (interactive)
-  (let ((position (bounds-of-thing-at-point 'word)))
+  (when-let ((position (bounds-of-thing-at-point 'word)))
     (goto-char (cdr position))
     (push-mark (car position) t t)))
 

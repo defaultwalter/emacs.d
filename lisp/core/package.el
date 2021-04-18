@@ -285,13 +285,20 @@
   :defer t
   :custom                               ;
   (highlight-indent-guides-suppress-auto-error t)
-  (highlight-indent-guides-method 'character)
+  (highlight-indent-guides-method 'column)
   (highlight-indent-guides-responsive 'top)
   (highlight-indent-guides-character ?┊)
   :hook ((prog-mode conf-mode) . highlight-indent-guides-mode)
   :config                               ;
   (unless (display-graphic-p)
     (set-face-foreground 'highlight-indent-guides-character-face "black")))
+
+;; (use-package
+;;   highlight-indentation
+;;   :ensure t                             ;高亮缩进
+;;   :custom                               ;
+;;   (highlight-indentation-blank-lines t)
+;;   :hook ((prog-mode conf-mode) . highlight-indentation-mode))
 
 (use-package
   visual-fill-column                    ;设置正文宽度
@@ -318,11 +325,13 @@
 
 (use-package
   multi-vterm
+  :disabled
   :ensure t)
 
 (use-package
   vterm-toggle
   :ensure t
+  :disabled
   :bind                                 ;
   ("C-`" . vterm-toggle)
   ("C-~" . vterm-toggle-cd)
@@ -505,7 +514,6 @@
                             (:eval (mode-line-buffer-encoding))
                             (:eval (mode-line-buffer-name-with-project))
                             (:eval (mode-line-buffer-major-mode))
-                            (:eval (modal-match-indicator))
                             (:eval (modal-indicator))))
   :init                                 ;
   :config                               ;
@@ -540,7 +548,7 @@
   :hook (server-after-make-frame . (lambda()
                                      (load-theme 'doom-one t)))
   :config                               ;
-  (load-theme 'doom-one t)
+  (load-theme 'doom-nord t)
   ;; (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config)
   (doom-themes-neotree-config)
