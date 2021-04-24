@@ -54,10 +54,14 @@
   (org-block-begin-line ((t
                           (:background nil
                                        :box (:line-width -1
-                                                         :color  ,(color-lighten-name
-                                                                   (face-background 'default) 5))))))
+                                                         :color  ,(if (color-defined-p
+                                                                       (face-background 'default))
+                                                                      (color-lighten-name
+                                                                       (face-background 'default) 5)
+                                                                    nil))))))
   (org-block ((t
-               (:background ,(color-lighten-name (face-background 'default) 5)))))
+               (:background ,(if (color-defined-p (face-background 'default))
+                                 (color-lighten-name (face-background 'default) 5)  nil)))))
   (org-block-end-line ((t
                         (:background nil
                                      :inherit 'org-block-begin-line))))

@@ -538,7 +538,7 @@
   :ensure t
   :init
   :custom                               ;
-  (doom-themes-neotree-file-icons t)
+  (doom-themes-neotree-file-icons 'simple)
   (doom-themes-treemacs-theme "doom-colors")
   :custom-face                          ;
   (font-lock-comment-face ((t
@@ -557,6 +557,7 @@
 (use-package
   dashboard
   :ensure t
+  :if (display-graphic-p)
   :config                               ;
   (modal-leader-set-key "b <home>" '(dashboard-refresh-buffer :which-key "dashboard"))
   (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))

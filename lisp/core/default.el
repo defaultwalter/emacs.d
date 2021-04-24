@@ -96,7 +96,8 @@
 (defun user/set-font(fontsize)
   "Try to config font"
   ;; 设置默认字体
-  (let ((frame-font (cond ((member "Sarasa Mono SC" (font-family-list)) "Sarasa Mono SC")
+  (let ((frame-font (cond ((member "Source Code Pro" (font-family-list)) "Source Code Pro")
+                          ((member "Sarasa Mono SC" (font-family-list)) "Sarasa Mono SC")
                           ((member "Consolas" (font-family-list)) "Consolas")
                           ((member "Menlo" (font-family-list)) "Menlo")
                           ((member "DejaVu Sans Mono" (font-family-list)) "DejaVu Sans Mono")
@@ -105,13 +106,13 @@
     (set-frame-font (format "%s-%s" frame-font fontsize) t t))
 
   ;; 中文字体
-  (set-fontset-font t '(#x4e00 . #x9fff)
-                    (cond ((member "Sarasa Mono SC" (font-family-list)) "Sarasa Mono SC")
-                          ((member "WenQuanYi Micro Hei" (font-family-list)) "WenQuanYi Micro Hei")
-                          ((member "Microsoft YaHei" (font-family-list)) "Microsoft YaHei")
-                          ((member "Hei" (font-family-list)) "Hei")
-                          ((member "WenQuanYi Micro Hei Mono" (font-family-list))
-                           "WenQuanYi Micro Hei Mono")))
+  (set-fontset-font t 'han (cond ((member "Sarasa Mono SC" (font-family-list)) "Sarasa Mono SC")
+                                 ((member "WenQuanYi Micro Hei Mono" (font-family-list))
+                                  "WenQuanYi Micro Hei Mono")
+                                 ((member "Microsoft YaHei" (font-family-list)) "Microsoft YaHei")
+                                 ((member "Hei" (font-family-list)) "Hei")
+                                 ((member "WenQuanYi Micro Hei Mono" (font-family-list))
+                                  "WenQuanYi Micro Hei Mono")))
   ;; 设置Emoji字体
   (set-fontset-font t '(#x1f300 . #x1fad0)
                     (cond ((member "Noto Color Emoji" (font-family-list)) "Noto Color Emoji")
@@ -162,8 +163,8 @@
 (add-hook 'conf-mode-hook 'display-line-numbers-mode) ; 显示行号
 ;; (add-hook 'prog-mode-hook 'hl-line-mode)              ; 高亮当前行
 ;; (add-hook 'text-mode-hook 'hl-line-mode)              ; 高亮当前行
-(add-hook 'conf-mode-hook 'hl-line-mode) ; 高亮当前行
-(delete-selection-mode 1)                ; 插入时替换选区
+;; (add-hook 'conf-mode-hook 'hl-line-mode) ; 高亮当前行
+(delete-selection-mode 1)               ; 插入时替换选区
 
 (setq-default truncate-lines nil)
 

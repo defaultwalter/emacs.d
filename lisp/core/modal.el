@@ -48,8 +48,6 @@
   "Modal normal state cursor style."
   :group 'modal)
 
-(eval-when-compile (message "%s" (face-foreground 'default)))
-
 
 (defvar modal-mode-map (make-sparse-keymap)
   "Global keymap for Modal")
@@ -59,22 +57,17 @@
     ;; (define-key keymap (kbd "<escape>") 'meow-insert-exit)
     keymap)
   "Keymap for Modal insert state.")
+(defvar modal-motion-state-map (let ((keymap (make-keymap)))
+                                 (suppress-keymap keymap t) keymap)
+  "Keymap for Modal motion state.")
 
 (defvar modal-normal-state-map
   (let ((keymap (make-sparse-keymap)))
     (suppress-keymap keymap t) keymap)
   "Keymap for Modal normal state.")
 
-(defvar modal-motion-state-map
-  (let ((keymap (make-keymap)))
-    (suppress-keymap keymap t)
-    (set-keymap-parent keymap modal-normal-state-map) keymap)
-  "Keymap for Modal motion state.")
-
-(defvar modal-visual-state-map
-  (let ((keymap (make-keymap)))
-    (suppress-keymap keymap t)
-    (set-keymap-parent keymap modal-normal-state-map) keymap)
+(defvar modal-visual-state-map (let ((keymap (make-keymap)))
+                                 (suppress-keymap keymap t) keymap)
   "Keymap for Modal visual state.")
 
 
@@ -162,23 +155,21 @@
 (defun modal--switch-visual-state()
   (modal--switch-state 'visual))
 
-(defun modal--change-cursor()
+(defun modal--refresh-cursor()
   "Change cursor color."
   (let ((cursor-style (cond ((bound-and-true-p modal-normal-mode)
                              (or modal-normal-cursor
-                                 `(box . ,(face-foreground 'default))))
+                                 `(bar . ,(face-foreground 'link))))
                             ((bound-and-true-p modal-motion-mode)
                              (or modal-motion-cursor
-                                 `(hbar . ,(face-foreground 'font-lock-string-face))))
+                                 `(bar . ,(face-foreground 'success))))
                             ((bound-and-true-p modal-visual-mode)
                              (or modal-visual-cursor
-                                 `(hollow . ,(face-foreground 'font-lock-type-face))))
+                                 `(bar . ,(face-foreground 'warning))))
                             ((bound-and-true-p modal-insert-mode)
                              (or modal-insert-cursor
-                                 `(bar . ,(face-foreground 'font-lock-function-name-face))))
-                            (t '(bar . "#ff0000")))))
-
-    (alert (format "cursor style %s %s" cursor-style modal-motion-mode))
+                                 `(bar . ,(face-foreground 'error))))
+                            (t `(bar . ,(face-foreground 'default))))))
     (setq-local cursor-type (car cursor-style))
     (set-cursor-color (cdr cursor-style))))
 
@@ -188,11 +179,11 @@
   (if (derived-mode-p 'special-mode)
       (modal-motion-mode 1)
     (modal-normal-mode 1))
-  (add-hook 'activate-mark-hook #'modal--switch-visual-state nil t)
-  (message "=====================%s" major-mode)
-  (modal-diagnose)
-  (modal--change-cursor)
-  (add-hook 'post-command-hook #' modal--change-cursor nil t))
+  (add-hook 'modal-normal-mode-hook #'modal--refresh-cursor nil t)
+  (add-hook 'modal-motion-mode-hook #'modal--refresh-cursor nil t)
+  (add-hook 'modal-visual-mode-hook #'modal--refresh-cursor nil t)
+  (add-hook 'modal-insert-mode-hook #'modal--refresh-cursor nil t)
+  (add-hook 'activate-mark-hook #'modal--switch-visual-state nil t))
 
 (defun modal--disable ()
   "Disable Modal mode"
@@ -200,8 +191,7 @@
   (modal-motion-mode -1)
   (modal-insert-mode -1)
   (modal-visual-mode -1)
-  (remove-hook 'activate-mark-hook #'modal--switch-visual-state t)
-  (remove-hook 'post-command-hook #'modal--change-cursor t))
+  (remove-hook 'activate-mark-hook #'modal--switch-visual-state t))
 
 
 (define-minor-mode modal-mode "Toggle `modal-mode` minor mode."
@@ -237,20 +227,24 @@
       (modal-motion-mode 1)
     (modal-normal-mode 1)))
 
+(defun modal--window-state-change-handler
+    (&rest
+     args)
+  "Update modal state when Window state change."
+  (modal--refresh-cursor))
+
 (defun modal-mode--minibuffer-setup()
   "Set modal-mode state when minibuffer avtive."
   (setq-local modal-normal-mode nil))
 
 (defun modal--global-enable()
   "Enable Modal global mode"
-  ;; (setq-default modal-normal-mode t)
-  ;; (setq-default modal-mode t)
+  (add-hook 'window-state-change-functions #'modal--window-state-change-handler)
   (add-hook 'minibuffer-setup-hook #'modal-mode--minibuffer-setup))
 
 (defun modal--global-disable()
   "Disable Modal global mode"
-  ;; (setq-default meow-normal-mode nil)
-  ;; (setq-default modal-mode nil)
+  (remove-hook 'window-state-change-functions #'modal--window-state-change-handler)
   (remove-hook 'minibuffer-setup-hook #'modal-mode--minibuffer-setup))
 
 (defun modal--turn-on()
@@ -348,51 +342,28 @@
     (motion . "<M>")
     (visual . "<V>")
     (insert . "<I>")))
-(defface modal-indicator-normal
-  '((((class color)
-      (background dark))
-     (:inherit font-lock-keyword-face
-               :weight bold))
-    (((class color)
-      (background light))
-     (:inherit font-lock-keyword-face
-               :weight bold)))
+(defface modal-indicator-normal '((t
+                                   (:inherit link
+                                             :weight bold
+                                             :underline nil)))
   "Normal state indicator."
   :group 'modal)
 
-(defface modal-indicator-motion
-  '((((class color)
-      (background dark))
-     (:inherit font-lock-string-face
-               :weight bold))
-    (((class color)
-      (background light))
-     (:inherit font-lock-string-face
-               :weight bold)))
+(defface modal-indicator-motion '((t
+                                   (:inherit success
+                                             :weight bold)))
   "Motion state indicator."
   :group 'modal)
 
-(defface modal-indicator-visual
-  '((((class color)
-      (background dark))
-     (:inherit font-lock-type-face
-               :weight bold))
-    (((class color)
-      (background light))
-     (:inherit font-lock-type-face
-               :weight bold)))
+(defface modal-indicator-visual '((t
+                                   (:inherit warning
+                                             :weight bold)))
   "Motion state indicator."
   :group 'modal)
 
-(defface modal-indicator-insert
-  '((((class color)
-      (background dark))
-     (:inherit font-lock-function-name-face
-               :weight bold))
-    (((class color)
-      (background light))
-     (:inherit font-lock-function-name-face
-               :weight bold)))
+(defface modal-indicator-insert '((t
+                                   (:inherit error
+                                             :weight bold)))
   "Insert state indicator."
   :group 'modal)
 
@@ -626,17 +597,19 @@
 (defun modal-select-lines()
   (interactive)
   (if (not (region-active-p))
-      (modal-select-inner-line)
+      (modal-select-whole-line)
     (cond ((= (point)
               (region-end))
-           (goto-char (line-end-position))
+           (let ((position (bounds-of-thing-at-point 'line)))
+             (goto-char (cdr position)))
            (save-excursion (goto-char (region-beginning))
                            (push-mark (line-beginning-position) t t)))
           ((= (point)
               (region-beginning))
            (goto-char (line-beginning-position))
            (save-excursion (goto-char (region-end))
-                           (push-mark (line-end-position) t t))))))
+                           (let ((position (bounds-of-thing-at-point 'line)))
+                             (push-mark (cdr position) t t)))))))
 
 ;;;;; modify
 (defun modal-open-line-above(arg)

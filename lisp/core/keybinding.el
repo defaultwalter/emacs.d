@@ -26,6 +26,13 @@
 
 ;;;; bind map
 
+;;;; Normal state
+(define-key modal-normal-state-map (kbd "<escape>") #'keyboard-quit)
+
+
+;; (define-key modal-normal-state-map (kbd "<backspace>") #'keyboard-quit)
+;; (define-key modal-normal-state-map (kbd "<return>") #'keyboard-quit)
+
 (define-key modal-normal-state-map (kbd "j") #'modal-next-line)
 (define-key modal-normal-state-map (kbd "k") #'modal-previous-line)
 (define-key modal-normal-state-map (kbd "h") #'modal-backward-char)
@@ -34,7 +41,6 @@
 (define-key modal-normal-state-map (kbd "K") #'modal-select-to-previous-line)
 (define-key modal-normal-state-map (kbd "H") #'modal-select-to-backward-char)
 (define-key modal-normal-state-map (kbd "L") #'modal-select-to-forward-char)
-
 
 (define-key modal-normal-state-map (kbd "w") #'modal-select-word)
 (define-key modal-normal-state-map (kbd "W") #'modal-select-symbol)
@@ -62,10 +68,9 @@
 
 (define-key modal-normal-state-map (kbd "c") #'modal-change)
 (define-key modal-normal-state-map (kbd "C") #'modal-save-and-change)
-(define-key modal-normal-state-map (kbd "d") #'modal-delete)
-(define-key modal-normal-state-map (kbd "D") #'modal-save-and-delete)
-(define-key modal-normal-state-map (kbd "x") #'modal-delete-char)
-(define-key modal-normal-state-map (kbd "X") #'modal-save-and-delete-char)
+
+(define-key modal-normal-state-map (kbd "d") #'modal-delete-char)
+(define-key modal-normal-state-map (kbd "D") #'modal-save-and-delete-char)
 (define-key modal-normal-state-map (kbd "y") #'kill-ring-save)
 (define-key modal-normal-state-map (kbd "p") #'yank)
 (define-key modal-normal-state-map (kbd "u") #'undo)
@@ -76,9 +81,6 @@
 (define-key modal-normal-state-map (read-kbd-macro "g g") #'beginning-of-buffer)
 (define-key modal-normal-state-map (read-kbd-macro "G") #'end-of-buffer)
 
-(define-key modal-insert-state-map (kbd "<escape>") #'modal-quit-insert-mode)
-(define-key modal-motion-state-map (kbd "<escape>") #'modal-temporary-insert)
-
 (define-key modal-normal-state-map (kbd "M-h") #'windmove-left)
 (define-key modal-normal-state-map (kbd "M-l") #'windmove-right)
 (define-key modal-normal-state-map (kbd "M-j") #'windmove-down)
@@ -88,6 +90,15 @@
 (define-key modal-normal-state-map (kbd "~") #'exchange-point-and-mark)
 
 (define-key modal-normal-state-map (kbd "z") #'outline-toggle-children)
+;;;; Motion state
+(set-keymap-parent modal-motion-state-map modal-normal-state-map)
+(define-key modal-motion-state-map (kbd "<escape>") #'modal-temporary-insert)
+;;;; Visual state
+(set-keymap-parent modal-visual-state-map modal-normal-state-map)
+(define-key modal-visual-state-map (kbd "d") #'modal-delete)
+(define-key modal-visual-state-map (kbd "D") #'modal-save-and-delete)
+;;;; Insert state
+(define-key modal-insert-state-map (kbd "<escape>") #'modal-quit-insert-mode)
 ;;;; leader key
 
 (modal-leader-set-key "SPC" '(counsel-M-x :which-key "command"))
