@@ -585,7 +585,7 @@
                                                              (call-interactively 'org-agenda))
                                         default "" ""))
                                       () ;
-                                      ((,(all-the-icons-octicon "file-text"
+                                      ((,(all-the-icons-octicon "versions"
                                                                 :height 0.9
                                                                 :v-adjust 0.0)
                                         " Open recently file                  " "" (lambda
