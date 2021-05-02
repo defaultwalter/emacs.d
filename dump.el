@@ -23,7 +23,6 @@
 (delete 'org-plus-contrib dump-packages)
 (delete 'with-editor dump-packages)
 
-(setq evil-want-keybinding nil)
 (dolist (package dump-packages)
   (require package))
 

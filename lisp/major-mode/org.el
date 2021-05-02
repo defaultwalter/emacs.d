@@ -6,65 +6,6 @@
   :ensure org-plus-contrib
   :defer t
   :hook (org-mode . org-superstar-mode)
-  :custom-face                          ;
-  (org-level-1 ((t
-                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
-                              :slant italic
-                              :inherit 'outline-1))))
-  (org-level-2 ((t
-                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
-                              :slant italic
-                              :inherit 'outline-2))))
-  (org-level-3 ((t
-                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
-                              :slant italic
-                              :inherit 'outline-3))))
-  (org-level-4 ((t
-                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
-                              :slant italic
-                              :inherit 'outline-4))))
-  (org-level-5 ((t
-                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
-                              :slant italic
-                              :inherit 'outline-5))))
-  (org-level-6 ((t
-                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
-                              :slant italic
-                              :inherit 'outline-6))))
-  (org-level-7 ((t
-                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
-                              :slant italic
-                              :inherit 'outline-7))))
-  (org-level-8 ((t
-                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)
-                              :slant italic
-                              :inherit 'outline-8))))
-  (org-link ((t
-              (:foreground ,(color-darken-name (face-foreground 'default) 20)
-                           :slant italic
-                           :inherit 'link))))
-  (org-list-dt ((t
-                 (:foreground ,(color-lighten-name (face-foreground 'default) 100)))))
-  (org-table ((t
-               (:foreground ,(face-foreground 'default)))))
-  (org-code ((t
-              (:foreground ,(color-darken-name (face-foreground 'default) 20)))))
-  (org-verbatim ((t
-                  (:foreground ,(color-darken-name (face-foreground 'default) 20)))))
-  (org-block-begin-line ((t
-                          (:background nil
-                                       :box (:line-width -1
-                                                         :color  ,(if (color-defined-p
-                                                                       (face-background 'default))
-                                                                      (color-lighten-name
-                                                                       (face-background 'default) 5)
-                                                                    nil))))))
-  (org-block ((t
-               (:background ,(if (color-defined-p (face-background 'default))
-                                 (color-lighten-name (face-background 'default) 5)  nil)))))
-  (org-block-end-line ((t
-                        (:background nil
-                                     :inherit 'org-block-begin-line))))
   :init                                 ;
   (setq org-preview-latex-image-directory (expand-file-name "ltximg/" user-emacs-directory))
   (setq org-hide-emphasis-markers nil) ; 隐藏强调符号（加粗，下划线等等）
@@ -125,18 +66,6 @@
   ob-plantuml
   :init (setq-default org-plantuml-exec-mode 'plantuml)
   (setq-default org-plantuml-jar-path ""))
-
-(use-package
-  evil-org
-  :ensure t
-  :after org
-  :hook ((org-mode . evil-org-mode)
-         (org-agenda-mode . evil-org-mode))
-  :config                  ;
-  ;; (add-hook 'evil-org-mode-hook (lambda ()
-  ;;                                 (evil-org-set-key-theme)))
-  (require 'evil-org-agenda)
-  (evil-org-agenda-set-keys))
 
 (use-package
   org-superstar

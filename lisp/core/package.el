@@ -51,7 +51,7 @@
   (which-key-idle-secondary-delay 0.05)
   (which-key-sort-order 'which-key-prefix-then-key-order)
   (which-key-allow-multiple-replacements t)
-  (which-key-allow-evil-operators t)
+  ;; (which-key-allow-evil-operators t)
   (which-key-popup-type 'side-window)
   :config                               ;
   (add-to-list 'which-key-replacement-alist '(("ESC" . nil) . ("esc" . nil)))
@@ -226,9 +226,7 @@
   disable-mouse
   :ensure t
   :disabled
-  :config (when (boundp 'evil-mode)
-            (mapc #'disable-mouse-in-keymap (list evil-motion-state-map evil-normal-state-map
-                                                  evil-visual-state-map evil-insert-state-map)))
+  :config                               ;
   (global-disable-mouse-mode))
 
 
@@ -368,31 +366,6 @@
                                        (dedicated . t) ;dedicated is supported in emacs27
                                        (reusable-frames . visible)
                                        (window-height . 0.3))))
-(use-package
-  centaur-tabs
-  :ensure t
-  :demand
-
-  :disabled
-  :custom                               ;
-  (centaur-tabs-style "bar")
-  (centaur-tabs-height 32)
-  (centaur-tabs-set-icons t)
-  ;; (centaur-tabs-plain-icons t)
-  (centaur-tabs-gray-out-icons 'buffer)
-  (centaur-tabs-set-bar 'over)
-  (centaur-tabs-set-modified-marker t)
-  (centaur-tabs-show-navigation-buttons t)
-  (centaur-tabs-cycle-scope 'tabs)
-  :bind                                 ;
-  (:map evil-normal-state-map
-        ("g t" . centaur-tabs-forward)
-        ("g T" . centaur-tabs-backward))
-  :config (centaur-tabs-mode t)
-  :bind ("C-<prior>" . centaur-tabs-backward)
-  ("C-<next>" . centaur-tabs-forward)
-  :config                               ;
-  (centaur-tabs-group-by-projectile-project))
 ;; ;;;; ==============================================
 ;; ;;;; 编辑增强
 ;; ;;;; ==============================================
@@ -481,13 +454,9 @@
   drag-stuff
   :ensure t
   :defer t
-  :after evil
-  :bind (:map evil-visual-state-map
-              ("K" . drag-stuff-up)
-              ("J" . drag-stuff-down)
-              :map evil-normal-state-map
-              ("K" . drag-stuff-up)
-              ("J" . drag-stuff-down))
+  :bind (:map modal-normal-state-map
+              ("C-k" . drag-stuff-up)
+              ("C-j" . drag-stuff-down))
   :config                               ;
   (drag-stuff-global-mode 1))
 
@@ -495,9 +464,9 @@
   expand-region                         ;选择区域
   :ensure t
   :defer t
-  :after evil
-  :bind (("<S-return>" . er/expand-region)
-         ("S-RET" . er/expand-region)))
+  :bind (:map modal-normal-state-map
+              ("<S-return>" . er/expand-region)
+              ("S-RET" . er/expand-region)))
 
 (use-package
   format-all                            ;格式化代码，支持多种格式
