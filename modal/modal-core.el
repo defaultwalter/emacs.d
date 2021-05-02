@@ -23,6 +23,7 @@
 ;;
 
 ;;; Code:
+(require 'modal-cursor)
 
 (defvar modal-mode-map (make-sparse-keymap)
   "Global keymap for Modal")
@@ -56,11 +57,11 @@
 (defun modal--apply-mode-maps()
   "Apply mode map"
   (let ((normal-state-map (or (cdr (assoc major-mode modal--normal-state-maps))
-                                   modal-normal-state-map))
+                              modal-normal-state-map))
         (motion-state-map (or (cdr (assoc major-mode modal--motion-state-maps))
-                             modal-motion-state-map))
+                              modal-motion-state-map))
         (visual-state-map (or (cdr (assoc major-mode modal--visual-state-maps))
-                             modal-visual-state-map)))
+                              modal-visual-state-map)))
     (push `(modal-normal-state-mode . ,normal-state-map) minor-mode-overriding-map-alist)
     (push `(modal-motion-state-mode . ,motion-state-map) minor-mode-overriding-map-alist)
     (push `(modal-visual-state-mode . ,visual-state-map) minor-mode-overriding-map-alist)))
@@ -80,7 +81,7 @@
   nil
   " ModalMotion"
   modal-motion-state-map
-  (when modal-motion-state-mode               ;
+  (when modal-motion-state-mode         ;
     (modal-insert-state-mode -1)
     (modal-normal-state-mode -1)
     (modal-visual-state-mode -1)))
@@ -89,13 +90,13 @@
   nil
   " ModalMotion"
   modal-visual-state-map
-  (when modal-visual-state-mode               ;
+  (when modal-visual-state-mode         ;
     (modal-insert-state-mode -1)
     (modal-normal-state-mode -1)
     (modal-motion-state-mode -1)
     (add-hook 'post-command-hook #'modal--visual-state-mode-post-command-handler nil t)
     (add-hook 'deactivate-mark-hook #'modal--cancel nil t))
-  (unless modal-visual-state-mode             ;
+  (unless modal-visual-state-mode       ;
     (remove-hook 'post-command-hook #'modal--visual-state-mode-post-command-handler t)
     (remove-hook 'deactivate-mark-hook #'modal--cancel t)))
 
@@ -105,10 +106,11 @@
 (defun modal--visual-state-mode-post-command-handler
     (&optional
      command)
-  (when modal-visual-state-mode               ;
+  (when modal-visual-state-mode         ;
     (let ((command (or command
                        this-command)))
-      (when (or (eq command #'keyboard-quit)
+      (when (or (or (eq command #'keyboard-escape-quit)
+                    (eq command #'keyboard-quit))
                 deactivate-mark
                 (not (region-active-p)))
         (deactivate-mark)
@@ -118,21 +120,22 @@
   nil
   " ModalInsert"
   modal-insert-state-map
-  (when modal-insert-state-mode               ;
+  (when modal-insert-state-mode         ;
     (modal-normal-state-mode -1)
     (modal-motion-state-mode -1)
     (modal-visual-state-mode -1)
     (add-hook 'post-command-hook #'modal--insert-state-mode-post-command-handler nil t))
-  (unless modal-insert-state-mode             ;
+  (unless modal-insert-state-mode       ;
     (remove-hook 'post-command-hook #'modal--insert-state-mode-post-command-handler t)))
 
 (defun modal--insert-state-mode-post-command-handler
     (&optional
      command)
-  (when modal-insert-state-mode               ;
+  (when modal-insert-state-mode         ;
     (let ((command (or command
                        this-command)))
-      (when  (eq command #'keyboard-quit)
+      (when  (or (eq command #'keyboard-escape-quit)
+                 (eq command #'keyboard-quit))
         (modal--cancel) ))))
 
 
@@ -209,8 +212,11 @@
                              (or modal-insert-cursor
                                  `(bar . ,(face-foreground 'error))))
                             (t `(bar . ,(face-foreground 'default))))))
-    (setq-local cursor-type (car cursor-style))
-    (set-cursor-color (cdr cursor-style))))
+    (if (display-graphic-p)
+        (progn (setq-local cursor-type (car cursor-style))
+               (set-cursor-color (cdr cursor-style)))
+      (send-string-to-terminal (tcursor--make-cursor-shape (car cursor-style)))
+      (send-string-to-terminal (tcursor--make-cursor-color (cdr cursor-style))))))
 
 (defun modal--window-state-change-handler
     (&rest
@@ -244,8 +250,8 @@
   (interactive)
   (message
    "modal global state: %s\nmodal state: %s\nnormal state: %s\nvisual state: %s\ninsert state: %s\nmotion state: %s"
-   modal-global-mode modal-mode modal-normal-state-mode modal-visual-state-mode modal-insert-state-mode
-   modal-motion-state-mode))
+   modal-global-mode modal-mode modal-normal-state-mode modal-visual-state-mode
+   modal-insert-state-mode modal-motion-state-mode))
 
 (provide 'modal-core)
 ;;; modal-core.el ends here

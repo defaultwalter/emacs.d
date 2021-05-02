@@ -30,6 +30,7 @@
 (require 'modal-leader)
 (require 'modal-command)
 (require 'modal-default)
+(require 'modal-cursor)
 
 (modal--default-setup)
 (modal-global-mode 1)

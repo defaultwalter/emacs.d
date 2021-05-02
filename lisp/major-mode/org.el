@@ -38,7 +38,7 @@
                              (add-hook 'before-save-hook (lambda()
                                                            ;; 保存时 对齐 tag
                                                            (org-align-tags t)) nil 'local)))
-  ;; (setq org-image-actual-width '(100 200 300))
+  (setq org-image-actual-width '(100 200 300 400))
   (setq-default org-confirm-babel-evaluate nil)
   :config                               ;
   (require 'ob-dot)

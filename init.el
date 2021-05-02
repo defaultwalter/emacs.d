@@ -15,8 +15,7 @@
 ;; (if (bound-and-true-p with-dump)
 ;;     (setq load-path dump-load-path)
 ;;   (package-initialize) )
-(unless package--initialized
-  (package-initialize))
+(unless package--initialized (package-initialize))
 
 (add-to-list 'load-path (expand-file-name "lisp" user-config-directory))
 (add-to-list 'load-path (expand-file-name "modal" user-config-directory))
@@ -28,6 +27,18 @@
 ;; 启用use-package统计
 (setq use-package-compute-statistics t)
 (require 'use-package)
+;; 安装 straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file (expand-file-name "straight/repos/straight.el/bootstrap.el"
+                                        user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer (url-retrieve-synchronously
+                          "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+                          'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
 ;;; 加载配置
 (require 'modal)

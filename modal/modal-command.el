@@ -27,13 +27,10 @@
   (when (not (region-active-p))
     (push-mark (point) t t)))
 
-
-
-(defun modal-quit-insert-mode()
+(defun modal-back-to-default-state()
   (interactive)
-  (if (derived-mode-p 'special-mode)
-      (modal--switch-state 'motion)
-    (modal--switch-state 'normal)))
+  (modal--cancel))
+
 (defun modal-insert()
   (interactive)
   (when (region-active-p)
@@ -65,7 +62,7 @@
 (defun modal--temporary-insert-callback()
   (unless (eq this-command #'modal-temporary-insert)
     (remove-hook 'post-command-hook #'modal--temporary-insert-callback t)
-    (modal-quit-insert-mode)))
+    (modal-back-to-default-satte)))
 
 (defun modal-temporary-insert()
   (interactive)
@@ -263,14 +260,14 @@
   (newline arg)
   (backward-char arg)
   (indent-for-tab-command)
-  (modal-insert-mode 1))
+  (modal--switch-state 'insert))
 
 (defun modal-open-line-below(arg)
   (interactive "p")
   (goto-char (line-end-position))
   (newline arg)
   (indent-for-tab-command)
-  (modal-insert-mode 1))
+  (modal--switch-state 'insert))
 
 (defun modal-delete-char (arg)
   (interactive "p")
@@ -299,7 +296,7 @@
                      (region-end))
     (delete-region (point)
                    (1+ (point))))
-  (modal-insert-mode 1))
+  (modal--switch-state 'insert))
 
 (defun modal-save-and-change()
   (interactive)
@@ -308,7 +305,7 @@
                    (region-end))
     (kill-region (point)
                  (1+ (point))))
-  (modal-insert-mode 1))
+  (modal--switch-state 'insert))
 
 (defun modal-delete-boundary()
   (interactive)

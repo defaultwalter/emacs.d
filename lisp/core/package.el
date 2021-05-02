@@ -347,6 +347,7 @@
 
 (use-package
   multi-vterm
+
   :disabled
   :ensure t)
 
@@ -415,6 +416,7 @@
                            (company-dabbrev)))
   (setq company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend)))
 
+
 (use-package
   company-box
   :ensure t
@@ -446,9 +448,16 @@
   hungry-delete                         ; 可以删除前面所有的空白字符
   :ensure t
   :defer t
+  :disabled
   :custom (hungry-delete-join-reluctantly t)
   :hook (prog-mode . hungry-delete-mode))
-
+(use-package
+  smart-hungry-delete
+  :ensure t
+  :bind (("<backspace>" . smart-hungry-delete-backward-char)
+         ("C-d" . smart-hungry-delete-forward-char))
+  :defer nil ;; dont defer so we can add our functions to hooks
+  :config (smart-hungry-delete-add-default-hooks))
 
 (use-package
   drag-stuff
