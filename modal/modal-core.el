@@ -44,98 +44,96 @@
   "Keymap for Modal normal state.")
 
 
-(defvar modal--visual-mode-maps nil
+(defvar modal--visual-state-maps nil
   "Modal map for major mode")
 
-(defvar modal--normal-mode-maps nil
+(defvar modal--normal-state-maps nil
   "Modal map for major mode")
 
-(defvar modal--motion-mode-maps nil
+(defvar modal--motion-state-maps nil
   "Modal map for major mode")
 
 (defun modal--apply-mode-maps()
   "Apply mode map"
-  (let ((normal-mode-map (or (cdr (assoc major-mode modal--normal-mode-maps))
-                             modal-normal-state-map))
-        (motion-mode-map (or (cdr (assoc major-mode modal--motion-mode-maps))
+  (let ((normal-state-map (or (cdr (assoc major-mode modal--normal-state-maps))
+                                   modal-normal-state-map))
+        (motion-state-map (or (cdr (assoc major-mode modal--motion-state-maps))
                              modal-motion-state-map))
-        (visual-mode-map (or (cdr (assoc major-mode modal--visual-mode-maps))
+        (visual-state-map (or (cdr (assoc major-mode modal--visual-state-maps))
                              modal-visual-state-map)))
-    (push `(modal-normal-mode . ,normal-mode-map) minor-mode-overriding-map-alist)
-    (push `(modal-motion-mode . ,motion-mode-map) minor-mode-overriding-map-alist)
-    (push `(modal-visual-mode . ,visual-mode-map) minor-mode-overriding-map-alist)))
+    (push `(modal-normal-state-mode . ,normal-state-map) minor-mode-overriding-map-alist)
+    (push `(modal-motion-state-mode . ,motion-state-map) minor-mode-overriding-map-alist)
+    (push `(modal-visual-state-mode . ,visual-state-map) minor-mode-overriding-map-alist)))
 
 (add-hook 'after-change-major-mode-hook #'modal--apply-mode-maps)
 
-(define-minor-mode modal-normal-mode "Modal normal state."
+(define-minor-mode modal-normal-state-mode "Modal normal state."
   nil
   " ModalNormal"
   modal-normal-state-map
-  (when modal-normal-mode               ;
-    (modal-insert-mode -1)
-    (modal-motion-mode -1)
-    (modal-visual-mode -1)))
+  (when modal-normal-state-mode         ;
+    (modal-insert-state-mode -1)
+    (modal-motion-state-mode -1)
+    (modal-visual-state-mode -1)))
 
-(define-minor-mode modal-motion-mode "Modal motion state."
+(define-minor-mode modal-motion-state-mode "Modal motion state."
   nil
   " ModalMotion"
   modal-motion-state-map
-  (when modal-motion-mode               ;
-    (modal-insert-mode -1)
-    (modal-normal-mode -1)
-    (modal-visual-mode -1)))
+  (when modal-motion-state-mode               ;
+    (modal-insert-state-mode -1)
+    (modal-normal-state-mode -1)
+    (modal-visual-state-mode -1)))
 
-(define-minor-mode modal-visual-mode "Modal motion state."
+(define-minor-mode modal-visual-state-mode "Modal motion state."
   nil
   " ModalMotion"
   modal-visual-state-map
-  (when modal-visual-mode               ;
-    (modal-insert-mode -1)
-    (modal-normal-mode -1)
-    (modal-motion-mode -1)
-    (add-hook 'post-command-hook #'modal--visual-mode-post-command-handler nil t)
-    (add-hook 'deactivate-mark-hook #'modal--exit-visual nil t))
-  (unless modal-visual-mode             ;
-    (remove-hook 'post-command-hook #'modal--visual-mode-post-command-handler t)
-    (remove-hook 'deactivate-mark-hook #'modal--exit-visual t)))
+  (when modal-visual-state-mode               ;
+    (modal-insert-state-mode -1)
+    (modal-normal-state-mode -1)
+    (modal-motion-state-mode -1)
+    (add-hook 'post-command-hook #'modal--visual-state-mode-post-command-handler nil t)
+    (add-hook 'deactivate-mark-hook #'modal--cancel nil t))
+  (unless modal-visual-state-mode             ;
+    (remove-hook 'post-command-hook #'modal--visual-state-mode-post-command-handler t)
+    (remove-hook 'deactivate-mark-hook #'modal--cancel t)))
 
 
-(defun modal--exit-visual()
-  (deactivate-mark)
-  (modal--quit))
 
-(defun modal--visual-mode-post-command-handler
+
+(defun modal--visual-state-mode-post-command-handler
     (&optional
      command)
-  (when modal-visual-mode               ;
+  (when modal-visual-state-mode               ;
     (let ((command (or command
                        this-command)))
       (when (or (eq command #'keyboard-quit)
                 deactivate-mark
                 (not (region-active-p)))
         (deactivate-mark)
-        (modal--quit)))))
+        (modal--cancel)))))
 
-(define-minor-mode modal-insert-mode "Modal insert state."
+(define-minor-mode modal-insert-state-mode "Modal insert state."
   nil
   " ModalInsert"
   modal-insert-state-map
-  (when modal-insert-mode               ;
-    (modal-normal-mode -1)
-    (modal-motion-mode -1)
-    (modal-visual-mode -1)
-    (add-hook 'post-command-hook #'modal--insert-mode-post-command-handler nil t))
-  (unless modal-insert-mode             ;
-    (remove-hook 'post-command-hook #'modal--insert-mode-post-command-handler t)))
+  (when modal-insert-state-mode               ;
+    (modal-normal-state-mode -1)
+    (modal-motion-state-mode -1)
+    (modal-visual-state-mode -1)
+    (add-hook 'post-command-hook #'modal--insert-state-mode-post-command-handler nil t))
+  (unless modal-insert-state-mode             ;
+    (remove-hook 'post-command-hook #'modal--insert-state-mode-post-command-handler t)))
 
-(defun modal--insert-mode-post-command-handler
+(defun modal--insert-state-mode-post-command-handler
     (&optional
      command)
-  (when modal-insert-mode               ;
+  (when modal-insert-state-mode               ;
     (let ((command (or command
                        this-command)))
       (when  (eq command #'keyboard-quit)
-        (modal--quit) ))))
+        (modal--cancel) ))))
 
 
 (defun modal--switch-visual-state()
@@ -145,20 +143,20 @@
 (defun modal--enable ()
   "Enable Modal mode"
   (if (derived-mode-p 'special-mode)
-      (modal-motion-mode 1)
-    (modal-normal-mode 1))
-  (add-hook 'modal-normal-mode-hook #'modal--refresh-cursor nil t)
-  (add-hook 'modal-motion-mode-hook #'modal--refresh-cursor nil t)
-  (add-hook 'modal-visual-mode-hook #'modal--refresh-cursor nil t)
-  (add-hook 'modal-insert-mode-hook #'modal--refresh-cursor nil t)
+      (modal-motion-state-mode 1)
+    (modal-normal-state-mode 1))
+  (add-hook 'modal-normal-state-mode-hook #'modal--refresh-cursor nil t)
+  (add-hook 'modal-motion-state-mode-hook #'modal--refresh-cursor nil t)
+  (add-hook 'modal-visual-state-mode-hook #'modal--refresh-cursor nil t)
+  (add-hook 'modal-insert-state-mode-hook #'modal--refresh-cursor nil t)
   (add-hook 'activate-mark-hook #'modal--switch-visual-state nil t))
 
 (defun modal--disable ()
   "Disable Modal mode"
-  (modal-normal-mode -1)
-  (modal-motion-mode -1)
-  (modal-insert-mode -1)
-  (modal-visual-mode -1)
+  (modal-normal-state-mode -1)
+  (modal-motion-state-mode -1)
+  (modal-insert-state-mode -1)
+  (modal-visual-state-mode -1)
   (remove-hook 'activate-mark-hook #'modal--switch-visual-state t))
 
 
@@ -172,42 +170,42 @@
 
 (defun modal--current-state ()
   "Current state."
-  (cond ((bound-and-true-p modal-insert-mode) 'insert)
-        ((bound-and-true-p modal-normal-mode) 'normal)
-        ((bound-and-true-p modal-motion-mode) 'motion)
-        ((bound-and-true-p modal-visual-mode) 'visual)))
+  (cond ((bound-and-true-p modal-insert-state-mode) 'insert)
+        ((bound-and-true-p modal-normal-state-mode) 'normal)
+        ((bound-and-true-p modal-motion-state-mode) 'motion)
+        ((bound-and-true-p modal-visual-state-mode) 'visual)))
 
 (defun modal--switch-state (state)
   "Switch state."
   (cond ((equal state 'normal)
-         (modal-normal-mode 1))
+         (modal-normal-state-mode 1))
         ((equal state 'motion)
-         (modal-motion-mode 1))
+         (modal-motion-state-mode 1))
         ((equal state 'insert)
-         (modal-insert-mode 1))
+         (modal-insert-state-mode 1))
         ((equal state 'visual)
-         (modal-visual-mode 1))))
+         (modal-visual-state-mode 1))))
 
-(defun modal--quit()
+(defun modal--cancel()
   "Quit insert or visual mode"
   (if (seq-contains-p modal-motion-mode-list major-mode (lambda (item mode)
                                                           (derived-mode-p item)))
-      (modal-motion-mode 1)
-    (modal-normal-mode 1)))
+      (modal--switch-state 'motion)
+    (modal--switch-state 'normal)))
 
 
 (defun modal--refresh-cursor()
   "Change cursor color."
-  (let ((cursor-style (cond ((bound-and-true-p modal-normal-mode)
+  (let ((cursor-style (cond ((bound-and-true-p modal-normal-state-mode)
                              (or modal-normal-cursor
                                  `(bar . ,(face-foreground 'link))))
-                            ((bound-and-true-p modal-motion-mode)
+                            ((bound-and-true-p modal-motion-state-mode)
                              (or modal-motion-cursor
                                  `(bar . ,(face-foreground 'success))))
-                            ((bound-and-true-p modal-visual-mode)
+                            ((bound-and-true-p modal-visual-state-mode)
                              (or modal-visual-cursor
                                  `(bar . ,(face-foreground 'warning))))
-                            ((bound-and-true-p modal-insert-mode)
+                            ((bound-and-true-p modal-insert-state-mode)
                              (or modal-insert-cursor
                                  `(bar . ,(face-foreground 'error))))
                             (t `(bar . ,(face-foreground 'default))))))
@@ -222,7 +220,7 @@
 
 (defun modal-mode--minibuffer-setup()
   "Set modal-mode state when minibuffer avtive."
-  (setq-local modal-normal-mode nil))
+  (modal--switch-state 'insert))
 
 (defun modal--global-enable()
   "Enable Modal global mode"
@@ -235,13 +233,19 @@
   (remove-hook 'minibuffer-setup-hook #'modal-mode--minibuffer-setup))
 
 (defun modal--turn-on()
-  (unless (minibufferp)
-    (modal-mode 1)))
+  (modal-mode 1))
 
 (define-globalized-minor-mode modal-global-mode modal-mode
   modal--turn-on
   (if modal-mode (modal--global-enable)
     (modal--global-disable )))
+
+(defun modal-diagnose()
+  (interactive)
+  (message
+   "modal global state: %s\nmodal state: %s\nnormal state: %s\nvisual state: %s\ninsert state: %s\nmotion state: %s"
+   modal-global-mode modal-mode modal-normal-state-mode modal-visual-state-mode modal-insert-state-mode
+   modal-motion-state-mode))
 
 (provide 'modal-core)
 ;;; modal-core.el ends here

@@ -29,12 +29,6 @@
   "Modal default keybinding"
   (set-keymap-parent modal-visual-state-map modal-normal-state-map)
   (set-keymap-parent modal-motion-state-map modal-normal-state-map)
-;;;; All
-  (define-key modal-mode-map (kbd "C-z") #'undo)
-  (define-key modal-mode-map (kbd "C-x") #'kill-region)
-  (define-key modal-mode-map (kbd "C-c") #'kill-ring-save)
-  (define-key modal-mode-map (kbd "C-v") #'yank)
-  (add-to-list 'emulation-mode-map-alists `((modal-mode . ,modal-mode-map)))
 ;;;; Insert state
   (define-key modal-insert-state-map (kbd "<escape>") #'modal-quit-insert-mode)
 

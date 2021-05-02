@@ -32,50 +32,45 @@
 (defun modal-quit-insert-mode()
   (interactive)
   (if (derived-mode-p 'special-mode)
-      (modal-motion-mode 1)
-    (modal-normal-mode 1)))
+      (modal--switch-state 'motion)
+    (modal--switch-state 'normal)))
 (defun modal-insert()
   (interactive)
   (when (region-active-p)
     (goto-char (region-beginning))
     (deactivate-mark t))
-  (modal-insert-mode 1))
+  (modal--switch-state 'insert))
 
 (defun modal-append()
   (interactive)
   (when (region-active-p)
     (goto-char (region-end))
     (deactivate-mark t))
-  (modal-insert-mode 1))
+  (modal--switch-state 'insert))
 
 (defun modal-line-insert()
   (interactive)
   (when (region-active-p)
     (deactivate-mark t))
   (goto-char (line-beginning-position))
-  (modal-insert-mode 1))
+  (modal--switch-state 'insert))
 
 (defun modal-line-append()
   (interactive)
   (when (region-active-p)
     (deactivate-mark t))
   (goto-char (line-end-position))
-  (modal-insert-mode 1))
+  (modal--switch-state 'insert))
+
 (defun modal--temporary-insert-callback()
   (unless (eq this-command #'modal-temporary-insert)
     (remove-hook 'post-command-hook #'modal--temporary-insert-callback t)
     (modal-quit-insert-mode)))
+
 (defun modal-temporary-insert()
   (interactive)
-  (modal-insert-mode 1)
+  (modal--switch-state 'insert)
   (add-hook 'post-command-hook #'modal--temporary-insert-callback 0 t))
-
-(defun modal-diagnose()
-  (interactive)
-  (message
-   "modal global state: %s\nmodal state: %s\nnormal state: %s\nvisual state: %s\ninsert state: %s\nmotion state: %s"
-   modal-global-mode modal-mode modal-normal-mode modal-visual-mode modal-insert-mode
-   modal-motion-mode))
 
 ;;;; motion
 (defun modal-previous-line (arg)

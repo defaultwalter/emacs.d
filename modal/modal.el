@@ -25,6 +25,7 @@
 ;;; Code:
 (require 'modal-option)
 (require 'modal-core)
+(require 'modal-modern)
 (require 'modal-indicator)
 (require 'modal-leader)
 (require 'modal-command)

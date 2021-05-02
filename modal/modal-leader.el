@@ -48,7 +48,9 @@
          (which-key (plist-get def
                                :which-key)))
     (unless ignore (define-key map (read-kbd-macro key) command))
-    (when (and (boundp 'which-key) which-key) (which-key-add-keymap-based-replacements map key which-key))))
+    (when which-key                     ;
+      (with-eval-after-load 'which-key  (which-key-add-keymap-based-replacements map key
+                                                                                 which-key)))))
 
 (defun modal-leader-set-key(key def)
   "Set key for leader."
@@ -56,29 +58,29 @@
 
 (defun modal-leader-set-key-for-mode (mode key def)
   "Set key for leader."
-  (let* ((normal-mode-map (cdr (assoc mode modal--normal-mode-maps)))
-         (motion-mode-map (cdr (assoc mode modal--motion-mode-maps)))
-         (visual-mode-map (cdr (assoc mode modal--visual-mode-maps)))
+  (let* ((normal-state-map (cdr (assoc mode modal--normal-state-maps)))
+         (motion-state-map (cdr (assoc mode modal--motion-state-maps)))
+         (visual-state-map (cdr (assoc mode modal--visual-state-maps)))
          (leader-map (cdr (assoc mode modal-leader--mode-maps))))
-    (unless normal-mode-map
-      (setq normal-mode-map (make-sparse-keymap))
-      (set-keymap-parent normal-mode-map modal-normal-state-map)
-      (push (cons mode normal-mode-map) modal--normal-mode-maps))
-    (unless motion-mode-map
-      (setq motion-mode-map (make-sparse-keymap))
-      (set-keymap-parent motion-mode-map modal-motion-state-map)
-      (push (cons mode motion-mode-map) modal--motion-mode-maps))
-    (unless visual-mode-map
-      (setq visual-mode-map (make-sparse-keymap))
-      (set-keymap-parent visual-mode-map modal-visual-state-map)
-      (push (cons mode motion-mode-map) modal--motion-mode-maps))
+    (unless normal-state-map
+      (setq normal-state-map (make-sparse-keymap))
+      (set-keymap-parent normal-state-map modal-normal-state-map)
+      (push (cons mode normal-state-map) modal--normal-state-maps))
+    (unless motion-state-map
+      (setq motion-state-map (make-sparse-keymap))
+      (set-keymap-parent motion-state-map modal-motion-state-map)
+      (push (cons mode motion-state-map) modal--motion-state-maps))
+    (unless visual-state-map
+      (setq visual-state-map (make-sparse-keymap))
+      (set-keymap-parent visual-state-map modal-visual-state-map)
+      (push (cons mode motion-state-map) modal--motion-state-maps))
     (unless leader-map
       (setq leader-map (make-sparse-keymap))
       (set-keymap-parent leader-map modal-leader--default-map)
       (push (cons mode leader-map) modal-leader--mode-maps)
-      (define-key normal-mode-map (read-kbd-macro modal-leader-key) leader-map)
-      (define-key motion-mode-map (read-kbd-macro modal-leader-key) leader-map)
-      (define-key visual-mode-map (read-kbd-macro modal-leader-key) leader-map))
+      (define-key normal-state-map (read-kbd-macro modal-leader-key) leader-map)
+      (define-key motion-state-map (read-kbd-macro modal-leader-key) leader-map)
+      (define-key visual-state-map (read-kbd-macro modal-leader-key) leader-map))
     (modal-leader--define-key leader-map key def)))
 
 (provide 'modal-leader)

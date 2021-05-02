@@ -42,6 +42,30 @@
   :config (xclip-mode 1))
 
 ;;; 交互增强
+(use-package
+  which-key
+  :ensure t
+  :custom                               ;
+  (which-key-show-early-on-C-h t)
+  (which-key-idle-delay 10)
+  (which-key-idle-secondary-delay 0.05)
+  (which-key-sort-order 'which-key-prefix-then-key-order)
+  (which-key-allow-multiple-replacements t)
+  (which-key-allow-evil-operators t)
+  (which-key-popup-type 'side-window)
+  :config                               ;
+  (add-to-list 'which-key-replacement-alist '(("ESC" . nil) . ("esc" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("tab" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("return" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("delete" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("left" . nil) . ("left" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("right" . nil) . ("right" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("<left>" . nil) . ("left" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("<right>" . nil) . ("right" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("up" . nil) . ("up" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("down" . nil) . ("down" . nil)))
+  (which-key-mode t))
 
 (use-package
   ivy
