@@ -6,7 +6,7 @@
   :ensure t
   :defer t
   :init                                 ;
-  (modal-leader-set-key "cf" '(elisp-format-buffer :which-key "format elisp"))
+  (modal-leader-set-key-for-mode 'emacs-lisp-mode "cf" '(elisp-format-buffer :which-key "format elisp"))
   )
 
 

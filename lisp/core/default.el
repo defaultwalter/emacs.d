@@ -8,8 +8,8 @@
 ;;;;==================================================
 ;;;;用户信息
 ;;;;==================================================
-(setq user-full-name "Maf")
-(setq user-mail-address "wmafire@gmail.com")
+(setq user-full-name "meetcw")
+(setq user-mail-address "meetcw@outlook.com")
 
 ;;;;==================================================
 ;;;; Emacs行为
@@ -93,7 +93,13 @@
 (setq-default electric-pair-inhibit-predicate 'electric-pair-default-inhibit) ; 抑制策略
 (electric-pair-mode 1)
 
-(defun user/set-font(fontsize)
+(defcustom machine:fontsize 12
+  "Font size"
+  :type 'integer
+  :group 'machine)
+
+
+(defun update-font()
   "Try to config font"
   ;; 设置默认字体
   (let ((frame-font (cond ((member "Source Code Pro" (font-family-list)) "Source Code Pro")
@@ -103,7 +109,7 @@
                           ((member "DejaVu Sans Mono" (font-family-list)) "DejaVu Sans Mono")
                           ((member "WenQuanYi Micro Hei Mono" (font-family-list))
                            "WenQuanYi Micro Hei Mono"))))
-    (set-frame-font (format "%s-%s" frame-font fontsize) t t))
+    (set-frame-font (format "%s-%s" frame-font machine:fontsize) t t))
 
   ;; 中文字体
   (set-fontset-font t 'han (cond ((member "Sarasa Mono SC" (font-family-list)) "Sarasa Mono SC")
@@ -120,12 +126,12 @@
                           ((member "Segoe UI Emoji" (font-family-list)) "Segoe UI Emoji")
                           ((member "Symbola" (font-family-list)) "Symbola")
                           ((member "Apple Color Emoji" (font-family-list)) "Apple Color Emoji"))))
-(user/set-font user/fontsize)
+(update-font)
 ;; C/S 模式需要再次设置字体
-(add-hook 'server-after-make-frame-hook (lambda ()
-                                          (user/set-font user/fontsize)))
+(add-hook 'server-after-make-frame-hook 'update-font)
+
 ;; 主题样式
-(defun user/gui-ajust()
+(defun update-gui()
   "调整主题样式"
   (if (and (eq system-type 'darwin)
            (display-graphic-p))
@@ -142,8 +148,8 @@
   (set-face-background 'mode-line nil)
   (setq underline-minimum-offset 5))
 
-;; (add-hook 'after-init-hook 'user/gui-ajust)
-;; (add-hook 'server-after-make-frame-hook 'user/gui-ajust)
+(add-hook 'after-init-hook 'update-gui)
+(add-hook 'server-after-make-frame-hook 'update-gui)
 ;; 自动结束子进程
 (setq confirm-kill-processes nil)
 ;;;;==================================================

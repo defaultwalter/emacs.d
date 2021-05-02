@@ -157,6 +157,23 @@
   (setq org-superstar-prettify-item-bullets t))
 
 
+(defcustom machine:note-directory "~/.cache/notes"
+  "Note root directory"
+  :type 'string
+  :group 'machine)
+(unless (file-directory-p machine:note-directory)
+  (mkdir machine:note-directory))
+
+(defcustom machine:note-server-host "127.0.0.1"
+  "Note server host"
+  :type 'string
+  :group 'machine)
+
+(defcustom machine:note-server-port 10101
+  "Note server port"
+  :type 'integer
+  :group 'machine)
+
 
 (use-package
   org-roam
@@ -176,7 +193,7 @@
   ;;                                      (mode-line-format "")
   ;;                                      (window-slot . 0)
   ;;                                      (window-side . bottom)))
-  (org-roam-directory user/note-directory)
+  (org-roam-directory machine:note-directory)
   (org-roam-index-file "Index.org")
   (org-roam-dailies-directory "Journals")
   (org-roam-title-sources '(headline))
@@ -220,7 +237,7 @@
   :custom (deft-recursive t)
   (deft-use-filter-string-for-filename t)
   (deft-default-extension "org")
-  (deft-directory user/note-directory)
+  (deft-directory machine:note-directory)
   :init                                 ;
   (modal-leader-set-key "n n" '(deft :which-key "list")))
 
@@ -229,8 +246,8 @@
   :ensure t
   :defer t
   :custom                               ;
-  (org-roam-server-host user/note-server-host )
-  (org-roam-server-port user/note-server-port )
+  (org-roam-server-host machine:note-server-host )
+  (org-roam-server-port machine:note-server-port )
   (org-roam-server-authenticate nil)
   (org-roam-server-export-inline-images t)
   (org-roam-server-serve-files nil)
@@ -249,11 +266,18 @@
                                                      org-roam-server-port))) :which-key "server"))
   :config )
 
-(unless (file-exists-p user/agenda-directory)
-  (mkdir user/agenda-directory))
+(defcustom machine:agenda-directory "~/.cache/agenda"
+  "Agenda root directory"
+  :type 'string
+  :group 'machine)
+(unless (file-directory-p machine:agenda-directory)
+  (mkdir machine:agenda-directory))
+
+(unless (file-exists-p machine:agenda-directory)
+  (mkdir machine:agenda-directory))
 (setq org-agenda-files (mapcar (lambda (file)
-                                 (expand-file-name file user/agenda-directory))
-                               (directory-files user/agenda-directory nil ".*\.org")))
+                                 (expand-file-name file machine:agenda-directory))
+                               (directory-files machine:agenda-directory nil ".*\.org")))
 (setq org-refile-targets '((nil :maxlevel . 9)
                            (org-agenda-files :maxlevel . 9)))
 

@@ -12,10 +12,14 @@
                          ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
                          ("org" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/org/")))
 
-(if (bound-and-true-p user/with-dump)
-    (setq load-path user/dump-load-path)
-  (package-initialize) )
+;; (if (bound-and-true-p with-dump)
+;;     (setq load-path dump-load-path)
+;;   (package-initialize) )
+(unless package--initialized
+  (package-initialize))
+
 (add-to-list 'load-path (expand-file-name "lisp" user-config-directory))
+(add-to-list 'load-path (expand-file-name "modal" user-config-directory))
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -26,6 +30,7 @@
 (require 'use-package)
 
 ;;; 加载配置
+(require 'modal)
 (require 'core)
 (require 'major-mode)
 
