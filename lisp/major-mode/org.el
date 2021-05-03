@@ -86,7 +86,7 @@
   (setq org-superstar-prettify-item-bullets t))
 
 
-(defcustom machine:note-directory "~/.cache/notes"
+(defcustom machine:note-directory (expand-file-name "notes" temporary-file-directory)
   "Note root directory"
   :type 'string
   :group 'machine)
@@ -195,7 +195,7 @@
                                                      org-roam-server-port))) :which-key "server"))
   :config )
 
-(defcustom machine:agenda-directory "~/.cache/agenda"
+(defcustom machine:agenda-directory (expand-file-name "agenda" temporary-file-directory)
   "Agenda root directory"
   :type 'string
   :group 'machine)
