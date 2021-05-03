@@ -2,7 +2,7 @@
 
 ;; Copyright (C) 2021  Maf
 
-;; Author: Maf <wmafire@gmail.com>
+;; Author: meetcw <meetcw@outlook.com>
 ;; Keywords:
 
 ;; This program is free software; you can redistribute it and/or modify

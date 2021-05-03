@@ -1,8 +1,8 @@
 ;;; modal-option.el --- modal option                 -*- lexical-binding: t; -*-
 
-;; Copyright (C) 2021  Maf
+;; Copyright (C) 2021  meetcw
 
-;; Author: Maf <wmafire@gmail.com>
+;; Author: meetcw <meetcw@outlook.com>
 ;; Keywords:
 
 ;; This program is free software; you can redistribute it and/or modify
