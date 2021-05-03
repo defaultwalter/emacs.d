@@ -222,11 +222,13 @@
 
 (defun modal--global-enable()
   "Enable Modal global mode"
+  (unless window-system (modal-esc-mode 1))
   (add-hook 'window-state-change-functions #'modal--window-state-change-handler)
   (add-hook 'minibuffer-setup-hook #'modal-mode--minibuffer-setup))
 
 (defun modal--global-disable()
   "Disable Modal global mode"
+  (unless window-system (modal-esc-mode -1))
   (remove-hook 'window-state-change-functions #'modal--window-state-change-handler)
   (remove-hook 'minibuffer-setup-hook #'modal-mode--minibuffer-setup))
 

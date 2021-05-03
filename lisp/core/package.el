@@ -546,7 +546,7 @@
   (neo-root-dir-face ((t
                        (:extend t))))
   :hook (server-after-make-frame . (lambda()
-                                     (load-theme 'doom-one t)))
+                                     (load-theme 'doom-nord t)))
   :config                               ;
   (load-theme 'doom-nord t)
   ;; (doom-themes-visual-bell-config)
