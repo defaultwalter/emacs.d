@@ -30,7 +30,7 @@
   (set-keymap-parent modal-visual-state-map modal-normal-state-map)
   (set-keymap-parent modal-motion-state-map modal-normal-state-map)
 ;;;; Insert state
-  (define-key modal-insert-state-map (kbd "<escape>") #'modal-back-to-default-state)
+  (define-key modal-insert-state-map (kbd "<escape>") #'modal-switch-to-default-state)
 
 ;;;; Normal state
   (define-key modal-normal-state-map (kbd "<escape>") #'keyboard-quit)

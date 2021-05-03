@@ -27,9 +27,9 @@
   (when (not (region-active-p))
     (push-mark (point) t t)))
 
-(defun modal-back-to-default-state()
+(defun modal-switch-to-default-state()
   (interactive)
-  (modal--cancel))
+  (modal--switch-to-default-state))
 
 (defun modal-insert()
   (interactive)
@@ -62,7 +62,7 @@
 (defun modal--temporary-insert-callback()
   (unless (eq this-command #'modal-temporary-insert)
     (remove-hook 'post-command-hook #'modal--temporary-insert-callback t)
-    (modal-back-to-default-satte)))
+    (modal-switch-to-default-state)))
 
 (defun modal-temporary-insert()
   (interactive)

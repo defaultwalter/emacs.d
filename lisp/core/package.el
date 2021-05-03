@@ -41,6 +41,13 @@
   :if (not (display-graphic-p))
   :config (xclip-mode 1))
 
+(use-package
+  terminal-cursor
+  :straight (:host github
+                   :repo "meetcw/emacs-terminal-cursor"
+                   :branch "main")
+  :config (terminal-cursor-mode 1))
+
 ;;; 交互增强
 (use-package
   which-key
@@ -347,7 +354,6 @@
 
 (use-package
   multi-vterm
-
   :disabled
   :ensure t)
 
@@ -448,16 +454,8 @@
   hungry-delete                         ; 可以删除前面所有的空白字符
   :ensure t
   :defer t
-  :disabled
   :custom (hungry-delete-join-reluctantly t)
   :hook (prog-mode . hungry-delete-mode))
-(use-package
-  smart-hungry-delete
-  :ensure t
-  :bind (("<backspace>" . smart-hungry-delete-backward-char)
-         ("C-d" . smart-hungry-delete-forward-char))
-  :defer nil ;; dont defer so we can add our functions to hooks
-  :config (smart-hungry-delete-add-default-hooks))
 
 (use-package
   drag-stuff

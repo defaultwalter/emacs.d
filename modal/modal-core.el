@@ -23,7 +23,6 @@
 ;;
 
 ;;; Code:
-(require 'modal-cursor)
 
 (defvar modal-mode-map (make-sparse-keymap)
   "Global keymap for Modal")
@@ -95,13 +94,10 @@
     (modal-normal-state-mode -1)
     (modal-motion-state-mode -1)
     (add-hook 'post-command-hook #'modal--visual-state-mode-post-command-handler nil t)
-    (add-hook 'deactivate-mark-hook #'modal--cancel nil t))
+    (add-hook 'deactivate-mark-hook #'modal--switch-to-default-state nil t))
   (unless modal-visual-state-mode       ;
     (remove-hook 'post-command-hook #'modal--visual-state-mode-post-command-handler t)
-    (remove-hook 'deactivate-mark-hook #'modal--cancel t)))
-
-
-
+    (remove-hook 'deactivate-mark-hook #'modal--switch-to-default-state t)))
 
 (defun modal--visual-state-mode-post-command-handler
     (&optional
@@ -114,7 +110,7 @@
                 deactivate-mark
                 (not (region-active-p)))
         (deactivate-mark)
-        (modal--cancel)))))
+        (modal--switch-to-default-state)))))
 
 (define-minor-mode modal-insert-state-mode "Modal insert state."
   nil
@@ -136,7 +132,7 @@
                        this-command)))
       (when  (or (eq command #'keyboard-escape-quit)
                  (eq command #'keyboard-quit))
-        (modal--cancel) ))))
+        (modal--switch-to-default-state) ))))
 
 
 (defun modal--switch-visual-state()
@@ -145,9 +141,8 @@
 ;;;; define mode
 (defun modal--enable ()
   "Enable Modal mode"
-  (if (derived-mode-p 'special-mode)
-      (modal-motion-state-mode 1)
-    (modal-normal-state-mode 1))
+  (modal--switch-to-default-state)
+  (modal--refresh-cursor)
   (add-hook 'modal-normal-state-mode-hook #'modal--refresh-cursor nil t)
   (add-hook 'modal-motion-state-mode-hook #'modal--refresh-cursor nil t)
   (add-hook 'modal-visual-state-mode-hook #'modal--refresh-cursor nil t)
@@ -189,7 +184,7 @@
         ((equal state 'visual)
          (modal-visual-state-mode 1))))
 
-(defun modal--cancel()
+(defun modal--switch-to-default-state()
   "Quit insert or visual mode"
   (if (seq-contains-p modal-motion-mode-list major-mode (lambda (item mode)
                                                           (derived-mode-p item)))
@@ -201,10 +196,10 @@
   "Change cursor color."
   (let ((cursor-style (cond ((bound-and-true-p modal-normal-state-mode)
                              (or modal-normal-cursor
-                                 `(bar . ,(face-foreground 'link))))
+                                 `(box . ,(face-foreground 'link))))
                             ((bound-and-true-p modal-motion-state-mode)
                              (or modal-motion-cursor
-                                 `(bar . ,(face-foreground 'success))))
+                                 `(box . ,(face-foreground 'success))))
                             ((bound-and-true-p modal-visual-state-mode)
                              (or modal-visual-cursor
                                  `(bar . ,(face-foreground 'warning))))
@@ -212,11 +207,8 @@
                              (or modal-insert-cursor
                                  `(bar . ,(face-foreground 'error))))
                             (t `(bar . ,(face-foreground 'default))))))
-    (if (display-graphic-p)
-        (progn (setq-local cursor-type (car cursor-style))
-               (set-cursor-color (cdr cursor-style)))
-      (send-string-to-terminal (tcursor--make-cursor-shape (car cursor-style)))
-      (send-string-to-terminal (tcursor--make-cursor-color (cdr cursor-style))))))
+    (setq-local cursor-type (car cursor-style))
+    (set-cursor-color (cdr cursor-style))))
 
 (defun modal--window-state-change-handler
     (&rest
