@@ -93,71 +93,70 @@
 (unless (file-directory-p machine:note-directory)
   (mkdir machine:note-directory))
 
-(defcustom machine:note-server-host "127.0.0.1"
-  "Note server host"
-  :type 'string
-  :group 'machine)
-
-(defcustom machine:note-server-port 10101
-  "Note server port"
-  :type 'integer
-  :group 'machine)
-
 
 (use-package
   org-roam
-  :ensure t
-  :defer t
-  :commands (org-roam-buffer-toggle-display org-roam-dailies-find-today org-roam-db-clear
-                                            org-roam-db-build-cache)
-  :hook(org-mode . org-roam-mode)
-  :custom                               ;
-  (org-roam-title-to-slug-function (lambda (title)
-                                     (upcase (org-roam--title-to-slug title))))
-  ;; (org-roam-db-update-method 'immediate)
-  (org-roam-buffer "*Backlink*")
-  ;; (org-roam-buffer-position 'bottom)
-  ;; (org-roam-buffer-width 0.3)
-  ;; (org-roam-buffer-window-parameters '((no-delete-other-windows . t)
-  ;;                                      (mode-line-format "")
-  ;;                                      (window-slot . 0)
-  ;;                                      (window-side . bottom)))
-  (org-roam-directory machine:note-directory)
-  (org-roam-index-file "Index.org")
-  (org-roam-dailies-directory "Journals")
-  (org-roam-title-sources '(headline))
-  (org-roam-tag-sources '(vanilla))
-  (org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
-                                 :file-name "${slug}-%<%Y-%m-%d %H:%M:%S>"
-                                 :head "* ${title} :Default:\n\n"
-                                 :unnarrowed t)))
-  (org-roam-capture-immediate-template '("d" "default" plain #'org-roam-capture--get-point "%?"
-                                         :file-name "${slug}-%<%Y%m%d%H%M%S>"
-                                         :head "* ${title} :Default:\n\n"
-                                         :unnarrowed t
-                                         :immediate-finish t))
-  (org-roam-dailies-capture-templates '(("d" "default" entry #'org-roam-capture--get-point "%?"
-                                         :file-name "Journals/%<%Y-%m-%d>"
-                                         :head
-                                         "* %<%d %B, %Y> :Journal:%<%A>:\n\n** 🍀 晨间日记\n\n*** 昨天发生的事\n\n*** 今天要做的事\n\n*** 一些想法\n\n** 🌟 随手记\n\n"
-                                         :unnarrowed t)))
-  :custom-face                          ;
-  (org-roam-link ((t
-                   (:foreground ,(color-lighten-name (face-foreground 'default) 10)
-                                :inherit 'org-link))))
-  (org-roam-link-current ((t
-                           (:inherit 'org-roam-link))))
-  :init                                 ;
-  (modal-leader-set-key "n d" '(org-roam-dailies-find-today :which-key "today"))
-  (modal-leader-set-key "n f" '(org-roam-find-file :which-key "find note"))
-  (modal-leader-set-key "n DEL" '(org-roam-db-clear :which-key "delete cache"))
-  (modal-leader-set-key "n RET" '(org-roam-db-build-cache :which-key "build cache"))
-  (modal-leader-set-key-for-mode 'org-mode "n b" '(org-roam-buffer-toggle-display :which-key
-                                                                                  "backlink"))
-  (modal-leader-set-key-for-mode 'org-mode "n g" '(org-roam-graph :which-key "graph"))
-  (modal-leader-set-key-for-mode 'org-mode "n i" '(org-roam-insert :which-key "insert node"))
-  :config                               ;
-  (require 'org-roam-protocol))
+  :straight (:host github
+                   :repo "org-roam/org-roam"
+                   :branch "v2")
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find))
+  :config (org-roam-setup))
+
+;; (use-package
+;;   org-roam
+;;   :ensure t
+;;   :defer t
+;;   :commands (org-roam-buffer-toggle-display org-roam-dailies-find-today org-roam-db-clear
+;;                                             org-roam-db-build-cache)
+;;   :hook(org-mode . org-roam-mode)
+;;   :custom                               ;
+;;   (org-roam-title-to-slug-function (lambda (title)
+;;                                      (upcase (org-roam--title-to-slug title))))
+;;   ;; (org-roam-db-update-method 'immediate)
+;;   (org-roam-buffer "*Backlink*")
+;;   ;; (org-roam-buffer-position 'bottom)
+;;   ;; (org-roam-buffer-width 0.3)
+;;   ;; (org-roam-buffer-window-parameters '((no-delete-other-windows . t)
+;;   ;;                                      (mode-line-format "")
+;;   ;;                                      (window-slot . 0)
+;;   ;;                                      (window-side . bottom)))
+;;   (org-roam-directory machine:note-directory)
+;;   (org-roam-index-file "Index.org")
+;;   (org-roam-dailies-directory "Journals")
+;;   (org-roam-title-sources '(headline))
+;;   (org-roam-tag-sources '(vanilla))
+;;   (org-roam-capture-templates '(("d" "default" plain #'org-roam-capture--get-point "%?"
+;;                                  :file-name "${slug}"
+;;                                  :head "* ${title} :Default:\n\n"
+;;                                  :unnarrowed t)))
+;;   (org-roam-capture-immediate-template '("d" "default" plain #'org-roam-capture--get-point "%?"
+;;                                          :file-name "${slug}"
+;;                                          :head "* ${title} :Default:\n\n"
+;;                                          :unnarrowed t
+;;                                          :immediate-finish t))
+;;   (org-roam-dailies-capture-templates '(("d" "default" entry #'org-roam-capture--get-point "%?"
+;;                                          :file-name "Journals/%<%Y-%m-%d>"
+;;                                          :head
+;;                                          "* %<%d %B, %Y> :Journal:%<%A>:\n\n** 🍀 晨间日记\n\n*** 昨天发生的事\n\n*** 今天要做的事\n\n*** 一些想法\n\n** 🌟 随手记\n\n"
+;;                                          :unnarrowed t)))
+;;   :custom-face                          ;
+;;   (org-roam-link ((t
+;;                    (:foreground ,(color-lighten-name (face-foreground 'default) 10)
+;;                                 :inherit 'org-link))))
+;;   (org-roam-link-current ((t
+;;                            (:inherit 'org-roam-link))))
+;;   :init                                 ;
+;;   (modal-leader-set-key "n d" '(org-roam-dailies-find-today :which-key "today"))
+;;   (modal-leader-set-key "n f" '(org-roam-find-file :which-key "find note"))
+;;   (modal-leader-set-key "n DEL" '(org-roam-db-clear :which-key "delete cache"))
+;;   (modal-leader-set-key "n RET" '(org-roam-db-build-cache :which-key "build cache"))
+;;   (modal-leader-set-key-for-mode 'org-mode "n b" '(org-roam-buffer-toggle-display :which-key
+;;                                                                                   "backlink"))
+;;   (modal-leader-set-key-for-mode 'org-mode "n g" '(org-roam-graph :which-key "graph"))
+;;   (modal-leader-set-key-for-mode 'org-mode "n i" '(org-roam-insert :which-key "insert node"))
+;;   :config                               ;
+;;   (require 'org-roam-protocol))
 
 (use-package
   deft
@@ -169,6 +168,16 @@
   (deft-directory machine:note-directory)
   :init                                 ;
   (modal-leader-set-key "n n" '(deft :which-key "list")))
+
+(defcustom machine:note-server-host "127.0.0.1"
+  "Note server host"
+  :type 'string
+  :group 'machine)
+
+(defcustom machine:note-server-port 10101
+  "Note server port"
+  :type 'integer
+  :group 'machine)
 
 (use-package
   org-roam-server
