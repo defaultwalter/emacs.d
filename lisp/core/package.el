@@ -350,11 +350,12 @@
             "SIS need to install macism. use ‘brew tap laishulu/macism;brew install macism’ to install it.")))
         ((eq system-type 'gnu/linux)
          (sis-ism-lazyman-config "1" "2" 'fcitx)))
-  (sis-global-respect-mode t))
+  (sis-global-respect-mode t)
+  (add-hook 'modal-normal-state-mode-hook #'sis-set-english)
+  (add-hook 'modal-motion-state-mode-hook #'sis-set-english))
 
 (use-package
   multi-vterm
-
   :disabled
   :ensure t)
 
