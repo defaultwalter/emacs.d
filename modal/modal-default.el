@@ -31,7 +31,7 @@
   (set-keymap-parent modal-motion-state-map modal-normal-state-map)
 
 ;;;; Insert state
-  (define-key modal-insert-state-map [escape] #'modal-switch-to-default-state)
+  (define-key modal-insert-state-map (kbd "<escape>") #'modal-switch-to-default-state)
 
 ;;;; Normal state
   ;; (define-key modal-normal-state-map (kbd "<escape>") #'keyboard-quit)
@@ -88,6 +88,7 @@
 ;;;; Motion state
   (define-key modal-motion-state-map (kbd "<escape>") #'modal-temporary-insert)
 ;;;; Visual state
+  (define-key modal-visual-state-map (kbd "<escape>") #'modal-switch-to-default-state)
   (define-key modal-visual-state-map (kbd "d") #'modal-delete)
   (define-key modal-visual-state-map (kbd "D") #'modal-save-and-delete)
 ;;;; leader key

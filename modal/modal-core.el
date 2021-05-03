@@ -105,10 +105,7 @@
   (when modal-visual-state-mode         ;
     (let ((command (or command
                        this-command)))
-      (when (or (or (eq command #'keyboard-escape-quit)
-                    (eq command #'keyboard-quit))
-                deactivate-mark
-                (not (region-active-p)))
+      (when (eq command #'keyboard-quit)
         (deactivate-mark)
         (modal--switch-to-default-state)))))
 
@@ -130,8 +127,7 @@
   (when modal-insert-state-mode         ;
     (let ((command (or command
                        this-command)))
-      (when  (or (eq command #'keyboard-escape-quit)
-                 (eq command #'keyboard-quit))
+      (when (eq command #'keyboard-quit)
         (modal--switch-to-default-state) ))))
 
 
@@ -189,7 +185,8 @@
   (if (seq-contains-p modal-motion-mode-list major-mode (lambda (item mode)
                                                           (derived-mode-p item)))
       (modal--switch-state 'motion)
-    (modal--switch-state 'normal)))
+    (modal--switch-state 'normal))
+  (deactivate-mark))
 
 
 (defun modal--refresh-cursor()
