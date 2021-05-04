@@ -23,6 +23,9 @@
 
 (add-to-list 'default-frame-alist '(ns-transparent-titlebar . t)) ; macOS 下沉浸式标题栏
 (add-to-list 'default-frame-alist '(ns-appearance . dark)) ; 使用黑色外观
+(add-to-list 'default-frame-alist '(alpha . 95))
+(add-hook 'emacs-startup-hook (lambda()
+                                (set-frame-parameter nil 'alpha 95)))
 ;; frame 初始位置
 (add-to-list 'default-frame-alist '(width . 0.7))
 (add-to-list 'default-frame-alist '(height . 0.7))
