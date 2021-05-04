@@ -98,6 +98,7 @@
                    ((eq state 'insert) modal-insert-state-map))))
     (modal--define-key map key def)))
 
+
 (defun modal-normal-set-key(key def)
   "Set normal state state key."
   (modal-set-key 'normal key def))

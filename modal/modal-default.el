@@ -35,9 +35,6 @@
 ;;;; Insert state
   (modal-insert-set-key "<escape>" #'modal-switch-to-default-state)
 
-;;;; Normal state
-  (modal-normal-set-key "RET" #'backward-char)
-  (modal-normal-set-key "DEL" #'forward-char)
 ;;;; Motion state
   (modal-motion-set-key "j" #'modal-next-line)
   (modal-motion-set-key "k" #'modal-previous-line)
@@ -70,8 +67,8 @@
   (modal-motion-set-key "A" #'modal-line-append)
   (modal-motion-set-key "c" #'modal-change)
   (modal-motion-set-key "C" #'modal-save-and-change)
-  (modal-motion-set-key "d" #'modal-delete-char)
-  (modal-motion-set-key "D" #'modal-save-and-delete-char)
+  (modal-motion-set-key "d" #'modal-save-and-delete-char)
+  (modal-motion-set-key "D" #'modal-delete-char)
   (modal-motion-set-key "y" #'kill-ring-save)
   (modal-motion-set-key "p" #'yank)
   (modal-motion-set-key "u" #'undo)
@@ -85,6 +82,10 @@
   (modal-motion-set-key "M-k" #'windmove-up)
   (modal-motion-set-key "`" #'exchange-point-and-mark)
   (modal-motion-set-key "~" #'exchange-point-and-mark)
+;;;; Normal state
+  (modal-normal-set-key "<escape>" nil)
+  (modal-normal-set-key "RET" #'backward-char)
+  (modal-normal-set-key "DEL" #'forward-char)
   (modal-motion-set-key "<escape>" #'modal-temporary-insert)
 ;;;; Visual state
   (modal-visual-set-key "<escape>" #'modal-switch-to-default-state)
