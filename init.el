@@ -41,7 +41,6 @@
   (load bootstrap-file nil 'nomessage))
 
 ;;; 加载配置
-(require 'modal)
 (require 'core)
 (require 'major-mode)
 

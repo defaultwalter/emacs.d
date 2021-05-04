@@ -25,6 +25,8 @@
 ;;; Code:
 
 (require 'modal-option)
+(require 'modal-key)
+
 (defvar modal-leader--mode-maps nil
   "Leader map for mode")
 
@@ -45,16 +47,16 @@
                             :ignore))
          (command (plist-get def
                              :command))
-         (which-key (plist-get def
-                               :which-key)))
+         (name (plist-get def
+                          :which-key)))
     (unless ignore (define-key map (read-kbd-macro key) command))
-    (when which-key                     ;
+    (when name                     ;
       (with-eval-after-load 'which-key  (which-key-add-keymap-based-replacements map key
-                                                                                 which-key)))))
+                                          `(,name . ,command))))))
 
 (defun modal-leader-set-key(key def)
   "Set key for leader."
-  (modal-leader--define-key modal-leader--default-map key def))
+  (modal--define-key modal-leader--default-map key def))
 
 (defun modal-leader-set-key-for-mode (mode key def)
   "Set key for leader."
@@ -81,7 +83,7 @@
       (define-key normal-state-map (read-kbd-macro modal-leader-key) leader-map)
       (define-key motion-state-map (read-kbd-macro modal-leader-key) leader-map)
       (define-key visual-state-map (read-kbd-macro modal-leader-key) leader-map))
-    (modal-leader--define-key leader-map key def)))
+    (modal--define-key leader-map key def)))
 
 (provide 'modal-leader)
 ;;; modal-leader.el ends here

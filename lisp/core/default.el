@@ -158,7 +158,7 @@
 ;; TAB 设置
 (setq-default tab-width 4)                 ; Tab Width
 (setq-default indent-tabs-mode nil)        ; 关闭 Tab 缩进
-(setq-default tab-always-indent 'complete) ; Tab键优先缩进，然后补全
+(setq-default tab-always-indent t) ; Indent 行为
 
 (setq-default select-enable-clipboard t) ; 启用系统剪切板
 

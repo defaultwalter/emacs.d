@@ -52,15 +52,17 @@
 (use-package
   which-key
   :ensure t
+  :demand t
   :custom                               ;
   (which-key-show-early-on-C-h t)
   (which-key-idle-delay 10)
   (which-key-idle-secondary-delay 0.05)
   (which-key-sort-order 'which-key-prefix-then-key-order)
   (which-key-allow-multiple-replacements t)
-  ;; (which-key-allow-evil-operators t)
+  (which-key-allow-evil-operators t)
   (which-key-popup-type 'side-window)
   :config                               ;
+  (setq which-key-replacement-alist '())
   (add-to-list 'which-key-replacement-alist '(("ESC" . nil) . ("esc" . nil)))
   (add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("tab" . nil)))
   (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("return" . nil)))
@@ -73,6 +75,13 @@
   (add-to-list 'which-key-replacement-alist '(("up" . nil) . ("up" . nil)))
   (add-to-list 'which-key-replacement-alist '(("down" . nil) . ("down" . nil)))
   (which-key-mode t))
+
+(use-package
+  modal
+  :demand t
+  :config                               ;
+  (modal-setup)
+  (modal-global-mode 1))
 
 (use-package
   ivy
@@ -356,7 +365,6 @@
 
 (use-package
   multi-vterm
-
   :disabled
   :ensure t)
 
@@ -389,14 +397,14 @@
   (prog-mode . company-mode)
   (conf-mode . company-mode)
   :init ;; Don't convert to downcase.
-  (defun modal-set-complete()
+  (defun +company-set-complete()
     (interactive)
     (or (yas/expand)
         (company-indent-or-complete-common nil)))
   (setq-default company-dabbrev-downcase nil)
   :bind (:map company-mode-map
-              ("<tab>" . modal-set-complete)
-              ("TAB" . modal-set-complete)
+              ("<tab>" . +company-set-complete)
+              ("TAB" . +company-set-complete)
               ;;
               :map company-active-map   ;
               ("C-n" . company-select-next)
@@ -404,16 +412,16 @@
               ("C-s" . company-filter-candidates)
               ("<tab>" . company-complete-selection)
               ("TAB" . company-complete-selection)
-              ("<return>" . company-complete-selection) ; 终端下无效
-              ("RET" . company-complete-selection)      ; 终端下生效
-              :map company-search-map                   ;
+              ("<return>" . company-complete-selection)
+              ("RET" . company-complete-selection)
+              :map company-search-map   ;
               ("C-n" . company-select-next)
               ("C-p" . company-select-previous)
               ("<tab>" . company-complete-selection)
               ("TAB" . company-complete-selection)
-              ("<return>" . company-complete-selection) ; 终端下无效
-              ("RET" . company-complete-selection))     ; 终端下生效
-  :custom                                               ;
+              ("<return>" . company-complete-selection)
+              ("RET" . company-complete-selection))
+  :custom                               ;
   (company-minimum-prefix-length 2)
   (company-idle-delay 0.01)
   (company-echo-delay 0.2)
@@ -465,9 +473,9 @@
   drag-stuff
   :ensure t
   :defer t
-  :bind (:map modal-normal-state-map
-              ("C-k" . drag-stuff-up)
-              ("C-j" . drag-stuff-down))
+  ;; :bind (:map modal-normal-state-map
+  ;;             ("C-k" . drag-stuff-up)
+  ;;             ("C-j" . drag-stuff-down))
   :config                               ;
   (drag-stuff-global-mode 1))
 
@@ -475,9 +483,8 @@
   expand-region                         ;选择区域
   :ensure t
   :defer t
-  :bind (:map modal-normal-state-map
-              ("<S-return>" . er/expand-region)
-              ("S-RET" . er/expand-region)))
+  :init                                 ;
+  (modal-motion-set-key "ss" #'er/expand-region))
 
 (use-package
   format-all                            ;格式化代码，支持多种格式

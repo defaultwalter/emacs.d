@@ -32,8 +32,5 @@
 (require 'modal-default)
 (require 'modal-esc)
 
-(modal--default-setup)
-(modal-global-mode 1)
-
 (provide 'modal)
 ;;; modal.el ends here

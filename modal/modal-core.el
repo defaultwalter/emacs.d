@@ -24,48 +24,8 @@
 
 ;;; Code:
 
-(defvar modal-mode-map (make-sparse-keymap)
-  "Global keymap for Modal")
-
-(defvar modal-insert-state-map (let ((keymap (make-keymap))) keymap)
-  "Keymap for Modal insert state.")
-
-(defvar modal-visual-state-map (let ((keymap (make-keymap)))
-                                 (suppress-keymap keymap t) keymap)
-  "Keymap for Modal visual state.")
-
-(defvar modal-motion-state-map (let ((keymap (make-keymap)))
-                                 (suppress-keymap keymap t) keymap)
-  "Keymap for Modal motion state.")
-
-(defvar modal-normal-state-map
-  (let ((keymap (make-sparse-keymap)))
-    (suppress-keymap keymap t) keymap)
-  "Keymap for Modal normal state.")
-
-
-(defvar modal--visual-state-maps nil
-  "Modal map for major mode")
-
-(defvar modal--normal-state-maps nil
-  "Modal map for major mode")
-
-(defvar modal--motion-state-maps nil
-  "Modal map for major mode")
-
-(defun modal--apply-mode-maps()
-  "Apply mode map"
-  (let ((normal-state-map (or (cdr (assoc major-mode modal--normal-state-maps))
-                              modal-normal-state-map))
-        (motion-state-map (or (cdr (assoc major-mode modal--motion-state-maps))
-                              modal-motion-state-map))
-        (visual-state-map (or (cdr (assoc major-mode modal--visual-state-maps))
-                              modal-visual-state-map)))
-    (push `(modal-normal-state-mode . ,normal-state-map) minor-mode-overriding-map-alist)
-    (push `(modal-motion-state-mode . ,motion-state-map) minor-mode-overriding-map-alist)
-    (push `(modal-visual-state-mode . ,visual-state-map) minor-mode-overriding-map-alist)))
-
-(add-hook 'after-change-major-mode-hook #'modal--apply-mode-maps)
+(require 'modal-option)
+(require 'modal-key)
 
 (define-minor-mode modal-normal-state-mode "Modal normal state."
   nil
