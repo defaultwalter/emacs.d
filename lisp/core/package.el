@@ -356,6 +356,7 @@
 
 (use-package
   multi-vterm
+
   :disabled
   :ensure t)
 
@@ -384,8 +385,9 @@
   company
   :ensure t
   :defer t
-  :hook ;; (prog-mode . company-mode)
-  (after-init . global-company-mode)
+  :hook                                 ;
+  (prog-mode . company-mode)
+  (conf-mode . company-mode)
   :init ;; Don't convert to downcase.
   (defun modal-set-complete()
     (interactive)
