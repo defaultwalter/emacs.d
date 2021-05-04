@@ -65,8 +65,8 @@
   (modal-motion-set-key "a" #'modal-append)
   (modal-motion-set-key "I" #'modal-line-insert)
   (modal-motion-set-key "A" #'modal-line-append)
-  (modal-motion-set-key "c" #'modal-change)
-  (modal-motion-set-key "C" #'modal-save-and-change)
+  (modal-motion-set-key "c" #'modal-save-and-change)
+  (modal-motion-set-key "C" #'modal-change)
   (modal-motion-set-key "d" #'modal-save-and-delete-char)
   (modal-motion-set-key "D" #'modal-delete-char)
   (modal-motion-set-key "y" #'kill-ring-save)
@@ -84,13 +84,13 @@
   (modal-motion-set-key "~" #'exchange-point-and-mark)
 ;;;; Normal state
   (modal-normal-set-key "<escape>" nil)
-  (modal-normal-set-key "RET" #'backward-char)
-  (modal-normal-set-key "DEL" #'forward-char)
+  (modal-normal-set-key "RET" #'forward-char)
+  (modal-normal-set-key "DEL" #'backward-char)
   (modal-motion-set-key "<escape>" #'modal-temporary-insert)
 ;;;; Visual state
   (modal-visual-set-key "<escape>" #'modal-switch-to-default-state)
-  (modal-visual-set-key "d" #'modal-delete)
-  (modal-visual-set-key "D" #'modal-save-and-delete)
+  (modal-visual-set-key "d" #'modal-save-and-delete)
+  (modal-visual-set-key "D" #'modal-delete)
 ;;;; leader key
   (modal-leader-set-key "SPC" '(counsel-M-x :which-key "command"))
   (modal-leader-set-key "f"
