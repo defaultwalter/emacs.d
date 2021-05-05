@@ -483,8 +483,9 @@
   expand-region                         ;选择区域
   :ensure t
   :defer t
+  :bind (("C-=" . #'er/expand-region))
   :init                                 ;
-  (modal-motion-set-key "ss" #'er/expand-region))
+  (modal-motion-set-key "=" #'er/expand-region))
 
 (use-package
   format-all                            ;格式化代码，支持多种格式
@@ -523,6 +524,84 @@
   mini-modeline
   :ensure t
   :hook (after-init . mini-modeline-mode)
+  :init                                 ;
+  (defface mode-line-buffer-name '((t
+                                    (:inherit bold
+                                              :background nil)))
+    "")
+  (defface mode-line-buffer-name-modified '((t
+                                             (:inherit (error
+                                                        bold)
+                                                       :background nil)))
+    "")
+  (defface mode-line-buffer-project '((t
+                                       (:inherit (font-lock-keyword-face bold)
+                                                 :background nil)))
+    "")
+  (defface mode-line-buffer-encoding '((t
+                                        (:inherit default
+                                                  :background nil)))
+    "")
+  (defface mode-line-buffer-major-mode
+    '((t
+       (:inherit (font-lock-keyword-face bold)
+                 :background nil)))
+    "")
+  (defun mode-line-buffer-name ()
+    (propertize " %b " 'face (cond ((and
+                                     buffer-file-name
+                                     (buffer-modified-p)) 'mode-line-buffer-name-modified)
+                                   (t 'mode-line-buffer-name))))
+  (defun mode-line-buffer-major-mode ()
+    (propertize " %m " 'face 'mode-line-buffer-major-mode))
+  (defun mode-line-buffer-project ()
+    (when-let ((project-root (or (when (fboundp 'projectile-project-root)
+                                   (projectile-project-root))
+                                 (when (fboundp 'project-current)
+                                   (when-let ((project (project-current)))
+                                     (car (project-roots project)))))))
+      (propertize (format " %s "  (file-name-nondirectory (directory-file-name project-root))) 'face
+                  'mode-line-buffer-project)))
+  (defun mode-line-buffer-encoding ()
+    "Displays the eol and the encoding style of the buffer the same way Atom does."
+    (concat " "
+            ;; eol type
+            (let ((eol (coding-system-eol-type buffer-file-coding-system)))
+              (propertize (pcase eol (0 "LF ")
+                                 (1 "CRLF ")
+                                 (2 "CR ")
+                                 (_ "")) 'face 'mode-line-buffer-encoding ))
+            ;; coding system
+            (propertize (let ((sys (coding-system-plist buffer-file-coding-system)))
+                          (cond ((memq (plist-get sys
+                                                  :category)
+                                       '(coding-category-undecided coding-category-utf-8)) "UTF-8")
+                                (t (upcase (symbol-name (plist-get sys
+                                                                   :name)))))) 'face
+                                                                   'mode-line-buffer-encoding ) " "))
+  (defun mode-line-buffer-name-with-project()
+    (let ((project-root (or (when (fboundp 'projectile-project-root)
+                              (projectile-project-root))
+                            (when (fboundp 'project-current)
+                              (when-let ((project (project-current)))
+                                (car (project-roots project))))))
+          (buffer-name (buffer-name)))
+      (if project-root (concat  " "(propertize (format "%s"  (file-name-nondirectory
+                                                              (directory-file-name project-root)))
+                                               'face 'mode-line-buffer-project) ":" (propertize
+                                                                                     buffer-name
+                                                                                     'face (cond
+                                                                                            ((and
+                                                                                              buffer-file-name
+                                                                                              (buffer-modified-p))
+                                                                                             'mode-line-buffer-name-modified)
+                                                                                            (t
+                                                                                             'mode-line-buffer-name)))
+                                               " ")
+        (format " %s " (propertize buffer-name 'face (cond ((and
+                                                             buffer-file-name
+                                                             (buffer-modified-p)) 'mode-line-buffer-name-modified)
+                                                           (t 'mode-line-buffer-name)))))))
   :custom (mini-modeline-right-padding 1)
   (mini-modeline-truncate-p t)
   (mini-modeline-face-attr nil)
@@ -664,5 +743,11 @@
   :ensure t
   :init (setq all-the-icons-scale-factor 0.9))
 
-
+(use-package
+  vterm
+  :ensure t
+  :hook (vterm-mode . modal-switch-to-insert-state)
+  :custom                               ;
+  (vterm-always-compile-module t)
+  (vterm-buffer-name "terminal"))
 (provide 'core/package)

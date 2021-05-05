@@ -77,9 +77,9 @@
 ;;                                                        face))
 ;; 自动关闭minibuffer
 (add-hook 'mouse-leave-buffer-hook (lambda()
-(when (and (>= (recursion-depth) 1)
-(active-minibuffer-window))
-(abort-recursive-edit))))
+                                     (when (and (>= (recursion-depth) 1)
+                                                (active-minibuffer-window))
+                                       (abort-recursive-edit))))
 (setq tramp-default-method "ssh")       ; tramp 默认使用 ssh
 
 (defface ellipsis-face '((t :inherit (font-lock-comment-face default)))
@@ -164,6 +164,10 @@
 ;;;;==================================================
 ;;;; 编辑行为
 ;;;;==================================================
+;;禁用 overwrite-mode
+(unbind-key (kbd "<insert>") global-map)     ; GUI
+(unbind-key (kbd "<insertchar>") global-map) ;终端
+
 ;; TAB 设置
 (setq-default tab-width 4)              ; Tab Width
 (setq-default indent-tabs-mode nil)     ; 关闭 Tab 缩进

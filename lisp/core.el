@@ -1,5 +1,4 @@
 (require 'core/machine)
-(require 'core/infrastructure)
 (require 'core/default)
 (require 'core/package)
 (provide 'core)

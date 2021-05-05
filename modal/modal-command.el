@@ -23,9 +23,27 @@
 ;;
 
 ;;; Code:
+(require 'modal-function)
 (defun modal--set-mark()
   (when (not (region-active-p))
     (push-mark (point) t t)))
+
+
+(defun modal-switch-to-normal-state()
+  (interactive)
+  (modal--switch-state 'normal))
+
+(defun modal-switch-to-motion-state()
+  (interactive)
+  (modal--switch-state 'motion))
+
+(defun modal-switch-to-visual-state()
+  (interactive)
+  (modal--switch-state 'visual))
+
+(defun modal-switch-to-insert-state()
+  (interactive)
+  (modal--switch-state 'insert))
 
 (defun modal-switch-to-default-state()
   (interactive)
@@ -47,15 +65,12 @@
 
 (defun modal-line-insert()
   (interactive)
-  (when (region-active-p)
-    (deactivate-mark t))
   (goto-char (line-beginning-position))
+  (skip-syntax-forward " " (line-end-position))
   (modal--switch-state 'insert))
 
 (defun modal-line-append()
   (interactive)
-  (when (region-active-p)
-    (deactivate-mark t))
   (goto-char (line-end-position))
   (modal--switch-state 'insert))
 
@@ -70,6 +85,16 @@
   (add-hook 'post-command-hook #'modal--temporary-insert-callback 0 t))
 
 ;;;; motion
+
+
+(defun modal-move-between-line-head-and-tail()
+  (interactive)
+  (if (not (eq (point)
+               (line-end-position)))
+      (move-end-of-line 1)
+    (move-beginning-of-line 1)
+    (skip-syntax-forward " " (line-end-position))))
+
 (defun modal-previous-line (arg)
   (interactive "p")
   (setq this-command #'previous-line)
@@ -102,16 +127,32 @@
     (when (< (point) boundary-position)
       (goto-char boundary-position))))
 
-
-(defun modal-word-end(arg)
+(defun modal-forward-word(arg)
   (interactive "p")
   (forward-thing 'word arg))
 
-(defun modal-word-begin(arg)
+(defun modal-backward-word(arg)
   (interactive "p")
   (forward-thing 'word (- arg)))
 
 ;;;; select
+(defun modal-select()
+  (interactive)
+  (push-mark (point) t t))
+
+(defun modal-secondary-selection()
+  (interactive)
+  (when (region-active-p)
+    (secondary-selection-from-region)
+    (deactivate-mark)))
+
+(defun modal-exchange-secondary-selection()
+  (interactive)
+  (if (region-active-p)
+      (let ((beginning (region-beginning))
+            (end (region-end))))
+    (secondary-selection-from-region)))
+
 
 (defun modal-select-word()
   (interactive)
@@ -221,13 +262,13 @@
     (push-mark (point) t t))
   (modal-backward-char arg))
 
-(defun modal-select-to-word-end(arg)
+(defun modal-select-to-forward-word(arg)
   (interactive "p")
   (unless (region-active-p)
     (push-mark (point) t t)  )
   (forward-thing 'word arg))
 
-(defun modal-select-to-word-begin(arg)
+(defun modal-select-to-backward-word(arg)
   (interactive "p")
   (unless (region-active-p)
     (push-mark (point) t t)  )
@@ -321,16 +362,60 @@
   (when (region-active-p)
     (delete-char 1)))
 
-
-(defun modal--suround-insert (begin end)
+;;;; insert pair
+(defun modal-insert-pair (open close)
+  (interactive (let ((open (read-char "insert pair open: "))
+                     (close (read-char "insert pair close: ")))
+                 (list open close)))
   (when (region-active-p)
-    (save-excursion (goto-char (region-end))
-                    (insert end)
-                    (goto-char (region-beginning))
-                    (insert begin))))
+    (insert-pair nil open close)))
 
-(defun modal-suround-insert-par()
-  (interactive))
+(defun  modal-insert-parentheses()
+  (interactive )
+  (modal-insert-pair "(" ")"))
+
+(defun modal-insert-parentheses-with-space()
+  (interactive )
+  (modal-insert-pair "( " " )"))
+
+(defun modal-insert-square-brackets()
+  (interactive)
+  (modal-insert-pair "[" "]"))
+
+(defun modal-insert-square-brackets-with-space()
+  (interactive )
+  (modal-insert-pair "[ " " ]"))
+
+(defun modal-insert-curly-brackets()
+  (interactive)
+  (modal-insert-pair "{" "}"))
+
+(defun modal-insert-curly-brackets-with-space()
+  (interactive )
+  (modal-insert-pair "{ " " }"))
+
+(defun modal-insert-single-quotes()
+  (interactive)
+  (modal-insert-pair "'" "'"))
+
+(defun modal-insert-double-quotes()
+  (interactive )
+  (modal-insert-pair "\" " "\""))
+
+(defun modal-insert-back-quotes()
+  (interactive)
+  (modal-insert-pair "`" "`"))
+
+(defun modal-delete-pair()
+  (interactive)
+  (when (region-active-p)
+    (let ((beginning (region-beginning))
+          (end (region-end)))
+      (save-excursion (goto-char end)
+                      (delete-char -1))
+      (goto-char beginning)
+      (delete-char 1))))
+
 
 (provide 'modal-command)
 ;;; modal-command.el ends here

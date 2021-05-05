@@ -57,7 +57,8 @@
     (add-hook 'deactivate-mark-hook #'modal--switch-to-default-state nil t))
   (unless modal-visual-state-mode       ;
     (remove-hook 'post-command-hook #'modal--visual-state-mode-post-command-handler t)
-    (remove-hook 'deactivate-mark-hook #'modal--switch-to-default-state t)))
+    (remove-hook 'deactivate-mark-hook #'modal--switch-to-default-state t)
+    (deactivate-mark t)))
 
 (defun modal--visual-state-mode-post-command-handler
     (&optional
