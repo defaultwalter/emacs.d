@@ -77,16 +77,25 @@
 ;;                                                        face))
 ;; 自动关闭minibuffer
 (add-hook 'mouse-leave-buffer-hook (lambda()
-                                     (when (and (>= (recursion-depth) 1)
-                                                (active-minibuffer-window))
-                                       (abort-recursive-edit))))
-(setq tramp-default-method "ssh")    ; tramp 默认使用 ssh
-;; 设置 outline mode 指示符号样式
+(when (and (>= (recursion-depth) 1)
+(active-minibuffer-window))
+(abort-recursive-edit))))
+(setq tramp-default-method "ssh")       ; tramp 默认使用 ssh
+
+(defface ellipsis-face '((t :inherit (font-lock-comment-face default)))
+  "Face for ellipsis.")
+(defface ellipsis-space-face '((t :inherit (font-lock-comment-face default)))
+  "Face for ellipsis space char.")
+;; 设置省略符号样式
 (set-display-table-slot  standard-display-table 'selective-display (vconcat (mapcar (lambda (c)
-                                                                                      (make-glyph-code
-                                                                                       c
-                                                                                       'font-lock-comment-face))
-                                                                                    " ✚")))
+                                                                                      (if (eq c 32)
+                                                                                          (make-glyph-code
+                                                                                           c
+                                                                                           'ellipsis-space-face)
+                                                                                        (make-glyph-code
+                                                                                         c
+                                                                                         'ellipsis-face)))
+                                                                                    " [••••••] ")))
 
 ;; 显示当前所在的括号
 (show-paren-mode 1)
@@ -156,9 +165,9 @@
 ;;;; 编辑行为
 ;;;;==================================================
 ;; TAB 设置
-(setq-default tab-width 4)                 ; Tab Width
-(setq-default indent-tabs-mode nil)        ; 关闭 Tab 缩进
-(setq-default tab-always-indent t) ; Indent 行为
+(setq-default tab-width 4)              ; Tab Width
+(setq-default indent-tabs-mode nil)     ; 关闭 Tab 缩进
+(setq-default tab-always-indent t)      ; Indent 行为
 
 (setq-default select-enable-clipboard t) ; 启用系统剪切板
 

@@ -10,7 +10,7 @@
   (setq org-preview-latex-image-directory (expand-file-name "ltximg/" user-emacs-directory))
   (setq org-hide-emphasis-markers nil) ; 隐藏强调符号（加粗，下划线等等）
   (setq org-pretty-entities nil)       ; 可以显示上标下标
-  (setq org-ellipsis " ✚")             ;设置折叠标识
+  ;; (setq org-ellipsis " ✚")             ;设置折叠标识
   (setq org-edit-src-content-indentation 0) ; 设置代码内容缩进
   (setq org-src-preserve-indentation nil)
   (setq org-src-tab-acts-natively t)
