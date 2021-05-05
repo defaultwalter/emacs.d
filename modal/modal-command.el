@@ -82,17 +82,26 @@
 
 (defun modal-forward-char (arg)
   (interactive "p")
+  (forward-char arg))
+
+(defun modal-backward-char (arg)
+  (interactive "p")
+  (backward-char arg))
+
+(defun modal-right-char (arg)
+  (interactive "p")
   (let ((boundary-position (line-end-position)))
     (forward-char arg)
     (when (> (point) boundary-position)
       (goto-char boundary-position))))
 
-(defun modal-backward-char (arg)
+(defun modal-left-char (arg)
   (interactive "p")
   (let ((boundary-position (line-beginning-position)))
     (backward-char arg)
     (when (< (point) boundary-position)
       (goto-char boundary-position))))
+
 
 (defun modal-word-end(arg)
   (interactive "p")
