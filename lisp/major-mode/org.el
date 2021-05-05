@@ -225,9 +225,13 @@
   :defer t
   :custom (org-tree-slide-header nil)
   :hook (org-tree-slide-mode . (lambda()
-                                 (read-only-mode 1)))
-  :config                               ;
-  )
+                                 (read-only-mode 1))))
+
+(use-package
+  valign
+  :ensure t
+  :hook (org-mode . valign-mode))
+
 
 (provide 'major-mode/org)
 ;;; org-config.el ends here
