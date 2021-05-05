@@ -159,10 +159,10 @@
                                  `((bar . 3) . ,(face-foreground 'success))))
                             ((bound-and-true-p modal-visual-state-mode)
                              (or modal-visual-cursor
-                                 `(bar . ,(face-foreground 'warning))))
+                                 `((bar . 2) . ,(face-foreground 'warning))))
                             ((bound-and-true-p modal-insert-state-mode)
                              (or modal-insert-cursor
-                                 `(bar . ,(face-foreground 'error))))
+                                 `((bar . 2) . ,(face-foreground 'error))))
                             (t `(bar . ,(face-foreground 'default))))))
     (setq-local cursor-type (car cursor-style))
     (set-cursor-color (cdr cursor-style))))
