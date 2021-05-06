@@ -18,6 +18,7 @@
   (setq org-hide-leading-stars t)       ; 隐藏标题多余的星号
   (setq org-startup-folded 'nofold)     ; 是否默认开启折叠
   (setq org-cycle-separator-lines 2)
+  (setq org-return-follows-link t)      ; 回车链接跳转
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
   (add-hook 'org-mode-hook (lambda ()
                              ;; (setq prettify-symbols-alist '(("#+BEGIN_SRC" . "▿")
