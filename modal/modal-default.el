@@ -23,9 +23,20 @@
 ;;
 
 ;;; Code:
-
+(require 'dash)
 (require 'modal-core)
 (require 'modal-command)
+
+(defun modal-setup-indicator ()
+  "Setup indicator appending the return of function `meow-indicator' to the modeline.
+
+This function should be called after you setup other parts of the mode-line and will work well for most cases.
+If this function is not enough for your requirements, use `meow-indicator' to get the raw text for indicator and put it anywhere you want."
+  (unless (-contains? mode-line-format
+                      '(:eval (modal-indicator)))
+    (setq-default mode-line-format (append
+                                    '((:eval (modal-indicator)) " ")
+                                    mode-line-format))))
 
 (defun modal-setup()
   "Modal default keybinding"
@@ -76,15 +87,14 @@
   (modal-motion-set-key "u" #'undo)
   (modal-motion-set-key "o" #'modal-open-line-below)
   (modal-motion-set-key "O" #'modal-open-line-above)
-  (modal-motion-set-key "g g" #'beginning-of-buffer)
-  (modal-motion-set-key "G" #'end-of-buffer)
+  (modal-motion-set-key "g g" #'beginning-of-buffer)  (modal-motion-set-key "G" #'end-of-buffer)
   (modal-motion-set-key "M-h" #'windmove-left)
   (modal-motion-set-key "M-l" #'windmove-right)
   (modal-motion-set-key "M-j" #'windmove-down)
   (modal-motion-set-key "M-k" #'windmove-up)
   (modal-motion-set-key "<escape>" #'modal-temporary-insert)
 ;;;; Normal state
-  (modal-normal-set-key "<escape>" nil)
+  (modal-normal-set-key "<escape>" #'keyboard-escape-quit)
 ;;;; Visual state
   (modal-visual-set-key "<escape>" #'modal-switch-to-default-state)
   (modal-visual-set-key "d" #'modal-save-and-delete)

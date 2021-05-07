@@ -1,4 +1,4 @@
-;;; modal.el --- modal                               -*- lexical-binding: t; -*-
+;;; java.el ---                                      -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,13 +23,18 @@
 ;;
 
 ;;; Code:
-(require 'modal-option)
-(require 'modal-core)
-(require 'modal-modern)
-(require 'modal-leader)
-(require 'modal-command)
-(require 'modal-default)
-(require 'modal-esc)
+(require 'module/lsp)
+(require 'module/completion)
 
-(provide 'modal)
-;;; modal.el ends here
+(use-package
+  lsp-java
+  :ensure t
+  :defer t
+  :hook (java-mode . (lambda ()
+                       (lsp)
+                       ;; (dap-ui-mode 1)
+                       ))
+  :config )
+
+(provide 'purpose/java)
+;;; java.el ends here

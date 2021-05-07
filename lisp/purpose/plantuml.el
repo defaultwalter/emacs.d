@@ -1,4 +1,4 @@
-;;; modal.el --- modal                               -*- lexical-binding: t; -*-
+;;; plantuml.el ---                                  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,13 +23,21 @@
 ;;
 
 ;;; Code:
-(require 'modal-option)
-(require 'modal-core)
-(require 'modal-modern)
-(require 'modal-leader)
-(require 'modal-command)
-(require 'modal-default)
-(require 'modal-esc)
+(require 'module/completion)
 
-(provide 'modal)
-;;; modal.el ends here
+(use-package
+  plantuml-mode
+  :ensure t
+  :defer t
+  :config (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+  ;; (setq-default plantuml-default-exec-mode 'jar)
+  ;; (setq plantuml-jar-path "/Users/baiyan/.emacs.d/plantuml.jar")
+  ;; (add-hook 'org-mode-hook (lambda ()
+  ;;                            (plantuml-set-exec-mode "jar")))
+  :custom                               ;
+  (plantuml-default-exec-mode 'executable)
+  (plantuml-jar-path ""))
+
+
+(provide 'purpose/plantuml)
+;;; plantuml.el ends here

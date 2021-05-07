@@ -1,4 +1,4 @@
-;;; modal.el --- modal                               -*- lexical-binding: t; -*-
+;;; rust.el ---                                      -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,13 +23,23 @@
 ;;
 
 ;;; Code:
-(require 'modal-option)
-(require 'modal-core)
-(require 'modal-modern)
-(require 'modal-leader)
-(require 'modal-command)
-(require 'modal-default)
-(require 'modal-esc)
 
-(provide 'modal)
-;;; modal.el ends here
+(require 'module/lsp)
+(require 'module/completion)
+(require 'module/snappet)
+
+(use-package
+  rust-mode
+  :ensure t
+  :defer t
+  :hook (rust-mode . lsp-deferred))
+
+(use-package
+  cargo
+  :ensure t
+  :defer t
+  :after rust-mode
+  :hook (rust-mode . cargo-minor-mode))
+
+(provide 'purpose/rust)
+;;; rust.el ends here

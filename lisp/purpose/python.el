@@ -1,4 +1,4 @@
-;;; modal.el --- modal                               -*- lexical-binding: t; -*-
+;;; python.el ---                                    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,13 +23,16 @@
 ;;
 
 ;;; Code:
-(require 'modal-option)
-(require 'modal-core)
-(require 'modal-modern)
-(require 'modal-leader)
-(require 'modal-command)
-(require 'modal-default)
-(require 'modal-esc)
 
-(provide 'modal)
-;;; modal.el ends here
+(require 'module/lsp)
+(require 'module/completion)
+(require 'module/snappet)
+
+(use-package
+  lsp-python-ms
+  :ensure t
+  :defer t
+  :init (setq lsp-python-ms-executable (executable-find "python-language-server")))
+
+(provide 'purpose/python)
+;;; python.el ends here

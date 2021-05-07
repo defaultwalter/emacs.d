@@ -79,8 +79,14 @@
 (use-package
   modal
   :demand t
+  :custom                               ;
+  (modal-indicator-alist '((normal . "▎@-.-@")
+                           (motion . "▎@-ω-@")
+                           (visual . "▎@•.•@")
+                           (insert . "▎@`д´@")))
   :config                               ;
   (modal-setup)
+  (add-hook 'doom-modeline-mode-hook #'modal-setup-indicator)
   (modal-global-mode 1))
 
 (use-package
@@ -365,6 +371,7 @@
 
 (use-package
   multi-vterm
+
   :disabled
   :ensure t)
 
@@ -387,68 +394,6 @@
 ;; ;;;; ==============================================
 ;; ;;;; 编辑增强
 ;; ;;;; ==============================================
-
-;; 自动完成
-(use-package
-  company
-  :ensure t
-  :defer t
-  :hook                                 ;
-  (prog-mode . company-mode)
-  (conf-mode . company-mode)
-  :init ;; Don't convert to downcase.
-  (defun +company-set-complete()
-    (interactive)
-    (or (yas/expand)
-        (company-indent-or-complete-common nil)))
-  (setq-default company-dabbrev-downcase nil)
-  :bind (:map company-mode-map
-              ("<tab>" . +company-set-complete)
-              ("TAB" . +company-set-complete)
-              ;;
-              :map company-active-map   ;
-              ("C-n" . company-select-next)
-              ("C-p" . company-select-previous)
-              ("C-s" . company-filter-candidates)
-              ("<tab>" . company-complete-selection)
-              ("TAB" . company-complete-selection)
-              ("<return>" . company-complete-selection)
-              ("RET" . company-complete-selection)
-              :map company-search-map   ;
-              ("C-n" . company-select-next)
-              ("C-p" . company-select-previous)
-              ("<tab>" . company-complete-selection)
-              ("TAB" . company-complete-selection)
-              ("<return>" . company-complete-selection)
-              ("RET" . company-complete-selection))
-  :custom                               ;
-  (company-minimum-prefix-length 2)
-  (company-idle-delay 0.01)
-  (company-echo-delay 0.2)
-  (company-show-numbers t)
-  :config                               ;
-  (setq company-selection-default 0)
-  (setq company-backends '(;; (:separate company-yasnippet
-                           ;;            company-capf)
-                           (company-capf company-dabbrev-code company-keywords company-files)
-                           (company-dabbrev)))
-  (setq company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend)))
-
-
-(use-package
-  company-box
-  :ensure t
-  :requires company
-  :hook (company-mode . company-box-mode)
-  :init                                 ;
-  (setq company-box-show-single-candidate t)
-  :config)
-
-(use-package
-  company-prescient
-  :ensure t
-  :after company
-  :hook (company-mode . company-prescient-mode))
 
 (use-package
   undo-tree                             ;撤销重做可视化
@@ -473,9 +418,9 @@
   drag-stuff
   :ensure t
   :defer t
-  ;; :bind (:map modal-normal-state-map
-  ;;             ("C-k" . drag-stuff-up)
-  ;;             ("C-j" . drag-stuff-down))
+  :bind (:map modal-normal-state-map
+              ("C-K" . drag-stuff-up)
+              ("C-J" . drag-stuff-down))
   :config                               ;
   (drag-stuff-global-mode 1))
 
@@ -507,15 +452,16 @@
   doom-modeline
   :ensure t
   :defer t
-  :disabled
-  :init (doom-modeline-init)
+  ;; :disabled                             ;
+  :init                                 ;
+  (doom-modeline-init)
   (setq doom-modeline-height 20)
-  (setq doom-modeline-bar-width 3)
+  (setq doom-modeline-bar-width -1)
   (setq doom-modeline-enable-word-count t) ;字数统计
   (setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
   (setq doom-modeline-buffer-file-name-style 'auto)
   ;; (setq doom-modeline-minor-modes t)
-  (setq doom-modeline-icon (display-graphic-p))
+  (setq doom-modeline-icon t)
   (setq doom-modeline-major-mode-color-icon t)
   (setq doom-modeline-modal-icon t)
   (doom-modeline-mode 1))
@@ -523,6 +469,7 @@
 (use-package
   mini-modeline
   :ensure t
+  :disabled
   :hook (after-init . mini-modeline-mode)
   :init                                 ;
   (defface mode-line-buffer-name '((t
@@ -655,7 +602,13 @@
 (use-package
   dashboard
   :ensure t
-  :if (display-graphic-p)
+  ;; :if (display-graphic-p)
+  :init                                 ;
+  (defun +dashboard--lookup-icon (name)
+    (when (boundp all-the-icons-octicon)
+      (all-the-icons-octicon name
+                             :height 0.9
+                             :v-adjust 0.0)))
   :config                               ;
   (modal-leader-set-key "b <home>" '(dashboard-refresh-buffer :which-key "dashboard"))
   (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
@@ -664,69 +617,48 @@
   (setq dashboard-set-file-icons t)
   (setq dashboard-items '())
   (setq dashboard-set-navigator t)
-  (setq dashboard-navigator-buttons `(   ;
+  (setq dashboard-navigator-buttons `(()
+                                      ()
                                       () ;
-                                      () ;
-                                      () ;
-                                      ((,(all-the-icons-octicon "calendar"
-                                                                :height 0.9
-                                                                :v-adjust 0.0)
-                                        " Open agenda                         " "" (lambda
-                                                                                     (&rest
-                                                                                      _)
-                                                                                     (call-interactively
-                                                                                      'org-agenda))
+                                      (("🍃" " Open agenda                         " "" (lambda
+                                                                                          (&rest
+                                                                                           _)
+                                                                                          (org-agenda))
                                         nil "" "")
                                        ("" "SPC n a   " "" (lambda
                                                              (&rest
                                                               _)
-                                                             (call-interactively 'org-agenda))
-                                        default "" ""))
+                                                             (org-agenda)) default "" ""))
                                       () ;
-                                      ((,(all-the-icons-octicon "versions"
-                                                                :height 0.9
-                                                                :v-adjust 0.0)
-                                        " Open recently file                  " "" (lambda
-                                                                                     (&rest
-                                                                                      _)
-                                                                                     (call-interactively
-                                                                                      'counsel-recentf))
+                                      (("🍁" " Open recently file                  " "" (lambda
+                                                                                          (&rest
+                                                                                           _)
+                                                                                          (counsel-recentf))
                                         nil "" "")
                                        ("" "SPC f r   " "" (lambda
                                                              (&rest
                                                               _)
-                                                             (call-interactively 'counsel-recentf))
-                                        default "" ""))
+                                                             (counsel-recentf)) default "" ""))
                                       () ;
-                                      ((,(all-the-icons-octicon "briefcase"
-                                                                :height 0.9
-                                                                :v-adjust 0.0)
-                                        " Open project                        " "" (lambda
-                                                                                     (&rest
-                                                                                      _)
-                                                                                     (call-interactively
-                                                                                      'counsel-projectile))
+                                      (("🌵" " Open project                        " "" (lambda
+                                                                                          (&rest
+                                                                                           _)
+                                                                                          (counsel-projectile))
                                         nil "" "")
                                        ("" "SPC p p   " "" (lambda
                                                              (&rest
                                                               _)
-                                                             (call-interactively
-                                                              'counsel-projectile)) default "" ""))
+                                                             (counsel-projectile)) default "" ""))
                                       () ;
-                                      ((,(all-the-icons-octicon "star"
-                                                                :height 0.9
-                                                                :v-adjust 0.0)
-                                        " Jump to bookmark                    " "" (lambda
-                                                                                     (&rest
-                                                                                      _)
-                                                                                     (call-interactively
-                                                                                      'counsel-bookmark))
+                                      (("✨" " Jump to bookmark                    " "" (lambda
+                                                                                          (&rest
+                                                                                           _)
+                                                                                          (counsel-bookmark))
                                         nil "" "")
                                        ("" "SPC return" "" (lambda
                                                              (&rest
                                                               _)
-                                                             (call-interactively 'counsel-bookmark))
-                                        default "" ""))
+                                                             (counsel-bookmark)) default "" ""))
                                       ()   ;
                                       ()   ;
                                       ())) ;
@@ -750,4 +682,4 @@
   :custom                               ;
   (vterm-always-compile-module t)
   (vterm-buffer-name "terminal"))
-(provide 'core/package)
+(provide 'module/common)

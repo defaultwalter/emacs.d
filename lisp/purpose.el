@@ -1,4 +1,4 @@
-;;; modal.el --- modal                               -*- lexical-binding: t; -*-
+;;; purpose.el ---                                   -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,13 +23,23 @@
 ;;
 
 ;;; Code:
-(require 'modal-option)
-(require 'modal-core)
-(require 'modal-modern)
-(require 'modal-leader)
-(require 'modal-command)
-(require 'modal-default)
-(require 'modal-esc)
 
-(provide 'modal)
-;;; modal.el ends here
+(require 'module/common)
+
+(require 'purpose/emacs-lisp)
+(require 'purpose/note)
+(require 'purpose/rust)
+(require 'purpose/python)
+(require 'purpose/java)
+(require 'purpose/lua)
+(require 'purpose/plantuml)
+(require 'purpose/graphviz)
+(require 'purpose/yaml)
+(require 'purpose/handlebars)
+(require 'purpose/javascript)
+(require 'purpose/css)
+(require 'purpose/html)
+
+
+(provide 'purpose)
+;;; purpose.el ends here

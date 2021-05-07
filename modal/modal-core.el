@@ -23,7 +23,6 @@
 ;;
 
 ;;; Code:
-
 (require 'modal-option)
 (require 'modal-key)
 
@@ -100,10 +99,7 @@
   "Enable Modal mode"
   (modal--switch-to-default-state)
   (modal--refresh-cursor)
-  (add-hook 'modal-normal-state-mode-hook #'modal--refresh-cursor nil t)
-  (add-hook 'modal-motion-state-mode-hook #'modal--refresh-cursor nil t)
-  (add-hook 'modal-visual-state-mode-hook #'modal--refresh-cursor nil t)
-  (add-hook 'modal-insert-state-mode-hook #'modal--refresh-cursor nil t)
+  (modal--update-indicator)
   (add-hook 'activate-mark-hook #'modal--switch-visual-state nil t))
 
 (defun modal--disable ()
@@ -112,6 +108,8 @@
   (modal-motion-state-mode -1)
   (modal-insert-state-mode -1)
   (modal-visual-state-mode -1)
+  (modal--refresh-cursor)
+  (modal--update-indicator)
   (remove-hook 'activate-mark-hook #'modal--switch-visual-state t))
 
 
@@ -139,7 +137,9 @@
         ((equal state 'insert)
          (modal-insert-state-mode 1))
         ((equal state 'visual)
-         (modal-visual-state-mode 1))))
+         (modal-visual-state-mode 1)))
+  (modal--refresh-cursor)
+  (modal--update-indicator))
 
 (defun modal--switch-to-default-state()
   "Quit insert or visual mode"
@@ -148,6 +148,7 @@
       (modal--switch-state 'motion)
     (modal--switch-state 'normal))
   (deactivate-mark))
+
 
 
 (defun modal--refresh-cursor()
@@ -167,6 +168,26 @@
                             (t `(bar . ,(face-foreground 'default))))))
     (setq-local cursor-type (car cursor-style))
     (set-cursor-color (cdr cursor-style))))
+
+
+(defvar modal--indicator nil
+  "Modal indicator")
+
+(defun modal--render-indicator()
+  (let* ((current-state (modal--current-state))
+         (state-text (cdr (assoc current-state modal-indicator-alist)))
+         (state-face (intern (format "modal-indicator-%s" (symbol-name current-state)))))
+    (when current-state (propertize (format "%s" state-text) 'face state-face))))
+
+
+(defun modal--update-indicator ()
+  (let ((indicator (modal--render-indicator)))
+    (setq-local modal--indicator indicator)))
+
+(defun modal-indicator ()
+  "Indicator showing current mode."
+  (or modal--indicator
+      (modal--update-indicator)))
 
 (defun modal--window-state-change-handler
     (&rest

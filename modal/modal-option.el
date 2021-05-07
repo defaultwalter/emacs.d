@@ -42,6 +42,16 @@
   "Modal normal state cursor style."
   :group 'modal)
 
+(defcustom modal-indicator-alist
+  '((normal . "<N>")
+    (motion . "<M>")
+    (visual . "<V>")
+    (insert . "<I>"))
+  "Modal indicator text"
+  :type 'list
+  :group 'modal)
+
+
 (defcustom modal-motion-mode-list '(special-mode)
   "Modal normal state cursor style."
   :type 'list
@@ -51,6 +61,31 @@
 (defcustom modal-leader-key "SPC"
   "Leader key"
   :type 'string
+  :group 'modal)
+
+(defface modal-indicator-normal '((t
+                                   (:inherit link
+                                             :weight bold
+                                             :underline nil)))
+  "Normal state indicator."
+  :group 'modal)
+
+(defface modal-indicator-motion '((t
+                                   (:inherit success
+                                             :weight bold)))
+  "Motion state indicator."
+  :group 'modal)
+
+(defface modal-indicator-visual '((t
+                                   (:inherit warning
+                                             :weight bold)))
+  "Motion state indicator."
+  :group 'modal)
+
+(defface modal-indicator-insert '((t
+                                   (:inherit error
+                                             :weight bold)))
+  "Insert state indicator."
   :group 'modal)
 
 

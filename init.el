@@ -42,7 +42,7 @@
 
 ;;; 加载配置
 (require 'core)
-(require 'major-mode)
+(require 'purpose)
 
 ;; (make-frame-visible)
 (provide 'init)

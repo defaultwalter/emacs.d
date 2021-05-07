@@ -1,4 +1,4 @@
-;;; modal.el --- modal                               -*- lexical-binding: t; -*-
+;;; snappet.el ---                                   -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,13 +23,24 @@
 ;;
 
 ;;; Code:
-(require 'modal-option)
-(require 'modal-core)
-(require 'modal-modern)
-(require 'modal-leader)
-(require 'modal-command)
-(require 'modal-default)
-(require 'modal-esc)
 
-(provide 'modal)
-;;; modal.el ends here
+(use-package
+  yasnippet
+  :ensure t
+  :defer t
+  :hook (prog-mode . yas-minor-mode)
+  :config                               ;
+  (use-package
+    yasnippet-snippets
+    :ensure t
+    :config (yas-reload-all)))
+
+(use-package
+  ivy-yasnippet
+  :ensure t
+  :after (yasnippet ivy)
+  :defer t)
+
+
+(provide 'module/snappet)
+;;; snappet.el ends here

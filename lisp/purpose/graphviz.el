@@ -1,4 +1,4 @@
-;;; modal.el --- modal                               -*- lexical-binding: t; -*-
+;;; graphviz.el ---                                  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,13 +23,22 @@
 ;;
 
 ;;; Code:
-(require 'modal-option)
-(require 'modal-core)
-(require 'modal-modern)
-(require 'modal-leader)
-(require 'modal-command)
-(require 'modal-default)
-(require 'modal-esc)
+(require 'module/completion)
 
-(provide 'modal)
-;;; modal.el ends here
+(use-package
+  graphviz-dot-mode
+  :ensure t
+  :defer t
+  :config (add-to-list 'auto-mode-alist '("\\.dot\\'" . graphviz-dot-mode))
+  (setq-default graphviz-dot-indent-width 4)
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (if (boundp 'org-src-lang-modes)
+                  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml)))))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((dot . t))))
+
+
+(provide 'purpose/graphviz)
+;;; graphviz.el ends here

@@ -1,6 +1,29 @@
-;;; package -- org-config
+;;; note.el ---                                      -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2021  meetcw
+
+;; Author: meetcw <meetcw@outlook.com>
+;; Keywords:
+
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation, either version 3 of the License, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
 ;;; Commentary:
+
+;;
+
 ;;; Code:
+
 (use-package
   org
   :ensure org-plus-contrib
@@ -11,7 +34,7 @@
   (setq org-hide-emphasis-markers nil) ; 隐藏强调符号（加粗，下划线等等）
   (setq org-pretty-entities nil)       ; 可以显示上标下标
   ;; (setq org-ellipsis " ✚")             ;设置折叠标识
-  (setq org-edit-src-content-indentation 0) ; 设置代码内容缩进
+  (setq org-edit-src-content-indentation 2) ; 设置代码内容缩进
   (setq org-src-preserve-indentation nil)
   (setq org-src-tab-acts-natively t)
   ;; (setq org-fontify-done-headline t) ; 标题状态为 Done 的时候修改标题样式
@@ -233,6 +256,5 @@
   :ensure t
   :hook (org-mode . valign-mode))
 
-
-(provide 'major-mode/org)
-;;; org-config.el ends here
+(provide 'purpose/note)
+;;; note.el ends here

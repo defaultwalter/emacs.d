@@ -1,4 +1,4 @@
-;;; modal.el --- modal                               -*- lexical-binding: t; -*-
+;;; handlebars.el ---                                -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,13 +23,14 @@
 ;;
 
 ;;; Code:
-(require 'modal-option)
-(require 'modal-core)
-(require 'modal-modern)
-(require 'modal-leader)
-(require 'modal-command)
-(require 'modal-default)
-(require 'modal-esc)
+(require 'module/completion)
 
-(provide 'modal)
-;;; modal.el ends here
+(use-package
+  handlebars-mode
+  :ensure t
+  :defer t
+  :mode ("\\.hbs\\'" . handlebars-mode)
+  :interpreter ("handlebars" . handlebars-mode))
+
+(provide 'purpose/handlebars)
+;;; handlebars.el ends here
