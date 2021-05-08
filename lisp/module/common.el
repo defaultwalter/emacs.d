@@ -419,8 +419,8 @@
   :ensure t
   :defer t
   :bind (:map modal-normal-state-map
-              ("C-K" . drag-stuff-up)
-              ("C-J" . drag-stuff-down))
+              ("C-S-k" . drag-stuff-up)
+              ("C-S-j" . drag-stuff-down))
   :config                               ;
   (drag-stuff-global-mode 1))
 

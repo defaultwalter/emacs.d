@@ -3,7 +3,7 @@
 ;;;;==================================================
 
 (defvar user-config-directory user-emacs-directory
-  "Instead ‘user-emacs-directory’")
+  "Replace ‘user-emacs-directory’")
 ;; 保持 .emacs.d 目录整洁
 (setq user-emacs-directory (expand-file-name "~/.cache/emacs"))
 

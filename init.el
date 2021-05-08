@@ -4,7 +4,7 @@
 
 (when (version< emacs-version "27")
   ;; Emacs版本低于27时，手动加载‘early-init.el’
-  (load-file (expand-file-name "early-init.el" user-config-directory)))
+  (load-file (expand-file-name "early-init.el" user-emacs-directory)))
 
 ;;;; Package初始化
 (require 'package)

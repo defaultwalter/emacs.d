@@ -39,6 +39,7 @@
 (require 'purpose/javascript)
 (require 'purpose/css)
 (require 'purpose/html)
+(require 'purpose/glsl)
 
 
 (provide 'purpose)
