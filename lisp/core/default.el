@@ -120,16 +120,17 @@
                            "WenQuanYi Micro Hei Mono"))))
     (set-frame-font (format "%s-%s" frame-font machine:fontsize) t t))
 
-  ;; 中文字体
-  (set-fontset-font t 'han (cond ((member "Sarasa Mono SC" (font-family-list)) "Sarasa Mono SC")
-                                 ((member "WenQuanYi Micro Hei Mono" (font-family-list))
-                                  "WenQuanYi Micro Hei Mono")
-                                 ((member "Microsoft YaHei" (font-family-list)) "Microsoft YaHei")
-                                 ((member "Hei" (font-family-list)) "Hei")
-                                 ((member "WenQuanYi Micro Hei Mono" (font-family-list))
-                                  "WenQuanYi Micro Hei Mono")))
+  (let ((other-font (cond ((member "Sarasa Mono SC" (font-family-list)) "Sarasa Mono SC")
+                          ((member "WenQuanYi Micro Hei Mono" (font-family-list))
+                           "WenQuanYi Micro Hei Mono")
+                          ((member "Microsoft YaHei" (font-family-list)) "Microsoft YaHei")
+                          ((member "Hei" (font-family-list)) "Hei"))))
+    ;; 中文字体
+    (set-fontset-font t 'han other-font)
+    ;; 一些标点符号在 cjk-misc 中
+    (set-fontset-font t 'cjk-misc other-font))
   ;; 设置Emoji字体
-  (set-fontset-font t '(#x1f300 . #x1fad0)
+  (set-fontset-font t 'symbol
                     (cond ((member "Noto Color Emoji" (font-family-list)) "Noto Color Emoji")
                           ((member "Noto Emoji" (font-family-list)) "Noto Emoji")
                           ((member "Segoe UI Emoji" (font-family-list)) "Segoe UI Emoji")
