@@ -364,11 +364,16 @@
 
 ;;;; insert pair
 (defun modal-insert-pair (open close)
-  (interactive (let ((open (read-char "insert pair open: "))
-                     (close (read-char "insert pair close: ")))
+  (interactive (let ((open (char-to-string (read-char "insert pair open: ")))
+                     (close (char-to-string (read-char "insert pair close: "))))
                  (list open close)))
   (when (region-active-p)
-    (insert-pair nil open close)))
+    (let ((beginning (region-beginning))
+          (end (region-end))
+          deactivate-mark)
+      (insert-pair nil open close)
+      (push-mark (+ beginning (length open)) t t)
+      (goto-char (+ end (length open))))))
 
 (defun  modal-insert-parentheses()
   (interactive )
@@ -400,7 +405,7 @@
 
 (defun modal-insert-double-quotes()
   (interactive )
-  (modal-insert-pair "\" " "\""))
+  (modal-insert-pair "\"" "\""))
 
 (defun modal-insert-back-quotes()
   (interactive)

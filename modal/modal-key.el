@@ -69,6 +69,8 @@
                               modal-insert-state-map)))
     (push `(modal-normal-state-mode . ,normal-state-map) minor-mode-overriding-map-alist)
     (push `(modal-motion-state-mode . ,motion-state-map) minor-mode-overriding-map-alist)
+    ;; (make-local-variable 'emulation-mode-map-alists)
+    ;; (push `(modal-motion-state-mode . ,motion-state-map) emulation-mode-map-alists)
     (push `(modal-visual-state-mode . ,visual-state-map) minor-mode-overriding-map-alist)
     (push `(modal-insert-state-mode . ,insert-state-map) minor-mode-overriding-map-alist)))
 

@@ -39,8 +39,8 @@
         (company-indent-or-complete-common nil)))
   (setq-default company-dabbrev-downcase nil)
   :bind (:map company-mode-map
-              ("<tab>" . +company-set-complete)
-              ("TAB" . +company-set-complete)
+              ;; ("<tab>" . +company-set-complete)
+              ;; ("TAB" . +company-set-complete)
               ;;
               :map company-active-map   ;
               ("C-n" . company-select-next)

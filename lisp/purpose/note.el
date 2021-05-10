@@ -125,6 +125,29 @@
                    :branch "v2")
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find))
+  :custom ;
+  (org-roam-directory machine:note-directory)
+  (org-roam-dailies-directory "DAILY")
+  (org-roam-capture-templates '(("d" "default" plain "%?"
+                                 :if-new (file+head "%(upcase \"${slug}\").org"
+                                                    "#+title: ${title}\n")
+                                 :unnarrowed t) ))
+  (org-roam-capture-immediate-template '("d" "default" plain "%?"
+                                         :if-new (file+head "${slug}.org"
+                                                            "#+title: ${title}\n")
+                                         :unnarrowed t
+                                         :immediate-finish t))
+  (org-roam-dailies-capture-templates '(("d" "default" plain "%?" :if-new
+  (file+head "DAILY/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>
+"))))
+  :commands (org-roam-dailies-find-today)
+  :init;
+  (modal-leader-set-key "n d" '(org-roam-dailies-find-today :which-key "today"))
+  (modal-leader-set-key "n f" '(org-roam-node-find :which-key "find note"))
+  (modal-leader-set-key-for-mode 'org-mode "n b" '(org-roam-buffer-toggle :which-key
+                                                                          "backlink"))
+  (modal-leader-set-key-for-mode 'org-mode "n g" '(org-roam-graph :which-key "graph"))
+  (modal-leader-set-key-for-mode 'org-mode "n i" '(org-roam-node-insert :which-key "insert node"))
   :config (org-roam-setup))
 
 ;; (use-package
@@ -182,51 +205,41 @@
 ;;   :config                               ;
 ;;   (require 'org-roam-protocol))
 
-(use-package
-  deft
-  :ensure t
-  :defer t
-  :custom (deft-recursive t)
-  (deft-use-filter-string-for-filename t)
-  (deft-default-extension "org")
-  (deft-directory machine:note-directory)
-  :init                                 ;
-  (modal-leader-set-key "n n" '(deft :which-key "list")))
 
-(defcustom machine:note-server-host "127.0.0.1"
-  "Note server host"
-  :type 'string
-  :group 'machine)
+;; (defcustom machine:note-server-host "127.0.0.1"
+;;   "Note server host"
+;;   :type 'string
+;;   :group 'machine)
 
-(defcustom machine:note-server-port 10101
-  "Note server port"
-  :type 'integer
-  :group 'machine)
+;; (defcustom machine:note-server-port 10101
+;;   "Note server port"
+;;   :type 'integer
+;;   :group 'machine)
 
-(use-package
-  org-roam-server
-  :ensure t
-  :defer t
-  :custom                               ;
-  (org-roam-server-host machine:note-server-host )
-  (org-roam-server-port machine:note-server-port )
-  (org-roam-server-authenticate nil)
-  (org-roam-server-export-inline-images t)
-  (org-roam-server-serve-files nil)
-  (org-roam-server-served-file-extensions '("pdf" "mp4" "ogv"))
-  (org-roam-server-network-poll t)
-  (org-roam-server-network-arrows nil)
-  (org-roam-server-network-label-truncate t)
-  (org-roam-server-network-label-truncate-length 60 )
-  (org-roam-server-network-label-wrap-length 20)
-  :init                                 ;
-  (modal-leader-set-key "ns" '((lambda ()
-                                 (interactive)
-                                 (when (not (bound-and-true-p org-roam-server-mode))
-                                   (org-roam-server-mode t))
-                                 (browse-url (format "http://%s:%s" org-roam-server-host
-                                                     org-roam-server-port))) :which-key "server"))
-  :config )
+;; (use-package
+;;   org-roam-server
+;;   :ensure t
+;;   :defer t
+;;   :custom                               ;
+;;   (org-roam-server-host machine:note-server-host )
+;;   (org-roam-server-port machine:note-server-port )
+;;   (org-roam-server-authenticate nil)
+;;   (org-roam-server-export-inline-images t)
+;;   (org-roam-server-serve-files nil)
+;;   (org-roam-server-served-file-extensions '("pdf" "mp4" "ogv"))
+;;   (org-roam-server-network-poll t)
+;;   (org-roam-server-network-arrows nil)
+;;   (org-roam-server-network-label-truncate t)
+;;   (org-roam-server-network-label-truncate-length 60 )
+;;   (org-roam-server-network-label-wrap-length 20)
+;;   :init                                 ;
+;;   (modal-leader-set-key "ns" '((lambda ()
+;;                                  (interactive)
+;;                                  (when (not (bound-and-true-p org-roam-server-mode))
+;;                                    (org-roam-server-mode t))
+;;                                  (browse-url (format "http://%s:%s" org-roam-server-host
+;;                                                      org-roam-server-port))) :which-key "server"))
+;;   :config )
 
 (defcustom machine:agenda-directory (expand-file-name "agenda" temporary-file-directory)
   "Agenda root directory"
@@ -242,14 +255,6 @@
                                (directory-files machine:agenda-directory nil ".*\.org")))
 (setq org-refile-targets '((nil :maxlevel . 9)
                            (org-agenda-files :maxlevel . 9)))
-
-(use-package
-  org-tree-slide                        ; 幻灯片
-  :ensure t
-  :defer t
-  :custom (org-tree-slide-header nil)
-  :hook (org-tree-slide-mode . (lambda()
-                                 (read-only-mode 1))))
 
 (use-package
   valign

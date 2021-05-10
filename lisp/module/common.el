@@ -257,7 +257,8 @@
   :ensure t
   :defer 1
   :config                               ;
-  (global-diff-hl-mode))
+  ;; (global-diff-hl-mode)
+  )
 
 (use-package
   avy
@@ -330,7 +331,7 @@
   :custom                               ;
   (highlight-indent-guides-suppress-auto-error t)
   (highlight-indent-guides-method 'column)
-  (highlight-indent-guides-responsive 'top)
+  (highlight-indent-guides-responsive nil)
   (highlight-indent-guides-character ?┊)
   :hook ((prog-mode conf-mode) . highlight-indent-guides-mode)
   :config                               ;

@@ -101,6 +101,11 @@
 (show-paren-mode 1)
 (setq-default electric-pair-inhibit-predicate 'electric-pair-default-inhibit) ; 抑制策略
 (electric-pair-mode 1)
+;; 显示空白字符
+;; (add-hook 'prog-mode-hook #'whitespace-mode)
+;; (add-hook 'conf-mode-hook #'whitespace-mode)
+;; (setq whitespace-style '(face tabs spaces newline space-mark tab-mark newline-mark))
+
 
 (defcustom machine:fontsize 12
   "Font size"
@@ -185,11 +190,6 @@
 (delete-selection-mode 1)               ; 插入时替换选区
 
 (setq-default truncate-lines nil)
-
-(add-hook 'before-save-hook '(lambda ()
-                               (when (derived-mode-p 'prog-mode)
-                                 (whitespace-cleanup)
-                                 (delete-trailing-whitespace))))
 
 ;;;;==================================================
 ;;;; 文件
