@@ -372,10 +372,10 @@
           (end (region-end))
           deactivate-mark)
       (insert-pair nil open close)
-      (push-mark (+ beginning (length open)) t t)
-      (goto-char (+ end (length open))))))
+      (goto-char (+ end (length open)))
+      (set-mark (+ beginning (length open))))))
 
-(defun  modal-insert-parentheses()
+(defun modal-insert-parentheses()
   (interactive )
   (modal-insert-pair "(" ")"))
 
