@@ -129,16 +129,16 @@
   (org-roam-directory machine:note-directory)
   (org-roam-dailies-directory "DAILY")
   (org-roam-capture-templates '(("d" "default" plain "%?"
-                                 :if-new (file+head "%(upcase \"${slug}\").org"
+                                 :if-new (file+head "%<%Y%m%d%H%M%S>.ORG"
                                                     "#+title: ${title}\n")
                                  :unnarrowed t) ))
   (org-roam-capture-immediate-template '("d" "default" plain "%?"
-                                         :if-new (file+head "${slug}.org"
+                                         :if-new (file+head "%<%Y%m%d%H%M%S>.ORG"
                                                             "#+title: ${title}\n")
                                          :unnarrowed t
                                          :immediate-finish t))
   (org-roam-dailies-capture-templates '(("d" "default" plain "%?" :if-new
-  (file+head "DAILY/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>
+  (file+head "DAILY/%<%Y-%m-%d>.ORG" "#+title: %<%Y-%m-%d>
 "))))
   :commands (org-roam-dailies-find-today)
   :init;
