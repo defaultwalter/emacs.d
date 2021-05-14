@@ -27,16 +27,6 @@
 (require 'modal-core)
 (require 'modal-command)
 
-(defun modal-setup-indicator ()
-  "Setup indicator appending the return of function `meow-indicator' to the modeline.
-
-This function should be called after you setup other parts of the mode-line and will work well for most cases.
-If this function is not enough for your requirements, use `meow-indicator' to get the raw text for indicator and put it anywhere you want."
-  (unless (-contains? mode-line-format
-                      '(:eval (modal-indicator)))
-    (setq-default mode-line-format (append
-                                    '((:eval (modal-indicator)) " ")
-                                    mode-line-format))))
 
 (defun modal-setup()
   "Modal default keybinding"

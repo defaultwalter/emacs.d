@@ -28,12 +28,10 @@
   org
   :ensure org-plus-contrib
   :defer t
-  :hook (org-mode . org-superstar-mode)
   :init                                 ;
   (setq org-preview-latex-image-directory (expand-file-name "ltximg/" user-emacs-directory))
-  (setq org-hide-emphasis-markers nil) ; 隐藏强调符号（加粗，下划线等等）
+  (setq org-hide-emphasis-markers t) ; 隐藏强调符号（加粗，下划线等等）
   (setq org-pretty-entities nil)       ; 可以显示上标下标
-  ;; (setq org-ellipsis " ✚")             ;设置折叠标识
   (setq org-edit-src-content-indentation 2) ; 设置代码内容缩进
   (setq org-src-preserve-indentation nil)
   (setq org-src-tab-acts-natively t)
@@ -62,7 +60,18 @@
                              (add-hook 'before-save-hook (lambda()
                                                            ;; 保存时 对齐 tag
                                                            (org-align-tags t)) nil 'local)))
-  (setq org-image-actual-width '(100 200 300 400))
+
+  (defun +org-rename-buffer()
+    (interactive)
+    (when-let ((title (pcase (org-collect-keywords '("TITLE"))
+                        (`(("TITLE" . ,val))
+                         (org-link-display-format (car val))))))
+      (rename-buffer title t))
+    (add-hook 'after-save-hook #'+org-rename-buffer nil t))
+
+  (add-hook 'org-mode-hook #'+org-rename-buffer)
+
+  ;; (setq org-image-actual-width '(100 200 300 400))
   (setq-default org-confirm-babel-evaluate nil)
   :config                               ;
   (require 'ob-dot)
@@ -76,25 +85,29 @@
   (require 'ox-freemind)
   (require 'org-tempo))
 
-
-(use-package
-  visual-fill-column                    ;设置正文宽度
-  :ensure t
-  :defer t
-  :commands (visual-fill-column-mode)
-  :config                               ;
-  (setq-default visual-fill-column-width 100)
-  (setq-default visual-fill-column-center-text t))
-
 (use-package
   ob-plantuml
   :init (setq-default org-plantuml-exec-mode 'plantuml)
   (setq-default org-plantuml-jar-path ""))
 
 (use-package
+  org-appear;自动切换预览元素
+  :ensure t
+  :custom ;
+  (org-appear-autoemphasis t)
+  (org-appear-autolinks t)
+  :hook (org-mode . org-appear-mode))
+
+(use-package
+  org-fragtog;自动切换预览Latex公式
+  :ensure t
+  :hook (org-mode . org-fragtog-mode))
+
+(use-package
   org-superstar
   :ensure t
   :defer t
+  :hook (org-mode . org-superstar-mode)
   :custom                               ;
   (org-superstar-remove-leading-stars t)
   (org-superstar-headline-bullets-list '("✿" "❖" "●" "◉" "◍" "◎" "○" "◌"))
@@ -108,6 +121,34 @@
   :hook (org-mode . org-superstar-mode)
   :init                                 ;
   (setq org-superstar-prettify-item-bullets t))
+(use-package
+  org-download
+  :ensure t
+  :custom ;
+  (org-download-image-dir "./Assets")
+  (org-download-file-format-function +org-download-file-format-default)
+  :init;
+  (defun +org-download-file-format-default (filename)
+    "It's affected by `org-download-timestamp'."
+    (when-let ((filename filename)
+               (extension (file-name-extension filename)))
+      (if extension
+          (concat
+           (format-time-string org-download-timestamp)
+           extension)
+        (concat
+         (format-time-string org-download-timestamp)
+         "00")))))
+
+
+(use-package
+  visual-fill-column                    ;设置正文宽度
+  :ensure t
+  :defer t
+  :commands (visual-fill-column-mode)
+  :config                               ;
+  (setq-default visual-fill-column-width 100)
+  (setq-default visual-fill-column-center-text t))
 
 
 (defcustom machine:note-directory (expand-file-name "notes" temporary-file-directory)
@@ -129,17 +170,16 @@
   (org-roam-directory machine:note-directory)
   (org-roam-dailies-directory "DAILY")
   (org-roam-capture-templates '(("d" "default" plain "%?"
-                                 :if-new (file+head "%<%Y%m%d%H%M%S>.ORG"
+                                 :if-new (file+head "%<%Y%m%d%H%M%S>.org"
                                                     "#+title: ${title}\n")
                                  :unnarrowed t) ))
   (org-roam-capture-immediate-template '("d" "default" plain "%?"
-                                         :if-new (file+head "%<%Y%m%d%H%M%S>.ORG"
+                                         :if-new (file+head "%<%Y%m%d%H%M%S>.org"
                                                             "#+title: ${title}\n")
                                          :unnarrowed t
                                          :immediate-finish t))
   (org-roam-dailies-capture-templates '(("d" "default" plain "%?" :if-new
-  (file+head "DAILY/%<%Y-%m-%d>.ORG" "#+title: %<%Y-%m-%d>
-"))))
+                                         (file+head "DAILY/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
   :commands (org-roam-dailies-find-today)
   :init;
   (modal-leader-set-key "n d" '(org-roam-dailies-find-today :which-key "today"))

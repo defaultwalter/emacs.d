@@ -75,7 +75,7 @@
     (unless visual-state-map
       (setq visual-state-map (make-sparse-keymap))
       (set-keymap-parent visual-state-map modal-visual-state-map)
-      (push (cons mode motion-state-map) modal--motion-state-maps))
+      (push (cons mode visual-state-map) modal--visual-state-maps))
     (unless leader-map
       (setq leader-map (make-sparse-keymap))
       (set-keymap-parent leader-map modal-leader--default-map)

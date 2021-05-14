@@ -80,13 +80,20 @@
   modal
   :demand t
   :custom                               ;
-  (modal-indicator-alist '((normal . "▎@-.-@")
-                           (motion . "▎@-ω-@")
-                           (visual . "▎@•.•@")
-                           (insert . "▎@`д´@")))
+  (modal-indicator-alist '((normal . "@-.-@")
+                           (motion . "@-ω-@")
+                           (visual . "@•.•@")
+                           (insert . "@`д´@")))
   :config                               ;
   (modal-setup)
-  (add-hook 'doom-modeline-mode-hook #'modal-setup-indicator)
+
+  (add-hook 'doom-modeline-mode-hook (lambda()
+                                       (unless (-contains? mode-line-format
+                                                           '(:eval (modal-indicator)))
+                                         (setq-default mode-line-format '("▎" (:eval
+                                                                          (modal-indicator)) 
+                                                                         (:eval
+                                                                          (doom-modeline-format--main)) "%e")))))
   (modal-global-mode 1))
 
 (use-package
@@ -537,14 +544,14 @@
       (if project-root (concat  " "(propertize (format "%s"  (file-name-nondirectory
                                                               (directory-file-name project-root)))
                                                'face 'mode-line-buffer-project) ":" (propertize
-                                                                                     buffer-name
-                                                                                     'face (cond
-                                                                                            ((and
-                                                                                              buffer-file-name
-                                                                                              (buffer-modified-p))
-                                                                                             'mode-line-buffer-name-modified)
-                                                                                            (t
-                                                                                             'mode-line-buffer-name)))
+                                               buffer-name
+                                               'face (cond
+                                                      ((and
+                                                        buffer-file-name
+                                                        (buffer-modified-p))
+                                                       'mode-line-buffer-name-modified)
+                                                      (t
+                                                       'mode-line-buffer-name)))
                                                " ")
         (format " %s " (propertize buffer-name 'face (cond ((and
                                                              buffer-file-name

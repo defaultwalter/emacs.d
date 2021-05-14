@@ -166,6 +166,7 @@
                              (or modal-insert-cursor
                                  `((bar . 2) . ,(face-foreground 'error))))
                             (t `(bar . ,(face-foreground 'default))))))
+    ;; (message "%s %s" major-mode cursor-style)
     (setq-local cursor-type (car cursor-style))
     (set-cursor-color (cdr cursor-style))))
 

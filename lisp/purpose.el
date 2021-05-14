@@ -40,6 +40,7 @@
 (require 'purpose/css)
 (require 'purpose/html)
 (require 'purpose/glsl)
+(require 'purpose/http)
 
 
 (provide 'purpose)
