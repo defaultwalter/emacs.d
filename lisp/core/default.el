@@ -158,8 +158,7 @@
     (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?┊)))
   ;; Modeline
   (set-face-background 'mode-line-inactive (face-background 'default))
-  (set-face-background 'mode-line (face-background 'default))
-  (setq underline-minimum-offset 5))
+  (set-face-background 'mode-line (face-background 'default)))
 
 (add-hook 'after-init-hook 'update-gui)
 (add-hook 'server-after-make-frame-hook 'update-gui)

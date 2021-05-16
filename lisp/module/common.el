@@ -86,14 +86,6 @@
                            (insert . "@`д´@")))
   :config                               ;
   (modal-setup)
-
-  (add-hook 'doom-modeline-mode-hook (lambda()
-                                       (unless (-contains? mode-line-format
-                                                           '(:eval (modal-indicator)))
-                                         (setq-default mode-line-format '("▎" (:eval
-                                                                          (modal-indicator)) 
-                                                                         (:eval
-                                                                          (doom-modeline-format--main)) "%e")))))
   (modal-global-mode 1))
 
 (use-package
@@ -464,7 +456,7 @@
   :init                                 ;
   (doom-modeline-init)
   (setq doom-modeline-height 20)
-  (setq doom-modeline-bar-width -1)
+  ;; (setq doom-modeline-bar-width 2)
   (setq doom-modeline-enable-word-count t) ;字数统计
   (setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
   (setq doom-modeline-buffer-file-name-style 'auto)
@@ -472,6 +464,15 @@
   (setq doom-modeline-icon t)
   (setq doom-modeline-major-mode-color-icon t)
   (setq doom-modeline-modal-icon t)
+  (doom-modeline-def-segment doom-modal-indicator
+    "Doom modeline modal indicator"
+    (concat " " (modal-indicator)))
+  (doom-modeline-def-modeline 'default-mode-line
+    '(bar doom-modal-indicator hud workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
+    '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker))
+  (defun setup-custom-doom-modeline ()
+    (doom-modeline-set-modeline 'default-mode-line 'default))
+  (add-hook 'doom-modeline-mode-hook 'setup-custom-doom-modeline)
   (doom-modeline-mode 1))
 
 (use-package
@@ -690,4 +691,10 @@
   :custom                               ;
   (vterm-always-compile-module t)
   (vterm-buffer-name "terminal"))
+(use-package
+  paradox        ;增强包管理
+  :ensure t
+  :config ;
+  (paradox-enable))
+
 (provide 'module/common)
