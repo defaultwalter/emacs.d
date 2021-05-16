@@ -25,7 +25,7 @@
 (tool-bar-mode -1)                       ; 隐藏工具栏
 (scroll-bar-mode -1)                     ; 隐藏滚动条
 (setq mouse-highlight nil)               ; 禁止鼠标悬浮高亮
-(setq-default frame-title-format " %b ") ; 设置窗口标题格式
+(setq-default frame-title-format "%F") ; 设置窗口标题格式
 (setq-default use-dialog-box nil)        ; 不显示对话框
 (set-frame-parameter nil 'alpha 100)     ; 设置窗口透明度
 ;; (cua-mode 1)                             ; 开启CUA模式
