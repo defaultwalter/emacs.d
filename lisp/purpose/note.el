@@ -66,8 +66,9 @@
     (interactive)
     (when-let ((title (pcase (org-collect-keywords '("TITLE"))
                         (`(("TITLE" . ,val))
-                         (org-link-display-format (car val))))))
-      (rename-buffer (format "%s[%s]" title (file-name-nondirectory buffer-file-name)) t))
+                         (org-link-display-format (car val)))))
+               (filename (when buffer-file-name (file-name-nondirectory buffer-file-name))))
+      (rename-buffer (format "%s<%s>" title filename) t))
     (add-hook 'after-save-hook #'+org-rename-buffer nil t))
 
   (add-hook 'org-mode-hook #'+org-rename-buffer)
