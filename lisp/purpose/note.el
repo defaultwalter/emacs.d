@@ -40,6 +40,7 @@
   (setq org-startup-folded 'nofold)     ; 是否默认开启折叠
   (setq org-cycle-separator-lines 2)
   (setq org-return-follows-link t)      ; 回车链接跳转
+  ;; (setq org-html-head-include-default-style nil) ;默认导出不要包含样式
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
   (add-hook 'org-mode-hook (lambda ()
                              ;; (setq prettify-symbols-alist '(("#+BEGIN_SRC" . "▿")
@@ -66,16 +67,18 @@
     (when-let ((title (pcase (org-collect-keywords '("TITLE"))
                         (`(("TITLE" . ,val))
                          (org-link-display-format (car val))))))
-      (rename-buffer title t))
+      (rename-buffer (format "%s[%s]" title (file-name-nondirectory buffer-file-name)) t))
     (add-hook 'after-save-hook #'+org-rename-buffer nil t))
 
   (add-hook 'org-mode-hook #'+org-rename-buffer)
 
-  ;; (setq org-image-actual-width '(100 200 300 400))
+  (setq org-image-actual-width nil)
   (setq-default org-confirm-babel-evaluate nil)
   :config                               ;
   (require 'ob-dot)
-  ;; (require 'ob-plantuml)
+  (setq-default org-plantuml-exec-mode 'plantuml)
+  (setq-default org-plantuml-jar-path "")
+  (require 'ob-plantuml)
   (require 'ob-python)
   (require 'ob-shell)
   (require 'ob-java)
@@ -84,11 +87,6 @@
   (require 'ob-latex)
   (require 'ox-freemind)
   (require 'org-tempo))
-
-(use-package
-  ob-plantuml
-  :init (setq-default org-plantuml-exec-mode 'plantuml)
-  (setq-default org-plantuml-jar-path ""))
 
 (use-package
   org-appear;自动切换预览元素
@@ -171,15 +169,15 @@
   (org-roam-dailies-directory "DAILY")
   (org-roam-capture-templates '(("d" "default" plain "%?"
                                  :if-new (file+head "%<%Y%m%d%H%M%S>.org"
-                                                    "#+title: ${title}\n")
+                                                    "#+title: ${title}\n* ${title}\n")
                                  :unnarrowed t) ))
   (org-roam-capture-immediate-template '("d" "default" plain "%?"
                                          :if-new (file+head "%<%Y%m%d%H%M%S>.org"
-                                                            "#+title: ${title}\n")
+                                                            "#+title: ${title}\n* ${title}\n")
                                          :unnarrowed t
                                          :immediate-finish t))
   (org-roam-dailies-capture-templates '(("d" "default" plain "%?" :if-new
-                                         (file+head "DAILY/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+                                         (file+head "DAILY/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n* %<%Y-%m-%d>"))))
   :commands (org-roam-dailies-find-today)
   :init;
   (modal-leader-set-key "n d" '(org-roam-dailies-find-today :which-key "today"))
