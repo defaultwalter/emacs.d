@@ -36,7 +36,12 @@
   ;;                            (plantuml-set-exec-mode "jar")))
   :custom                               ;
   (plantuml-default-exec-mode 'executable)
-  (plantuml-jar-path ""))
+  (plantuml-jar-path "")
+  :config;
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (if (boundp 'org-src-lang-modes)
+                  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))))))
 
 
 (provide 'purpose/plantuml)

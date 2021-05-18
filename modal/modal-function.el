@@ -67,5 +67,12 @@ If BACKWARD is non-nil, search backward."
                                (setq end (point)))
       (cons beg end))))
 (put 'string 'bounds-of-thing-at-point 'bound-of-string-at-point)
+
+
+(defun modal-select (begin end)
+  (set-mark begin)
+  (goto-char end))
+
+
 (provide 'modal-function)
 ;;; modal-function.el ends here

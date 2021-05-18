@@ -40,6 +40,7 @@
   (setq org-startup-folded 'nofold)     ; 是否默认开启折叠
   (setq org-cycle-separator-lines 2)
   (setq org-return-follows-link t)      ; 回车链接跳转
+  (setq org-image-actual-width nil) ; 图片宽度
   ;; (setq org-html-head-include-default-style nil) ;默认导出不要包含样式
   (add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
   (add-hook 'org-mode-hook (lambda ()
@@ -55,6 +56,7 @@
                              ;; (prettify-symbols-mode 1)
                              (setq truncate-lines nil)
                              (org-display-inline-images t t) ; 显示图片
+                             
                              (org-indent-mode 1) ; 缩进模式
                              (visual-fill-column-mode 1)
                              (org-align-tags t)
@@ -73,7 +75,6 @@
 
   (add-hook 'org-mode-hook #'+org-rename-buffer)
 
-  (setq org-image-actual-width nil)
   (setq-default org-confirm-babel-evaluate nil)
   :config                               ;
   (require 'ob-dot)

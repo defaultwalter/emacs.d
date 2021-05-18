@@ -24,9 +24,7 @@
 
 ;;; Code:
 (require 'modal-function)
-(defun modal--set-mark()
-  (when (not (region-active-p))
-    (push-mark (point) t t)))
+
 
 
 (defun modal-switch-to-normal-state()
