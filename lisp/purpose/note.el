@@ -57,7 +57,7 @@
                              (setq truncate-lines nil)
                              (org-display-inline-images t t) ; 显示图片
                              
-                             (org-indent-mode 1) ; 缩进模式
+                             ;; (org-indent-mode 1) ; 缩进模式 (和 truncate-lines 同时使用会导致 wrap-prefix 背景色总是使用默认的背色)
                              (visual-fill-column-mode 1)
                              (org-align-tags t)
                              (add-hook 'before-save-hook (lambda()
