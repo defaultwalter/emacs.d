@@ -55,7 +55,7 @@
   :demand t
   :custom                               ;
   (which-key-show-early-on-C-h t)
-  (which-key-idle-delay 10)
+  (which-key-idle-delay 1)
   (which-key-idle-secondary-delay 0.05)
   (which-key-sort-order 'which-key-prefix-then-key-order)
   (which-key-allow-multiple-replacements t)
