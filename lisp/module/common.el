@@ -298,6 +298,7 @@
 (use-package
   popwin                                ; 使用弹出窗口显示部分Buffer
   :ensure t
+  :disabled
   :config                               ;
   (popwin-mode 1))
 
@@ -369,28 +370,6 @@
   (add-hook 'modal-normal-state-mode-hook #'sis-set-english)
   (add-hook 'modal-motion-state-mode-hook #'sis-set-english))
 
-(use-package
-  multi-vterm
-
-  :disabled
-  :ensure t)
-
-(use-package
-  vterm-toggle
-  :ensure t
-  :disabled
-  :bind                                 ;
-  ("C-`" . vterm-toggle)
-  ("C-~" . vterm-toggle-cd)
-  :init                                 ;
-  (add-to-list 'display-buffer-alist '((lambda(bufname _)
-                                         (with-current-buffer bufname (equal major-mode
-                                                                             'vterm-mode)))
-                                       (display-buffer-reuse-window display-buffer-in-direction)
-                                       (direction . bottom)
-                                       (dedicated . t) ;dedicated is supported in emacs27
-                                       (reusable-frames . visible)
-                                       (window-height . 0.3))))
 ;; ;;;; ==============================================
 ;; ;;;; 编辑增强
 ;; ;;;; ==============================================
@@ -690,7 +669,7 @@
   :hook (vterm-mode . modal-switch-to-insert-state)
   :custom                               ;
   (vterm-always-compile-module t)
-  (vterm-buffer-name "terminal"))
+  (vterm-buffer-name "*terminal*"))
 (use-package
   paradox        ;增强包管理
   :ensure t

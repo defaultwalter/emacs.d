@@ -113,14 +113,15 @@
   (org-superstar-headline-bullets-list '("✿" "❖" "●" "◉" "◍" "◎" "○" "◌"))
   (org-superstar-prettify-item-bullets t)
   (org-superstar-item-bullet-alist '((?* . ?*)
-                                     (?+ . ?◆)
-                                     (?- . ?◈)))
+                                     (?+ . ?+)
+                                     (?- . ?-)))
   (org-superstar-special-todo-items t)
   (org-superstar-todo-bullet-alist '(("TODO" . ?☐)
                                      ("DONE" . ?☑)))
   :hook (org-mode . org-superstar-mode)
   :init                                 ;
   (setq org-superstar-prettify-item-bullets t))
+
 (use-package
   org-download
   :ensure t
@@ -300,6 +301,5 @@
   valign
   :ensure t
   :hook (org-mode . valign-mode))
-
 (provide 'purpose/note)
 ;;; note.el ends here
