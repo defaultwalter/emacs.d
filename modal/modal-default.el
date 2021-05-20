@@ -138,6 +138,7 @@
   (modal-leader-set-key "w"
                         '(:ignore t
                                   :which-key "window"))
+  (modal-leader-set-key "ww" '(window-toggle-side-windows :which-key "toggle side window"))
   (modal-leader-set-key "ws" '(split-window-horizontally :which-key "split window horizontally"))
   (modal-leader-set-key "wv" '(split-window-vertically :which-key "split window vertically"))
   (modal-leader-set-key "wm" '(maximize-window :which-key "maximize window"))

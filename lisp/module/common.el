@@ -187,6 +187,7 @@
   ace-window                            ; 窗口跳转
   :ensure t
   :defer t
+  :disabled
   :init                                 ;
   (modal-leader-set-key "ww" '(ace-window :which-key "select window"))
   :config (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)))
@@ -240,7 +241,7 @@
   ("C-<tab>" . neotree-toggle)
   ("C-TAB" . neotree-toggle)
   :init                                 ;
-  (modal-leader-set-key "fv" '(neotree-toggle :which-key "file view")))
+  (modal-leader-set-key "wf" '(neotree-toggle :which-key "file tree")))
 
 
 (use-package
@@ -669,7 +670,11 @@
   :hook (vterm-mode . modal-switch-to-insert-state)
   :custom                               ;
   (vterm-always-compile-module t)
-  (vterm-buffer-name "*terminal*"))
+  (vterm-buffer-name "*terminal*")
+  :bind ("C-`" . vterm)
+  :init;
+  (modal-leader-set-key "wt" '(vterm :which-key "terminal")))
+
 (use-package
   paradox        ;增强包管理
   :ensure t

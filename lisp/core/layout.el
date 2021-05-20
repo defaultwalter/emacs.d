@@ -19,7 +19,7 @@
 
 (defun +display-buffer-in-bottom-side-window (buffer alist)
 
-  (let  ((bottom-side-window (window-with-parameter 'window-side 'bottom)))
+  (let ((bottom-side-window (window-with-parameter 'window-side 'bottom)))
     (when bottom-side-window
       (delete-window bottom-side-window))
     (display-buffer-in-side-window buffer alist)))
@@ -36,5 +36,5 @@
                               (window-height . 0.3)
                               (side . bottom)
                               (slot . 0))))
-;;
+  
 (provide 'core/layout)
