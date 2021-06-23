@@ -1,6 +1,6 @@
 ;;; 基础
 (use-package
-  gcmh                                  ; 优化GC
+  gcmh                                  ; 优化 GC
   :ensure t
   :config                               ;
   (gcmh-mode 1))
@@ -103,12 +103,13 @@
 (use-package
   ivy-rich                              ; 在 M-x 和帮助中显示文档
   :ensure t
+  ;; :defer t
   :init
   :config (ivy-rich-mode +1)
   (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line))
 
 (use-package
-  counsel                               ;基于ivy的命令文件补全工具
+  counsel                               ;基于 ivy 的命令文件补全工具
   :ensure t
   :defer t
   :init                                 ;
@@ -147,7 +148,7 @@
   :config (ivy-prescient-mode 1))
 
 (use-package
-  swiper                                ;基于ivy的增量搜索工具
+  swiper                                ;基于 ivy 的增量搜索工具
   :ensure t
   :defer t
   :init                                 ;
@@ -165,7 +166,7 @@
 
 
 (use-package
-  buffer-move                           ; 交换两个window的buffer
+  buffer-move                           ; 交换两个 window 的 buffer
   :ensure t
   :defer t
   :init                                 ;
@@ -177,7 +178,7 @@
   (setq buffer-move-behavior 'move))
 
 (use-package
-  windresize                            ;调整window大小
+  windresize                            ;调整 window 大小
   :ensure t
   :defer t
   :init                                 ;
@@ -195,6 +196,7 @@
 (use-package
   projectile                            ;project 插件
   :ensure t
+  :defer t
   :custom       ;
   ;; (projectile-track-known-projects-automatically nil)
   ;; (projectile-indexing-method 'native)
@@ -207,14 +209,16 @@
   :config (projectile-mode +1))
 
 (use-package
-  counsel-projectile                    ;projectile 使用 counsel前端
+  counsel-projectile                    ;projectile 使用 counsel 前端
   :ensure t
+  :defer t
   :custom                               ;
   (counsel-projectile-sort-files t)
   (counsel-projectile-sort-directories t)
   (counsel-projectile-sort-buffers t)
   (counsel-projectile-sort-projects t)
-  :init (modal-leader-set-key "pp" '(counsel-projectile-switch-project :which-key "switch project"))
+  :init ;
+  (modal-leader-set-key "pp" '(counsel-projectile-switch-project :which-key "switch project"))
   (modal-leader-set-key "pf" '(counsel-projectile-find-file :which-key "find file in project"))
   (modal-leader-set-key "ps" '(counsel-projectile-git-grep :which-key "search in project by git"))
   (modal-leader-set-key "pS" '(counsel-projectile-grep :which-key "search in project"))
@@ -235,13 +239,13 @@
   (neo-smart-open t)
   (neo-window-width 35)
   (neo-mode-line-type 'none)
-  ;; (neo-vc-integration 'face); 和doom主题冲突
+  ;; (neo-vc-integration 'face); 和 doom 主题冲突
   (neo-hide-cursor t)
   :bind                                 ;
   ("C-<tab>" . neotree-toggle)
   ("C-TAB" . neotree-toggle)
   :init                                 ;
-  (modal-leader-set-key "wf" '(neotree-toggle :which-key "file tree")))
+  (modal-leader-set-key "ft" '(neotree-toggle :which-key "file tree")))
 
 
 (use-package
@@ -290,14 +294,14 @@
   :hook (prog-mode . highlight-parentheses-mode))
 
 (use-package
-  auto-sudoedit                         ;自动请求sudo权限
+  auto-sudoedit                         ;自动请求 sudo 权限
   :if (or (eq system-type 'gnu/linux)
           (eq system-type 'darwin))
   :ensure t
   :config (auto-sudoedit-mode 1))
 
 (use-package
-  popwin                                ; 使用弹出窗口显示部分Buffer
+  popwin                                ; 使用弹出窗口显示部分 Buffer
   :ensure t
   :disabled
   :config                               ;
@@ -673,11 +677,20 @@
   (vterm-buffer-name "*terminal*")
   :bind ("C-`" . vterm)
   :init;
-  (modal-leader-set-key "wt" '(vterm :which-key "terminal")))
+  (modal-leader-set-key "t" '(:ignore t :which-key "terminal"))
+  (modal-leader-set-key "tt" '(vterm :which-key "show terminal")))
+
+(use-package pangu-spacing
+  :ensure t
+  :custom ;
+  (pangu-spacing-real-insert-separtor t)
+  :config;
+  (global-pangu-spacing-mode 1))
 
 (use-package
   paradox        ;增强包管理
   :ensure t
+  :disabled
   :config ;
   (paradox-enable))
 

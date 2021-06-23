@@ -15,7 +15,7 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 ;; 初始化时隐藏 UI
-(add-to-list 'initial-frame-alist '(visibility . icon))
+;; (add-to-list 'initial-frame-alist '(visibility . icon))
 ;; 初始化完成后显示 UI
 (add-hook 'window-setup-hook (lambda ()
                                (set-frame-parameter nil 'alpha 95)
@@ -42,7 +42,7 @@
 ;; 设置GC阈值，防止在启动时GC，影响启动速度。
 (setq gc-cons-threshold (* 1024 1024 256))
 ;; (setq gc-cons-percentage 0.6)          ;GC
-;; (setq garbage-collection-messages t)    ;显示GC信息
+(setq garbage-collection-messages t)    ;显示GC信息
 ;; 空闲15秒后进行GC
 (run-with-idle-timer 15 t #'garbage-collect)
 ;; 失去焦点后进行GC

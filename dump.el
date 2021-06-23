@@ -21,7 +21,7 @@
 (delete 'vterm dump-packages)
 (delete 'vterm-toggle dump-packages)
 (delete 'org-plus-contrib dump-packages)
-(delete 'org-roam dump-packages)
+;; (delete 'org-roam dump-packages)
 (delete 'with-editor dump-packages)
 
 (dolist (package dump-packages)

@@ -3,10 +3,10 @@
 ;;; Code:
 
 (when (version< emacs-version "27")
-  ;; Emacs版本低于27时，手动加载‘early-init.el’
+  ;; Emacs 版本低于 27 时，手动加载‘early-init.el’
   (load-file (expand-file-name "early-init.el" user-emacs-directory)))
 
-;;;; Package初始化
+;;;; Package 初始化
 (require 'package)
 (setq package-archives '(("gnu"   . "http://mirrors.tuna.tsinghua.edu.cn/elpa/gnu/")
                          ("melpa" . "http://mirrors.tuna.tsinghua.edu.cn/elpa/melpa/")
@@ -24,7 +24,7 @@
   (package-refresh-contents)
   (package-install 'use-package))
 
-;; 启用use-package统计
+;; 启用 use-package 统计
 (setq use-package-compute-statistics t)
 (require 'use-package)
 ;; 安装 straight.el
@@ -47,4 +47,4 @@
 ;; (make-frame-visible)
 (provide 'init)
 ;;; init.el ends here
-(put 'upcase-region 'disabled nil)
+

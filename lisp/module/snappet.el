@@ -28,6 +28,7 @@
   yasnippet
   :ensure t
   :defer t
+  :disabled
   :hook (prog-mode . yas-minor-mode)
   :config                               ;
   (use-package
@@ -38,6 +39,7 @@
 (use-package
   ivy-yasnippet
   :ensure t
+  :disabled
   :after (yasnippet ivy)
   :defer t)
 

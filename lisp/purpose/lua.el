@@ -25,7 +25,9 @@
 ;;; Code:
 (require 'module/completion)
 
-
+(use-package
+  lua-mode
+  :ensure t)
 
 (provide 'purpose/lua)
 ;;; lua.el ends here

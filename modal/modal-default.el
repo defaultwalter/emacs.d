@@ -117,9 +117,7 @@
   (modal-leader-set-key "f." '((lambda()
                                  (interactive)
                                  (dired user-config-directory)) :which-key "open configuration"))
-  (modal-leader-set-key "b"
-                        '(:ignore t
-                                  :which-key "buffer"))
+  (modal-leader-set-key "b" '(:ignore t :which-key "buffer"))
   (modal-leader-set-key "bb" '(switch-to-buffer :which-key "switch buffer"))
   (modal-leader-set-key "bs" '(save-buffer :which-key "save buffer"))
   (modal-leader-set-key "bS" '(save-some-buffers :which-key "save all buffers"))

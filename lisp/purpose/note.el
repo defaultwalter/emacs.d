@@ -99,7 +99,7 @@
   :hook (org-mode . org-appear-mode))
 
 (use-package
-  org-fragtog;自动切换预览Latex公式
+  org-fragtog;自动切换预览 Latex 公式
   :ensure t
   :hook (org-mode . org-fragtog-mode))
 
@@ -125,6 +125,7 @@
 (use-package
   org-download
   :ensure t
+  :defer 10
   :custom ;
   (org-download-image-dir "./Assets")
   (org-download-file-format-function +org-download-file-format-default)
@@ -181,7 +182,7 @@
                                          :immediate-finish t))
   (org-roam-dailies-capture-templates '(("d" "default" plain "%?" :if-new
                                          (file+head "DAILY/%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n* %<%Y-%m-%d>"))))
-  :commands (org-roam-dailies-find-today)
+  :commands (org-roam-setup org-roam-dailies-find-today)
   :init;
   (modal-leader-set-key "n d" '(org-roam-dailies-find-today :which-key "today"))
   (modal-leader-set-key "n f" '(org-roam-node-find :which-key "find note"))
