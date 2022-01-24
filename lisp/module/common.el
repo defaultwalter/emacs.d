@@ -564,12 +564,10 @@
   :if (display-graphic-p)
   :hook                                 ;
   ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
-  (minibuffer-setup . solaire-mode-in-minibuffer)
   :config                               ;
   (set-face-background 'solaire-mode-line-face nil)
   (set-face-background 'solaire-mode-line-inactive-face nil)
-  (solaire-global-mode +1)
-  (solaire-mode-swap-bg))
+  (solaire-global-mode +1))
 
 (use-package
   doom-themes
