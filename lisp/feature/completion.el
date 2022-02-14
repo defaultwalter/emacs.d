@@ -87,5 +87,5 @@
   :hook (company-mode . company-prescient-mode))
 
 
-(provide 'module/completion)
+(provide 'feature/completion)
 ;;; completion.el ends here

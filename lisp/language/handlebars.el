@@ -1,4 +1,4 @@
-;;; snappet.el ---                                   -*- lexical-binding: t; -*-
+;;; handlebars.el ---                                -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,26 +23,14 @@
 ;;
 
 ;;; Code:
+(require 'feature/completion)
 
 (use-package
-  yasnippet
+  handlebars-mode
   :ensure t
   :defer t
-  :disabled
-  :hook (prog-mode . yas-minor-mode)
-  :config                               ;
-  (use-package
-    yasnippet-snippets
-    :ensure t
-    :config (yas-reload-all)))
+  :mode ("\\.hbs\\'" . handlebars-mode)
+  :interpreter ("handlebars" . handlebars-mode))
 
-(use-package
-  ivy-yasnippet
-  :ensure t
-  :disabled
-  :after (yasnippet ivy)
-  :defer t)
-
-
-(provide 'module/snappet)
-;;; snappet.el ends here
+(provide 'language/handlebars)
+;;; handlebars.el ends here

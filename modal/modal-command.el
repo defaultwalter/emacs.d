@@ -409,9 +409,9 @@
   (interactive)
   (modal-insert-pair "`" "`"))
 
-(defun modal-delete-pair()
+(defun modal-squeeze-selection()
   (interactive)
-  (when (region-active-p)
+  (when (region-active-p)               
     (let ((beginning (region-beginning))
           (end (region-end)))
       (save-excursion (goto-char end)

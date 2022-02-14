@@ -1,4 +1,4 @@
-;;; lua.el ---                                       -*- lexical-binding: t; -*-
+;;; html.el ---                                      -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,11 +23,8 @@
 ;;
 
 ;;; Code:
-(require 'module/completion)
 
-(use-package
-  lua-mode
-  :ensure t)
 
-(provide 'purpose/lua)
-;;; lua.el ends here
+
+(provide 'language/html)
+;;; html.el ends here

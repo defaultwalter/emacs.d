@@ -1,4 +1,4 @@
-;;; html.el ---                                      -*- lexical-binding: t; -*-
+;;; css.el ---                                       -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -24,7 +24,8 @@
 
 ;;; Code:
 
+(require 'feature/completion)
 
 
-(provide 'purpose/html)
-;;; html.el ends here
+(provide 'language/css)
+;;; css.el ends here

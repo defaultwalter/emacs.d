@@ -42,7 +42,8 @@
 
 ;;; 加载配置
 (require 'core)
-(require 'purpose)
+(require 'feature)
+(require 'language)
 
 ;; (make-frame-visible)
 (provide 'init)

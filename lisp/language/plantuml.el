@@ -1,4 +1,4 @@
-;;; python.el ---                                    -*- lexical-binding: t; -*-
+;;; plantuml.el ---                                  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,16 +23,26 @@
 ;;
 
 ;;; Code:
-
-(require 'module/lsp)
-(require 'module/completion)
-(require 'module/snappet)
+(require 'feature/completion)
 
 (use-package
-  lsp-python-ms
+  plantuml-mode
   :ensure t
   :defer t
-  :init (setq lsp-python-ms-executable (executable-find "python-language-server")))
+  :config (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
+  ;; (setq-default plantuml-default-exec-mode 'jar)
+  ;; (setq plantuml-jar-path "/Users/baiyan/.emacs.d/plantuml.jar")
+  ;; (add-hook 'org-mode-hook (lambda ()
+  ;;                            (plantuml-set-exec-mode "jar")))
+  :custom                               ;
+  (plantuml-default-exec-mode 'executable)
+  (plantuml-jar-path "")
+  :config;
+  (add-hook 'org-mode-hook
+            (lambda ()
+              (if (boundp 'org-src-lang-modes)
+                  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))))))
 
-(provide 'purpose/python)
-;;; python.el ends here
+
+(provide 'language/plantuml)
+;;; plantuml.el ends here

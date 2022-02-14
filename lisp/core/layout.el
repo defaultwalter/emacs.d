@@ -29,7 +29,7 @@
                               (dedicated .  t)
                               (window-parameters . (;; (delete-window . nil)
                                                     ;; (delete-other-windows . nil)
-                                                    (no-delete-other-windows . t)
+                                                    ;; (no-delete-other-windows . t)
                                                     ;; (quit-restore . (window window nil (get-buffer buffer-name)))
                                                     ))
                               (window-min-height . 10)

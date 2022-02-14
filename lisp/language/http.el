@@ -1,9 +1,9 @@
-;;; emacs-lisp.el ---                                -*- lexical-binding: t; -*-
+;;; http.el ---                                      -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
 ;; Author: meetcw <meetcw@outlook.com>
-;; Keywords:
+;; Keywords: 
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,13 +20,16 @@
 
 ;;; Commentary:
 
-;;
+;; 
 
 ;;; Code:
+(require 'feature/completion)
 
-(require 'module/completion)
+(use-package
+  restclient
+  :ensure t
+  :mode ("\\.http\\'" . restclient-mode))
 
 
-
-(provide 'purpose/emacs-lisp)
-;;; emacs-lisp.el ends here
+(provide 'language/http)
+;;; http.el ends here

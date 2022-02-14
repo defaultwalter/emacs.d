@@ -179,5 +179,5 @@
   valign
   :ensure t
   :hook (org-mode . valign-mode))
-(provide 'purpose/note)
+(provide 'language/note)
 ;;; note.el ends here

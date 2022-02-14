@@ -1,4 +1,4 @@
-;;; graphviz.el ---                                  -*- lexical-binding: t; -*-
+;;; lua.el ---                                       -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,19 +23,11 @@
 ;;
 
 ;;; Code:
-(require 'module/completion)
+(require 'feature/completion)
 
 (use-package
-  graphviz-dot-mode
-  :ensure t
-  :defer t
-  :config;
-  (add-to-list 'auto-mode-alist '("\\.dot\\'" . graphviz-dot-mode))
-  (setq-default graphviz-dot-indent-width 4)
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((dot . t))))
+  lua-mode
+  :ensure t)
 
-
-(provide 'purpose/graphviz)
-;;; graphviz.el ends here
+(provide 'language/lua)
+;;; lua.el ends here

@@ -10,7 +10,7 @@
 ;;;;==================================================
 ;;;; UI 设置
 ;;;;==================================================
-;; 移除不需要的GUI元素
+;; 移除不需要的 GUI 元素
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -26,12 +26,12 @@
 (add-to-list 'default-frame-alist '(ns-appearance . dark)) ; 使用黑色外观
 (add-to-list 'default-frame-alist '(alpha . 95))
 ;; frame 初始位置
-(add-to-list 'default-frame-alist '(width . 0.7))
-(add-to-list 'default-frame-alist '(height . 0.7))
+(add-to-list 'default-frame-alist '(width . 100))
+(add-to-list 'default-frame-alist '(height . 30))
 (add-to-list 'default-frame-alist '(left . 0.5))
 (add-to-list 'default-frame-alist '(top . 0.5))
-(add-to-list 'initial-frame-alist '(width . 0.7))
-(add-to-list 'initial-frame-alist '(height . 0.7))
+(add-to-list 'initial-frame-alist '(width . 100))
+(add-to-list 'initial-frame-alist '(height . 30))
 (add-to-list 'initial-frame-alist '(left . 0.5))
 (add-to-list 'initial-frame-alist '(top . 0.5))
 
@@ -39,23 +39,23 @@
 ;;;;==================================================
 ;;;; GC 设置
 ;;;;==================================================
-;; 设置GC阈值，防止在启动时GC，影响启动速度。
+;; 设置 GC 阈值，防止在启动时 GC，影响启动速度。
 (setq gc-cons-threshold (* 1024 1024 256))
 ;; (setq gc-cons-percentage 0.6)          ;GC
-(setq garbage-collection-messages t)    ;显示GC信息
-;; 空闲15秒后进行GC
+(setq garbage-collection-messages t)    ;显示 GC 信息
+;; 空闲 15 秒后进行 GC
 (run-with-idle-timer 15 t #'garbage-collect)
-;; 失去焦点后进行GC
+;; 失去焦点后进行 GC
 (add-hook 'focus-out-hook #'garbage-collect)
 
-;; 初始化后重新设置GC阈值
+;; 初始化后重新设置 GC 阈值
 (add-hook 'emacs-startup-hook (lambda()
                                 (setq gc-cons-threshold (* 1024 1024 8))))
 
 ;;;;==================================================
 ;;;; 其他设置
 ;;;;==================================================
-;; Emacs在加载文件时会通过‘file-name-handler-alist’ 加载对应的处理程序。启动时设置为空。启动完成后重新设置。
+;; Emacs 在加载文件时会通过‘file-name-handler-alist’ 加载对应的处理程序。启动时设置为空。启动完成后重新设置。
 (defvar file-name-handler-alist-original file-name-handler-alist)
 (setq file-name-handler-alist nil)
 

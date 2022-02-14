@@ -67,7 +67,7 @@
   (add-to-list 'which-key-replacement-alist '(("TAB" . nil) . ("tab" . nil)))
   (add-to-list 'which-key-replacement-alist '(("RET" . nil) . ("return" . nil)))
   (add-to-list 'which-key-replacement-alist '(("DEL" . nil) . ("delete" . nil)))
-  (add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("␣" . nil)))
+  (add-to-list 'which-key-replacement-alist '(("SPC" . nil) . ("space" . nil)))
   (add-to-list 'which-key-replacement-alist '(("left" . nil) . ("left" . nil)))
   (add-to-list 'which-key-replacement-alist '(("right" . nil) . ("right" . nil)))
   (add-to-list 'which-key-replacement-alist '(("<left>" . nil) . ("left" . nil)))
@@ -188,7 +188,7 @@
   ace-window                            ; 窗口跳转
   :ensure t
   :defer t
-  :disabled
+  ;; :disabled
   :init                                 ;
   (modal-leader-set-key "ww" '(ace-window :which-key "select window"))
   :config (setq aw-keys '(?h ?j ?k ?l ?a ?s ?d ?f ?g)))
@@ -245,7 +245,7 @@
   ("C-<tab>" . neotree-toggle)
   ("C-TAB" . neotree-toggle)
   :init                                 ;
-  (modal-leader-set-key "ft" '(neotree-toggle :which-key "file tree")))
+  (modal-leader-set-key "wf" '(neotree-toggle :which-key "toggle file window")))
 
 
 (use-package
@@ -261,7 +261,7 @@
   :ensure t
   :defer 1
   :config                               ;
-  ;; (global-diff-hl-mode)
+  (global-diff-hl-mode)
   )
 
 (use-package
@@ -375,6 +375,16 @@
   (add-hook 'modal-normal-state-mode-hook #'sis-set-english)
   (add-hook 'modal-motion-state-mode-hook #'sis-set-english))
 
+(use-package
+  tree-sitter
+  :ensure t
+  :config;
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+(use-package
+  tree-sitter-langs
+  :ensure t)
+
 ;; ;;;; ==============================================
 ;; ;;;; 编辑增强
 ;; ;;;; ==============================================
@@ -382,7 +392,9 @@
 (use-package
   undo-tree                             ;撤销重做可视化
   :ensure t
-  :config (global-undo-tree-mode))
+  :config ;
+  (assoc-delete-all 'undo-tree-mode minor-mode-map-alist)
+  (global-undo-tree-mode))
 
 (use-package
   smart-comment                         ;注释插件
@@ -441,6 +453,8 @@
   (doom-modeline-init)
   (setq doom-modeline-height 20)
   ;; (setq doom-modeline-bar-width 2)
+  (setq doom-modeline-hud nil)
+  (setq doom-modeline-window-width-limit fill-column)
   (setq doom-modeline-enable-word-count t) ;字数统计
   (setq doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode))
   (setq doom-modeline-buffer-file-name-style 'auto)
@@ -450,10 +464,10 @@
   (setq doom-modeline-modal-icon t)
   (doom-modeline-def-segment doom-modal-indicator
     "Doom modeline modal indicator"
-    (concat " " (modal-indicator)))
+    (concat " " (modal-indicator) " "))
   (doom-modeline-def-modeline 'default-mode-line
-    '(bar doom-modal-indicator hud workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
-    '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker))
+    '(bar doom-modal-indicator workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
+    '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker ))
   (defun setup-custom-doom-modeline ()
     (doom-modeline-set-modeline 'default-mode-line 'default))
   (add-hook 'doom-modeline-mode-hook 'setup-custom-doom-modeline)
@@ -692,4 +706,4 @@
   :config ;
   (paradox-enable))
 
-(provide 'module/common)
+(provide 'feature)

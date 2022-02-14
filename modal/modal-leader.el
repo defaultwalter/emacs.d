@@ -37,23 +37,6 @@
 (define-key modal-motion-state-map (read-kbd-macro modal-leader-key) modal-leader--default-map)
 (define-key modal-visual-state-map (read-kbd-macro modal-leader-key) modal-leader--default-map)
 
-(defun modal-leader--define-key(map key def)
-  "Leader define key."
-  (let* ((def (if (commandp def)
-                  (list :command def)
-                (if (commandp (car def))
-                    (cons :command def) def)))
-         (ignore (plist-get def
-                            :ignore))
-         (command (plist-get def
-                             :command))
-         (name (plist-get def
-                          :which-key)))
-    (unless ignore (define-key map (read-kbd-macro key) command))
-    (when name                     ;
-      (with-eval-after-load 'which-key  (which-key-add-keymap-based-replacements map key
-                                          `(,name . ,command))))))
-
 (defun modal-leader-set-key(key def)
   "Set key for leader."
   (modal--define-key modal-leader--default-map key def))

@@ -1,4 +1,4 @@
-;;; plantuml.el ---                                  -*- lexical-binding: t; -*-
+;;; snappet.el ---                                   -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,26 +23,26 @@
 ;;
 
 ;;; Code:
-(require 'module/completion)
 
 (use-package
-  plantuml-mode
+  yasnippet
   :ensure t
   :defer t
-  :config (add-to-list 'auto-mode-alist '("\\.plantuml\\'" . plantuml-mode))
-  ;; (setq-default plantuml-default-exec-mode 'jar)
-  ;; (setq plantuml-jar-path "/Users/baiyan/.emacs.d/plantuml.jar")
-  ;; (add-hook 'org-mode-hook (lambda ()
-  ;;                            (plantuml-set-exec-mode "jar")))
-  :custom                               ;
-  (plantuml-default-exec-mode 'executable)
-  (plantuml-jar-path "")
-  :config;
-  (add-hook 'org-mode-hook
-            (lambda ()
-              (if (boundp 'org-src-lang-modes)
-                  (add-to-list 'org-src-lang-modes '("plantuml" . plantuml))))))
+  :disabled
+  :hook (prog-mode . yas-minor-mode)
+  :config                               ;
+  (use-package
+    yasnippet-snippets
+    :ensure t
+    :config (yas-reload-all)))
+
+(use-package
+  ivy-yasnippet
+  :ensure t
+  :disabled
+  :after (yasnippet ivy)
+  :defer t)
 
 
-(provide 'purpose/plantuml)
-;;; plantuml.el ends here
+(provide 'feature/snappet)
+;;; snappet.el ends here

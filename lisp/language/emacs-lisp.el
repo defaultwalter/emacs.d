@@ -1,4 +1,4 @@
-;;; yaml.el ---                                      -*- lexical-binding: t; -*-
+;;; emacs-lisp.el ---                                -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,13 +23,10 @@
 ;;
 
 ;;; Code:
-(require 'module/completion)
 
-(use-package
-  yaml-mode
-  :ensure t
-  :defer t)
+(require 'feature/completion)
 
 
-(provide 'purpose/yaml)
-;;; yaml.el ends here
+
+(provide 'language/emacs-lisp)
+;;; emacs-lisp.el ends here

@@ -87,8 +87,7 @@
                           :which-key)))
     (unless ignore (define-key map (read-kbd-macro key) command))
     (when name                          ;
-      (with-eval-after-load 'which-key  (which-key-add-keymap-based-replacements map key `(,name .
-                                                                                                 ,command))))))
+      (with-eval-after-load 'which-key  (which-key-add-keymap-based-replacements map key name)))))
 
 (defun modal-set-key(state key def)
   "Set state key."

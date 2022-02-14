@@ -1,4 +1,4 @@
-;;; java.el ---                                      -*- lexical-binding: t; -*-
+;;; rust.el ---                                      -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,18 +23,23 @@
 ;;
 
 ;;; Code:
-(require 'module/lsp)
-(require 'module/completion)
+
+(require 'feature/lsp)
+(require 'feature/completion)
+(require 'feature/snappet)
 
 (use-package
-  lsp-java
+  rust-mode
   :ensure t
   :defer t
-  :hook (java-mode . (lambda ()
-                       (lsp)
-                       ;; (dap-ui-mode 1)
-                       ))
-  :config )
+  :hook (rust-mode . lsp-deferred))
 
-(provide 'purpose/java)
-;;; java.el ends here
+(use-package
+  cargo
+  :ensure t
+  :defer t
+  :after rust-mode
+  :hook (rust-mode . cargo-minor-mode))
+
+(provide 'language/rust)
+;;; rust.el ends here

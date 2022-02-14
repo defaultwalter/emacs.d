@@ -1,4 +1,4 @@
-;;; purpose.el ---                                   -*- lexical-binding: t; -*-
+;;; glsl.el ---                                      -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -24,24 +24,9 @@
 
 ;;; Code:
 
-(require 'module/common)
+(use-package
+  glsl-mode
+  :ensure t)
 
-(require 'purpose/emacs-lisp)
-(require 'purpose/note)
-(require 'purpose/rust)
-(require 'purpose/python)
-(require 'purpose/java)
-(require 'purpose/lua)
-(require 'purpose/plantuml)
-(require 'purpose/graphviz)
-(require 'purpose/yaml)
-(require 'purpose/handlebars)
-(require 'purpose/javascript)
-(require 'purpose/css)
-(require 'purpose/html)
-(require 'purpose/glsl)
-(require 'purpose/http)
-
-
-(provide 'purpose)
-;;; purpose.el ends here
+(provide 'language/glsl)
+;;; glsl.el ends here

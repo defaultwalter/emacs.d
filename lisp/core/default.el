@@ -12,12 +12,12 @@
 (setq user-mail-address "meetcw@outlook.com")
 
 ;;;;==================================================
-;;;; Emacs行为
+;;;; Emacs 行为
 ;;;;==================================================
 
 (setq default-directory "~/")
 
-;; UI控件设置
+;; UI 控件设置
 (if (and (eq system-type 'darwin)
          (display-graphic-p))
     (menu-bar-mode 1)
@@ -28,8 +28,8 @@
 (setq-default frame-title-format "%F") ; 设置窗口标题格式
 (setq-default use-dialog-box nil)        ; 不显示对话框
 (set-frame-parameter nil 'alpha 100)     ; 设置窗口透明度
-;; (cua-mode 1)                             ; 开启CUA模式
-;; 开启窗口UNDO-REDO
+;; (cua-mode 1)                             ; 开启 CUA 模式
+;; 开启窗口 UNDO-REDO
 (winner-mode t)
 ;; 编辑备份设置
 
@@ -49,10 +49,10 @@
 (setq-default inhibit-splash-screen 1)    ; 不显示启动屏幕
 (setq-default initial-scratch-message "") ; 将 Scratch 的内容设为空
 
-(setq read-process-output-max (* 1024 1024)) ; 设置Emacs每次从进程读取的最大数据量
+(setq read-process-output-max (* 1024 1024)) ; 设置 Emacs 每次从进程读取的最大数据量
 (fset 'yes-or-no-p 'y-or-n-p)                ; 用 y/n 代替 yes/no
 ;; (desktop-save-mode 1)                 ; 自动保存环境
-(setq ad-redefinition-action 'accept)   ; 禁止redefine warning
+(setq ad-redefinition-action 'accept)   ; 禁止 redefine warning
 
 ;; 保存光标位置
 (save-place-mode 1)
@@ -69,13 +69,13 @@
 (setq-default mouse-wheel-progressive-speed nil) ; 设置鼠标滚动速度
 
 ;; Minibuffer
-(savehist-mode 1)                       ; 开启Minibuffer历史记录
+(savehist-mode 1)                       ; 开启 Minibuffer 历史记录
 (setq echo-keystrokes 0.1)              ; 显示未完成的按键命令
 (setq-default history-length 500)       ; Minibuffer 历史长度
 (setq-default enable-recursive-minibuffers nil) ; 禁止递归 Minibuffer
 ;; (setq-default minibuffer-prompt-properties '(read-only t point-entered minibuffer-avoid-prompt
 ;;                                                        face))
-;; 自动关闭minibuffer
+;; 自动关闭 minibuffer
 (add-hook 'mouse-leave-buffer-hook (lambda()
                                      (when (and (>= (recursion-depth) 1)
                                                 (active-minibuffer-window))
@@ -129,12 +129,13 @@
                           ((member "WenQuanYi Micro Hei Mono" (font-family-list))
                            "WenQuanYi Micro Hei Mono")
                           ((member "Microsoft YaHei" (font-family-list)) "Microsoft YaHei")
-                          ((member "Hei" (font-family-list)) "Hei"))))
+                          ((member "Hei" (font-family-list)) "Hei")
+                          ((member "all-the-icons" (font-family-list)) "all-the-icons"))))
     ;; 中文字体
     (set-fontset-font t 'han other-font)
     ;; 一些标点符号在 cjk-misc 中
     (set-fontset-font t 'cjk-misc other-font))
-  ;; 设置Emoji字体
+  ;; 设置 Emoji 字体
   (set-fontset-font t 'symbol
                     (cond ((member "Noto Color Emoji" (font-family-list)) "Noto Color Emoji")
                           ((member "Noto Emoji" (font-family-list)) "Noto Emoji")
@@ -168,6 +169,8 @@
 ;;;; 编辑行为
 ;;;;==================================================
 ;;禁用 overwrite-mode
+(unbind-key [mouse-3] global-map);禁止右键剪切
+(unbind-key [mouse-2] global-map);禁止中键复制
 (unbind-key (kbd "<insert>") global-map)     ; GUI
 (unbind-key (kbd "<insertchar>") global-map) ;终端
 
@@ -213,8 +216,8 @@
 (setq global-auto-revert-non-file-buffers t) ;自动刷新
 (setq auto-revert-verbose nil)               ;不显示多余的信息
 (setq dired-dwim-target t)                   ;快速复制和移动
-(setq delete-by-moving-to-trash t)           ;删除文件到trash
-(put 'dired-find-alternate-file 'disabled nil) ;重新使用已经存在dired buffer
+(setq delete-by-moving-to-trash t)           ;删除文件到 trash
+(put 'dired-find-alternate-file 'disabled nil) ;重新使用已经存在 dired buffer
 (with-eval-after-load 'dired (define-key dired-mode-map (kbd "RET") 'dired-find-alternate-file)
                       (define-key dired-mode-map (kbd "<return>") 'dired-find-alternate-file)
                       (define-key dired-mode-map (kbd "^")

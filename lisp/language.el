@@ -1,4 +1,4 @@
-;;; rust.el ---                                      -*- lexical-binding: t; -*-
+;;; language.el ---                                   -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -12,7 +12,7 @@
 
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR language.  See the
 ;; GNU General Public License for more details.
 
 ;; You should have received a copy of the GNU General Public License
@@ -24,22 +24,24 @@
 
 ;;; Code:
 
-(require 'module/lsp)
-(require 'module/completion)
-(require 'module/snappet)
+(require 'feature)
 
-(use-package
-  rust-mode
-  :ensure t
-  :defer t
-  :hook (rust-mode . lsp-deferred))
+(require 'language/emacs-lisp)
+(require 'language/note)
+(require 'language/rust)
+(require 'language/python)
+(require 'language/java)
+(require 'language/lua)
+(require 'language/plantuml)
+(require 'language/graphviz)
+(require 'language/yaml)
+(require 'language/handlebars)
+(require 'language/javascript)
+(require 'language/css)
+(require 'language/html)
+(require 'language/glsl)
+(require 'language/http)
 
-(use-package
-  cargo
-  :ensure t
-  :defer t
-  :after rust-mode
-  :hook (rust-mode . cargo-minor-mode))
 
-(provide 'purpose/rust)
-;;; rust.el ends here
+(provide 'language)
+;;; language.el ends here

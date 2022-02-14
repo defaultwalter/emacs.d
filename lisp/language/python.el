@@ -1,4 +1,4 @@
-;;; handlebars.el ---                                -*- lexical-binding: t; -*-
+;;; python.el ---                                    -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,14 +23,16 @@
 ;;
 
 ;;; Code:
-(require 'module/completion)
+
+(require 'feature/lsp)
+(require 'feature/completion)
+(require 'feature/snappet)
 
 (use-package
-  handlebars-mode
+  lsp-python-ms
   :ensure t
   :defer t
-  :mode ("\\.hbs\\'" . handlebars-mode)
-  :interpreter ("handlebars" . handlebars-mode))
+  :init (setq lsp-python-ms-executable (executable-find "python-language-server")))
 
-(provide 'purpose/handlebars)
-;;; handlebars.el ends here
+(provide 'language/python)
+;;; python.el ends here

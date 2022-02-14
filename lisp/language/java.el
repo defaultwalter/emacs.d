@@ -1,4 +1,4 @@
-;;; css.el ---                                       -*- lexical-binding: t; -*-
+;;; java.el ---                                      -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,9 +23,18 @@
 ;;
 
 ;;; Code:
+(require 'feature/lsp)
+(require 'feature/completion)
 
-(require 'module/completion)
+(use-package
+  lsp-java
+  :ensure t
+  :defer t
+  :hook (java-mode . (lambda ()
+                       (lsp)
+                       ;; (dap-ui-mode 1)
+                       ))
+  :config )
 
-
-(provide 'purpose/css)
-;;; css.el ends here
+(provide 'language/java)
+;;; java.el ends here

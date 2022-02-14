@@ -1,9 +1,9 @@
-;;; http.el ---                                      -*- lexical-binding: t; -*-
+;;; yaml.el ---                                      -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
 ;; Author: meetcw <meetcw@outlook.com>
-;; Keywords: 
+;; Keywords:
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -20,16 +20,16 @@
 
 ;;; Commentary:
 
-;; 
+;;
 
 ;;; Code:
-(require 'module/completion)
+(require 'feature/completion)
 
 (use-package
-  restclient
+  yaml-mode
   :ensure t
-  :mode ("\\.http\\'" . restclient-mode))
+  :defer t)
 
 
-(provide 'purpose/http)
-;;; http.el ends here
+(provide 'language/yaml)
+;;; yaml.el ends here

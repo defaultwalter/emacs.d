@@ -1,4 +1,4 @@
-;;; glsl.el ---                                      -*- lexical-binding: t; -*-
+;;; javascript.el ---                                -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  meetcw
 
@@ -23,10 +23,8 @@
 ;;
 
 ;;; Code:
+(require 'feature/completion)
 
-(use-package
-  glsl-mode
-  :ensure t)
 
-(provide 'purpose/glsl)
-;;; glsl.el ends here
+(provide 'language/javascript)
+;;; javascript.el ends here

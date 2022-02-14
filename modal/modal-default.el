@@ -39,10 +39,10 @@
 ;;;; Motion state
   (modal-motion-set-key "j" #'modal-next-line)
   (modal-motion-set-key "k" #'modal-previous-line)
-  (modal-motion-set-key "h" #'modal-backward-char)
-  (modal-motion-set-key "l" #'modal-forward-char)
-  (modal-motion-set-key ";" #'modal-move-between-line-head-and-tail)
-  (modal-motion-set-key ":" #'modal-move-between-line-head-and-tail)
+  (modal-motion-set-key "h" #'modal-left-char)
+  (modal-motion-set-key "l" #'modal-right-char)
+  (modal-motion-set-key "~" #'modal-move-between-line-head-and-tail)
+  (modal-motion-set-key "~" #'modal-move-between-line-head-and-tail)
   (modal-motion-set-key "J" #'modal-select-to-next-line)
   (modal-motion-set-key "K" #'modal-select-to-previous-line)
   (modal-motion-set-key "H" #'modal-select-to-backward-char)
@@ -87,12 +87,14 @@
   (modal-motion-set-key "M-k" #'windmove-up)
   (modal-motion-set-key "<escape>" #'modal-temporary-insert)
 ;;;; Normal state
+  (modal-normal-set-key "DEL" #'backward-char)
+  (modal-normal-set-key "RET" #'forward-char)
   (modal-normal-set-key "<escape>" #'keyboard-escape-quit)
 ;;;; Visual state
   (modal-visual-set-key "<escape>" #'modal-switch-to-default-state)
   (modal-visual-set-key "d" #'modal-save-and-delete)
   (modal-visual-set-key "D" #'modal-delete)
-  (modal-visual-set-key ":" #'exchange-point-and-mark)
+  (modal-visual-set-key "~" #'exchange-point-and-mark)
   (modal-visual-set-key ")" #'modal-insert-parentheses)
   (modal-visual-set-key "(" #'modal-insert-parentheses-with-space)
   (modal-visual-set-key "]" #'modal-insert-square-brackets)
@@ -102,7 +104,7 @@
   (modal-visual-set-key "'" #'modal-insert-single-quotes)
   (modal-visual-set-key "\"" #'modal-insert-double-quotes)
   (modal-visual-set-key "`" #'modal-insert-back-quotes)
-  (modal-visual-set-key "~" #'modal-delete-pair)
+  (modal-visual-set-key "C-<backspace>" #'modal-squeeze-selection)
 
 
 ;;;; leader key
@@ -146,6 +148,11 @@
   (modal-leader-set-key "wD" '(delete-other-windows :which-key "delete other window"))
   (modal-leader-set-key "wc" '(delete-window :which-key "delete window"))
   (modal-leader-set-key "wC" '(delete-other-windows :which-key "delete other window"))
+  (modal-leader-set-key "wh" '(windmove-left :which-key "switch to left window"))
+  (modal-leader-set-key "wl" '(windmove-right :which-key "switch to right window"))
+  (modal-leader-set-key "wj" '(windmove-down :which-key "switch to down window"))
+  (modal-leader-set-key "wk" '(windmove-up :which-key "switch to up window"))
+
   (modal-leader-set-key "h"
                         '(:ignore t
                                   :which-key "help"))

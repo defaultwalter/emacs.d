@@ -68,5 +68,5 @@
   :defer t
   :hook (lsp-mode . flycheck-mode))
 
-(provide 'module/lsp)
+(provide 'feature/lsp)
 ;;; lsp.el ends here
