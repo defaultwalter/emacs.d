@@ -237,7 +237,7 @@
   :defer t
   :custom                               ;
   (neo-smart-open t)
-  (neo-window-width 35)
+  (neo-window-width 30)
   (neo-mode-line-type 'none)
   ;; (neo-vc-integration 'face); 和 doom 主题冲突
   (neo-hide-cursor t)

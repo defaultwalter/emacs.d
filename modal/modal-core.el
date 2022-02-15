@@ -155,10 +155,10 @@
   "Change cursor color."
   (let ((cursor-style (cond ((bound-and-true-p modal-normal-state-mode)
                              (or modal-normal-cursor
-                                 `((bar . 3) . ,(face-foreground 'default))))
+                                 `((bar . 2) . ,(face-foreground 'default))))
                             ((bound-and-true-p modal-motion-state-mode)
                              (or modal-motion-cursor
-                                 `((bar . 3) . ,(face-foreground 'success))))
+                                 `((bar . 2) . ,(face-foreground 'success))))
                             ((bound-and-true-p modal-visual-state-mode)
                              (or modal-visual-cursor
                                  `((bar . 2) . ,(face-foreground 'warning))))
