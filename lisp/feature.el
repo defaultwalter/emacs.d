@@ -335,9 +335,9 @@
   :defer t
   :custom                               ;
   (highlight-indent-guides-suppress-auto-error t)
-  (highlight-indent-guides-method 'column)
+  (highlight-indent-guides-method 'character)
   (highlight-indent-guides-responsive nil)
-  (highlight-indent-guides-character ?┊)
+  (highlight-indent-guides-character ?╎)
   :hook ((prog-mode conf-mode) . highlight-indent-guides-mode)
   :config                               ;
   (unless (display-graphic-p)
@@ -625,16 +625,6 @@
   (setq dashboard-navigator-buttons `(()
                                       ()
                                       () ;
-                                      (("🍃" " Open agenda                         " "" (lambda
-                                                                                          (&rest
-                                                                                           _)
-                                                                                          (org-agenda))
-                                        nil "" "")
-                                       ("" "SPC n a   " "" (lambda
-                                                             (&rest
-                                                              _)
-                                                             (org-agenda)) default "" ""))
-                                      () ;
                                       (("🍁" " Open recently file                  " "" (lambda
                                                                                           (&rest
                                                                                            _)
@@ -645,6 +635,17 @@
                                                               _)
                                                              (counsel-recentf)) default "" ""))
                                       () ;
+                                      (("🍃" " Open file                           " "" (lambda
+                                                                                          (&rest
+                                                                                           _)
+                                                                                          (counsel-find-file))
+                                        nil "" "")
+                                       ("" "SPC f f   " "" (lambda
+                                                             (&rest
+                                                              _)
+                                                             (org-agenda)) default "" ""))
+                                      () ;
+
                                       (("🌵" " Open project                        " "" (lambda
                                                                                           (&rest
                                                                                            _)
