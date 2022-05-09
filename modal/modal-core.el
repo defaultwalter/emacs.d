@@ -26,28 +26,30 @@
 (require 'modal-option)
 (require 'modal-key)
 
+(setq-default cursor-in-non-selected-windows nil)
+
 (define-minor-mode modal-normal-state-mode "Modal normal state."
-  nil
-  " ModalNormal"
-  modal-normal-state-map
+  :init-value nil
+  :lighter " ModalNormal"
+  :keymap modal-normal-state-map
   (when modal-normal-state-mode         ;
     (modal-insert-state-mode -1)
     (modal-motion-state-mode -1)
     (modal-visual-state-mode -1)))
 
 (define-minor-mode modal-motion-state-mode "Modal motion state."
-  nil
-  " ModalMotion"
-  modal-motion-state-map
+  :init-value nil
+  :lighter " ModalMotion"
+  :keymap modal-motion-state-map
   (when modal-motion-state-mode         ;
     (modal-insert-state-mode -1)
     (modal-normal-state-mode -1)
     (modal-visual-state-mode -1)))
 
 (define-minor-mode modal-visual-state-mode "Modal motion state."
-  nil
-  " ModalMotion"
-  modal-visual-state-map
+  :init-value nil
+  :lighter " ModalMotion"
+  :keymap modal-visual-state-map
   (when modal-visual-state-mode         ;
     (modal-insert-state-mode -1)
     (modal-normal-state-mode -1)
@@ -67,12 +69,13 @@
                        this-command)))
       (when (eq command #'keyboard-quit)
         (deactivate-mark)
-        (modal--switch-to-default-state)))))
+        ;; (modal--switch-to-default-state)
+        ))))
 
 (define-minor-mode modal-insert-state-mode "Modal insert state."
-  nil
-  " ModalInsert"
-  modal-insert-state-map
+  :init-value nil
+  :lighter " ModalInsert"
+  :keymap modal-insert-state-map
   (when modal-insert-state-mode         ;
     (modal-normal-state-mode -1)
     (modal-motion-state-mode -1)
@@ -98,7 +101,7 @@
 (defun modal--enable ()
   "Enable Modal mode"
   (modal--switch-to-default-state)
-  (modal--refresh-cursor)
+  (modal--update-cursor)
   (modal--update-indicator)
   (add-hook 'activate-mark-hook #'modal--switch-visual-state nil t))
 
@@ -108,15 +111,15 @@
   (modal-motion-state-mode -1)
   (modal-insert-state-mode -1)
   (modal-visual-state-mode -1)
-  (modal--refresh-cursor)
+  (modal--update-cursor)
   (modal--update-indicator)
   (remove-hook 'activate-mark-hook #'modal--switch-visual-state t))
 
 
 (define-minor-mode modal-mode "Toggle `modal-mode` minor mode."
-  nil
-  " Modal"
-  modal-mode-map
+  :init-value nil
+  :lighter " Modal"
+  :keymap modal-mode-map
   (if modal-mode                        ;
       (modal--enable)
     (modal--disable)))
@@ -138,7 +141,7 @@
          (modal-insert-state-mode 1))
         ((equal state 'visual)
          (modal-visual-state-mode 1)))
-  (modal--refresh-cursor)
+  (modal--update-cursor)
   (modal--update-indicator))
 
 (defun modal--switch-to-default-state()
@@ -151,20 +154,20 @@
 
 
 
-(defun modal--refresh-cursor()
+(defun modal--update-cursor()
   "Change cursor color."
   (let ((cursor-style (cond ((bound-and-true-p modal-normal-state-mode)
                              (or modal-normal-cursor
-                                 `((bar . 2) . ,(face-foreground 'default))))
+                                 `((bar . 2) . ,(face-foreground 'modal-indicator-normal nil t))))
                             ((bound-and-true-p modal-motion-state-mode)
                              (or modal-motion-cursor
-                                 `((bar . 2) . ,(face-foreground 'success))))
+                                 `((bar . 2) . ,(face-foreground 'modal-indicator-motion nil t))))
                             ((bound-and-true-p modal-visual-state-mode)
                              (or modal-visual-cursor
-                                 `((bar . 2) . ,(face-foreground 'warning))))
+                                 `((bar . 2) . ,(face-foreground 'modal-indicator-visual nil t))))
                             ((bound-and-true-p modal-insert-state-mode)
                              (or modal-insert-cursor
-                                 `((bar . 2) . ,(face-foreground 'error))))
+                                 `((bar . 2) . ,(face-foreground 'modal-indicator-insert nil t))))
                             (t `(bar . ,(face-foreground 'default))))))
     ;; (message "%s %s" major-mode cursor-style)
     (setq-local cursor-type (car cursor-style))
@@ -194,7 +197,7 @@
     (&rest
      args)
   "Update modal state when Window state change."
-  (modal--refresh-cursor))
+  (modal--update-cursor))
 
 (defun modal-mode--minibuffer-setup()
   "Set modal-mode state when minibuffer avtive."

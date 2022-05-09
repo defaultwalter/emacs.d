@@ -239,7 +239,7 @@
   (neo-smart-open t)
   (neo-window-width 30)
   (neo-mode-line-type 'none)
-  ;; (neo-vc-integration 'face); 和 doom 主题冲突
+  (neo-vc-integration 'char); 和 doom 主题冲突
   (neo-hide-cursor t)
   :bind                                 ;
   ("C-<tab>" . neotree-toggle)
@@ -261,8 +261,9 @@
   :ensure t
   :defer 1
   :config                               ;
-  (global-diff-hl-mode)
-  )
+  (assoc-delete-all 'diff-hl-mode minor-mode-map-alist)
+  (add-to-list 'minor-mode-map-alist `(diff-hl-mode . ,(make-sparse-keymap)))
+  (global-diff-hl-mode))
 
 (use-package
   avy
@@ -293,12 +294,12 @@
   (hl-paren-colors '("cyan"))           ; 设置高亮括号颜色
   :hook (prog-mode . highlight-parentheses-mode))
 
-(use-package
-  auto-sudoedit                         ;自动请求 sudo 权限
-  :if (or (eq system-type 'gnu/linux)
-          (eq system-type 'darwin))
-  :ensure t
-  :config (auto-sudoedit-mode 1))
+;; (use-package
+;;   auto-sudoedit                         ;自动请求 sudo 权限
+;;   :if (or (eq system-type 'gnu/linux)
+;;           (eq system-type 'darwin))
+;;   :ensure t
+;;   :config (auto-sudoedit-mode 1))
 
 (use-package
   popwin                                ; 使用弹出窗口显示部分 Buffer
@@ -392,15 +393,17 @@
 (use-package
   undo-tree                             ;撤销重做可视化
   :ensure t
+  :disabled
   :config ;
   (assoc-delete-all 'undo-tree-mode minor-mode-map-alist)
+  (add-to-list 'minor-mode-map-alist `(undo-tree-mode . ,(make-sparse-keymap)))
   (global-undo-tree-mode))
 
 (use-package
   smart-comment                         ;注释插件
   :ensure t
   :defer t
-  :bind ("C-/" . smart-comment)
+  ;; :bind ("C-/" . smart-comment)
   :init (modal-leader-set-key "cc" '(smart-comment :which-key "comment")))
 
 (use-package
@@ -464,7 +467,8 @@
   (setq doom-modeline-modal-icon t)
   (doom-modeline-def-segment doom-modal-indicator
     "Doom modeline modal indicator"
-    (concat " " (modal-indicator) " "))
+    (when modal-mode
+      (concat " " (modal-indicator))))
   (doom-modeline-def-modeline 'default-mode-line
     '(bar doom-modal-indicator workspace-name window-number modals matches buffer-info remote-host buffer-position word-count parrot selection-info)
     '(objed-state misc-info persp-name battery grip irc mu4e gnus github debug repl lsp minor-modes input-method indent-info buffer-encoding major-mode process vcs checker ))
@@ -556,7 +560,8 @@
                                                              buffer-file-name
                                                              (buffer-modified-p)) 'mode-line-buffer-name-modified)
                                                            (t 'mode-line-buffer-name)))))))
-  :custom (mini-modeline-right-padding 1)
+  :custom ;
+  (mini-modeline-right-padding 1)
   (mini-modeline-truncate-p t)
   (mini-modeline-face-attr nil)
   (mini-modeline-enhance-visual t)
@@ -573,36 +578,53 @@
   )
 
 (use-package
-  solaire-mode
-  :ensure t
-  :if (display-graphic-p)
-  :hook                                 ;
-  ((change-major-mode after-revert ediff-prepare-buffer) . turn-on-solaire-mode)
-  :config                               ;
-  (set-face-background 'solaire-mode-line-face nil)
-  (set-face-background 'solaire-mode-line-inactive-face nil)
-  (solaire-global-mode +1))
-
-(use-package
   doom-themes
   :ensure t
-  :init
   :custom                               ;
   (doom-themes-neotree-file-icons 'simple)
   (doom-themes-treemacs-theme "doom-colors")
   :custom-face                          ;
-  (font-lock-comment-face ((t
-                            (:slant italic))))
-  (neo-root-dir-face ((t
-                       (:extend t))))
+  (font-lock-comment-face ((t (:slant italic))))
+  (neo-root-dir-face ((t (:extend t))))
+  (show-paren-match ((t (:background nil :bold nil))))
   :hook (server-after-make-frame . (lambda()
-                                     (load-theme 'doom-nord t)))
+                                     (load-theme 'doom-one t)))
+  :init;
+  (message "doom-themes init")
   :config                               ;
-  (load-theme 'doom-nord t)
+  (message "doom-themes config")
+  (load-theme 'doom-one t)
   ;; (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config)
   (doom-themes-neotree-config)
   (doom-themes-org-config))
+
+(use-package
+  solaire-mode
+  :ensure t
+  :after (doom-themes)
+  :custom-face;
+  (vertical-border  ((t (:foreground ,(face-background 'solaire-default-face) :background ,(face-background 'solaire-default-face)))))
+  :init ;
+  (message "solaire-mode init")
+  (setq solaire-mode-remap-alist
+        '((default . solaire-default-face)
+          (hl-line . solaire-hl-line-face)
+          (region . solaire-region-face)
+          (org-hide . solaire-org-hide-face)
+          (org-indent . solaire-org-hide-face)
+          (linum . solaire-line-number-face)
+          (line-number . solaire-line-number-face)
+          (header-line . solaire-header-line-face)
+          (mode-line . solaire-default-face)
+          (mode-line-active . solaire-default-face)
+          (mode-line-inactive . solaire-default-face)
+          (highlight-indentation-face . solaire-hl-line-face)
+          (fringe . solaire-fringe-face)))
+  :config;
+  (message "solaire-mode config")
+  (solaire-global-mode +1))
+
 
 (use-package
   dashboard
@@ -614,6 +636,8 @@
       (all-the-icons-octicon name
                              :height 0.9
                              :v-adjust 0.0)))
+  (defun +dashboard--create-navigator-button(icon title key action)
+    `((,icon ,(string-pad title 30 nil) "" ,action nil "" "") ("" ,(string-pad key 10 nil) "" ,action default "" "")))
   :config                               ;
   (modal-leader-set-key "b <home>" '(dashboard-refresh-buffer :which-key "dashboard"))
   (setq dashboard-startup-banner (expand-file-name "dashboard-banner.txt" user-config-directory))
@@ -622,52 +646,34 @@
   (setq dashboard-set-file-icons t)
   (setq dashboard-items '())
   (setq dashboard-set-navigator t)
-  (setq dashboard-navigator-buttons `(()
-                                      ()
-                                      () ;
-                                      (("🍁" " Open recently file                  " "" (lambda
-                                                                                          (&rest
-                                                                                           _)
-                                                                                          (counsel-recentf))
-                                        nil "" "")
-                                       ("" "SPC f r   " "" (lambda
-                                                             (&rest
-                                                              _)
-                                                             (counsel-recentf)) default "" ""))
-                                      () ;
-                                      (("🍃" " Open file                           " "" (lambda
-                                                                                          (&rest
-                                                                                           _)
-                                                                                          (counsel-find-file))
-                                        nil "" "")
-                                       ("" "SPC f f   " "" (lambda
-                                                             (&rest
-                                                              _)
-                                                             (org-agenda)) default "" ""))
-                                      () ;
+  (setq dashboard-navigator-buttons
+        `(
+          ,(+dashboard--create-navigator-button "🍁" "Recently file" "SPC f r" (lambda
+                                                                                 (&rest
+                                                                                  _)
+                                                                                 (counsel-recentf)))
 
-                                      (("🌵" " Open project                        " "" (lambda
-                                                                                          (&rest
-                                                                                           _)
-                                                                                          (counsel-projectile))
-                                        nil "" "")
-                                       ("" "SPC p p   " "" (lambda
-                                                             (&rest
-                                                              _)
-                                                             (counsel-projectile)) default "" ""))
-                                      () ;
-                                      (("✨" " Jump to bookmark                    " "" (lambda
-                                                                                          (&rest
-                                                                                           _)
-                                                                                          (counsel-bookmark))
-                                        nil "" "")
-                                       ("" "SPC return" "" (lambda
-                                                             (&rest
-                                                              _)
-                                                             (counsel-bookmark)) default "" ""))
-                                      ()   ;
-                                      ()   ;
-                                      ())) ;
+          () ;
+          ,(+dashboard--create-navigator-button "🍃" "Open file" "SPC f f" (lambda
+                                                                             (&rest
+                                                                              _)
+                                                                             (counsel-find-file)))
+          () ;
+          ,(+dashboard--create-navigator-button "🌵" "Open project" "SPC p p" (lambda
+                                                                                (&rest
+                                                                                 _)
+                                                                                (counsel-projectile)))
+
+
+          () ;
+          ,(+dashboard--create-navigator-button "✨" "Jump to bookmark" "SPC return" (lambda
+                                                                                       (&rest
+                                                                                        _)
+                                                                                       (counsel-bookmark)))
+
+          ()   ;
+          ()   ;
+          ())) ;
   ;;
   (setq dashboard-page-separator "")
   (setq dashboard-set-footer nil)

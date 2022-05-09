@@ -26,6 +26,7 @@
 
 (require 'feature/completion)
 
+(setq lisp-indent-offset nil)
 
 
 (provide 'language/emacs-lisp)

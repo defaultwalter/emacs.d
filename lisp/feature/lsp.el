@@ -47,7 +47,8 @@
   (lsp-enable-folding nil)
   (lsp-enable-indentation t)
   (lsp-enable-on-type-formatting t)
-  :hook ((lsp-mode . lsp-enable-which-key-integration)))
+  :hook ((lsp-mode . lsp-enable-which-key-integration))
+  :init (setq lsp-keymap-prefix nil))
 (use-package
   lsp-ui
   :ensure t
@@ -67,6 +68,7 @@
   :ensure t
   :defer t
   :hook (lsp-mode . flycheck-mode))
+
 
 (provide 'feature/lsp)
 ;;; lsp.el ends here

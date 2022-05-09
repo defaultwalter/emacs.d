@@ -26,6 +26,7 @@
 (require 'modal-function)
 
 
+(defvar modal--selection-type nil)
 
 (defun modal-switch-to-normal-state()
   (interactive)
@@ -37,6 +38,7 @@
 
 (defun modal-switch-to-visual-state()
   (interactive)
+  (push-mark (point) t t)
   (modal--switch-state 'visual))
 
 (defun modal-switch-to-insert-state()
@@ -50,15 +52,13 @@
 (defun modal-insert()
   (interactive)
   (when (region-active-p)
-    (goto-char (region-beginning))
-    (deactivate-mark t))
+    (goto-char (region-beginning)))
   (modal--switch-state 'insert))
 
 (defun modal-append()
   (interactive)
   (when (region-active-p)
-    (goto-char (region-end))
-    (deactivate-mark t))
+    (goto-char (region-end)))
   (modal--switch-state 'insert))
 
 (defun modal-line-insert()
@@ -82,8 +82,9 @@
   (modal--switch-state 'insert)
   (add-hook 'post-command-hook #'modal--temporary-insert-callback 0 t))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; motion
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defun modal-move-between-line-head-and-tail()
   (interactive)
@@ -91,7 +92,8 @@
                (line-end-position)))
       (move-end-of-line 1)
     (move-beginning-of-line 1)
-    (skip-syntax-forward " " (line-end-position))))
+    ;; (skip-syntax-forward " " (line-end-position))       
+    ))
 
 (defun modal-previous-line (arg)
   (interactive "p")
@@ -102,6 +104,16 @@
   (interactive "p")
   (setq this-command #'next-line)
   (next-line arg))
+
+(defun modal-previous-logical-line (arg)
+  (interactive "p")
+  (setq this-command #'previous-logical-line)
+  (previous-logical-line arg))
+
+(defun modal-next-logical-line (arg)
+  (interactive "p")
+  (setq this-command #'next-logical-line)
+  (next-logical-line arg))
 
 (defun modal-forward-char (arg)
   (interactive "p")
@@ -133,7 +145,30 @@
   (interactive "p")
   (forward-thing 'word (- arg)))
 
+(defun modal-forward-symbol(arg)
+  (interactive "p")
+  (forward-thing 'symbol arg))
+
+(defun modal-backward-symbol(arg)
+  (interactive "p")
+  (forward-thing 'symbol (- arg)))
+
+(defun modal-goto-nearest-char(arg)
+  (interactive "p")
+  (let ((char (string (read-char (message "goto:")))))
+    (search-forward char nil nil arg)))
+
+(defun modal-goto-next-char(arg)
+  (interactive "p")
+  (modal-goto-nearest-char arg))
+
+(defun modal-goto-preview-char(arg)
+  (interactive "p")
+  (modal-goto-nearest-char (- arg)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; select
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun modal-select()
   (interactive)
   (push-mark (point) t t))
@@ -144,13 +179,33 @@
     (secondary-selection-from-region)
     (deactivate-mark)))
 
-(defun modal-exchange-secondary-selection()
+(defun modal-goto-secondary-selection()
   (interactive)
-  (if (region-active-p)
-      (let ((beginning (region-beginning))
-            (end (region-end))))
-    (secondary-selection-from-region)))
+  (if (not (overlay-buffer mouse-secondary-overlay))
+      (message "Secondary selection was not set")
+    (switch-to-buffer (overlay-buffer mouse-secondary-overlay))
+    (deactivate-mark t)
+    (goto-char (overlay-end mouse-secondary-overlay))))
 
+(defun modal-exchange-selection()
+  (interactive)
+  (when (and (region-active-p) (overlay-buffer mouse-secondary-overlay))
+    (let ((secondary-selection-start (overlay-start mouse-secondary-overlay))
+          (secondary-selection-end (overlay-end mouse-secondary-overlay)))
+      (secondary-selection-from-region)
+      (push-mark secondary-selection-start  t t)
+      (goto-char secondary-selection-end))))
+
+(defun modal-repleace-secondary-selection()
+  (interactive)
+  (when (region-active-p)
+    (let ((selection-text (buffer-substring-no-properties (region-beginning) (region-end)))
+          (secondary-selection-start (overlay-start mouse-secondary-overlay))
+          (secondary-selection-end (overlay-end mouse-secondary-overlay)))
+      (with-current-buffer (overlay-buffer mouse-secondary-overlay)
+        (goto-char secondary-selection-start)
+        (delete-region secondary-selection-start secondary-selection-end)
+        (insert selection-text)))))
 
 (defun modal-select-word()
   (interactive)
@@ -164,42 +219,52 @@
     (goto-char (cdr position))
     (push-mark (car position) t t)))
 
+(defun modal-select-forward-word(arg)
+  (interactive "p")
+  (let ((from (point))
+        (to (save-excursion
+              (forward-thing 'word arg)
+              (cdr (bounds-of-thing-at-point 'word)))))
+    (push-mark from t t )
+    (goto-char to)))
+
+(defun modal-select-backward-word(arg)
+  (interactive "p")
+  (let ((from (point))
+        (to (save-excursion
+              (forward-thing 'word (- arg))
+              (car (bounds-of-thing-at-point 'word)))))
+    (push-mark from t t )
+    (goto-char to)))
+
+(defun modal-select-forward-symbol(arg)
+  (interactive "p")
+  (let ((from (point))
+        (to (save-excursion
+              (forward-thing 'symbol arg)
+              (cdr (bounds-of-thing-at-point 'symbol)))))
+    (push-mark from t t )
+    (goto-char to)))
+
+(defun modal-select-backward-symbol(arg)
+  (interactive "p")
+  (let ((from (point))
+        (to (save-excursion
+              (forward-thing 'symbol (- arg))
+              (car (bounds-of-thing-at-point 'symbol)))))
+    (push-mark from t t )
+    (goto-char to)))
+
 (defun modal-select-inner-line()
   (interactive )
   (goto-char (line-end-position))
   (push-mark (line-beginning-position) t t))
+
 (defun modal-select-whole-line()
   (interactive )
   (let ((position (bounds-of-thing-at-point 'line)))
     (goto-char (cdr position))
     (push-mark (car position) t t)))
-
-(defun modal-select-forward-word(arg)
-  (interactive "p")
-  (forward-thing 'word arg)
-  (let ((position (bounds-of-thing-at-point 'word)))
-    (goto-char (cdr position))
-    (push-mark (car position) t t)))
-
-(defun modal-select-backward-word(arg)
-  (interactive "p")
-  (forward-thing 'word (- arg))
-  (let ((position (bounds-of-thing-at-point 'word)))
-    (goto-char (car position))
-    (push-mark (cdr position) t t)))
-
-(defun modal-select-forward-symbol(arg)
-  (interactive "p")
-  (forward-thing 'word arg)
-  (let ((position (bounds-of-thing-at-point 'symbol)))
-    (goto-char (cdr position))
-    (push-mark (car position) t t)))
-(defun modal-select-backward-symbol(arg)
-  (interactive "p")
-  (forward-thing 'word (- arg))
-  (let ((position (bounds-of-thing-at-point 'symbol)))
-    (goto-char (car position))
-    (push-mark (cdr position) t t)))
 
 (defun modal-select-inner-parentheses()
   (interactive)
@@ -247,7 +312,37 @@
     (goto-char (cdr position))
     (push-mark (car position) t t)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; select to
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun modal-select-to-previous-line (arg)
+  (interactive "p")
+  (unless (region-active-p)
+    (push-mark (point) t t))
+  (setq this-command #'previous-line)
+  (previous-line arg))
+
+(defun modal-select-to-next-line (arg)
+  (interactive "p")
+  (unless (region-active-p)
+    (push-mark (point) t t))
+  (setq this-command #'next-line)
+  (next-line arg))
+
+(defun modal-select-to-previous-logical-line (arg)
+  (interactive "p")
+  (unless (region-active-p)
+    (push-mark (point) t t))
+  (setq this-command #'previous-logical-line)
+  (previous-logical-line arg))
+
+(defun modal-select-to-next-logical-line (arg)
+  (interactive "p")
+  (unless (region-active-p)
+    (push-mark (point) t t))
+  (setq this-command #'next-logical-line)
+  (next-logical-line arg))
+
 (defun modal-select-to-forward-char(arg)
   (interactive "p")
   (unless (region-active-p)
@@ -260,16 +355,29 @@
     (push-mark (point) t t))
   (modal-backward-char arg))
 
+
+(defun modal-select-to-right-char (arg)
+  (interactive "p")
+  (unless (region-active-p)
+    (push-mark (point) t t))
+  (modal-right-char arg))
+
+(defun modal-select-to-left-char (arg)
+  (interactive "p")
+  (unless (region-active-p)
+    (push-mark (point) t t))
+  (modal-left-char arg))
+
 (defun modal-select-to-forward-word(arg)
   (interactive "p")
   (unless (region-active-p)
-    (push-mark (point) t t)  )
+    (push-mark (point) t t))
   (forward-thing 'word arg))
 
 (defun modal-select-to-backward-word(arg)
   (interactive "p")
   (unless (region-active-p)
-    (push-mark (point) t t)  )
+    (push-mark (point) t t))
   (forward-thing 'word (- arg)))
 
 (defun modal-select-to-next-line(arg)
@@ -284,24 +392,34 @@
     (push-mark (point) t t))
   (modal-previous-line arg))
 
-(defun modal-select-lines()
-  (interactive)
-  (if (not (region-active-p))
-      (modal-select-whole-line)
-    (cond ((= (point)
-              (region-end))
-           (let ((position (bounds-of-thing-at-point 'line)))
-             (goto-char (cdr position)))
-           (save-excursion (goto-char (region-beginning))
-                           (push-mark (line-beginning-position) t t)))
-          ((= (point)
-              (region-beginning))
-           (goto-char (line-beginning-position))
-           (save-excursion (goto-char (region-end))
-                           (let ((position (bounds-of-thing-at-point 'line)))
-                             (push-mark (cdr position) t t)))))))
+(defun modal-select-lines(arg)
+  (interactive "p")
+  (dotimes (i arg)
+    (if (not (region-active-p))
+        (modal-select-inner-line)
+      (cond ((= (point) (region-end)); 向后选择
+             (when (and (> (region-beginning) (line-end-position)) (< (region-beginning) (line-beginning-position)))
+               (push-mark (line-beginning-position) t t))
+             (if (/= (point) (line-end-position))
+                 ;; 移动到当前行结尾
+                 (goto-char (line-end-position))
+               ;; 移动到下一行结尾
+               (goto-char (save-excursion (next-line)(line-end-position)))))
+            ((= (point) (region-beginning))
+             (when (and (< (region-end) (line-beginning-position)) (> (region-end) (line-end-position)))
+               (push-mark (line-end-position) t t))
+             (if (/= (point) (line-beginning-position))
+                 ;; 移动到当前行开始
+                 (goto-char (line-beginning-position))
+               ;; 移动到上一行开始
+               (goto-char (save-excursion (previous-line)(line-beginning-position)))))))))
 
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; modify
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun modal-open-line-above(arg)
   (interactive "p")
   (goto-char (line-beginning-position))
@@ -317,9 +435,15 @@
   (indent-for-tab-command)
   (modal--switch-state 'insert))
 
+(defun modal-save ()
+  (interactive)
+  (when (region-active-p)
+    (kill-ring-save (region-beginning) (region-end))))
+
 (defun modal-delete-char (arg)
   (interactive "p")
   (delete-char 1))
+
 (defun modal-save-and-delete-char (arg)
   (interactive "p")
   (kill-region (point)
@@ -355,12 +479,45 @@
                  (1+ (point))))
   (modal--switch-state 'insert))
 
+(defun modal-replace()
+  (interactive "*")
+  (when (region-active-p)
+    (delete-region (region-beginning) (region-end))
+    (insert (current-kill 0))))
+
+(defun modal-save-and-replace()
+  (interactive "*")
+  (when (region-active-p)
+    (let ((text (current-kill 0)))
+      (kill-region (region-beginning) (region-end))
+      (insert text))))
+
+(defun modal-paste-before(arg)
+  (interactive "*p")
+  (yank arg))
+
+(defun modal-paste-after(arg)
+  (interactive "*p")
+  (let ((position (point)))
+    (yank arg)
+    (goto-char position)))
+
 (defun modal-delete-boundary()
   (interactive)
   (when (region-active-p)
     (delete-char 1)))
 
+(defun modal-undo(arg)
+  (interactive "*p")
+  (undo arg))
+
+(defun modal-redo(arg)
+  (interactive "*p")
+  (undo-redo arg))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; insert pair
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun modal-insert-pair (open close)
   (interactive (let ((open (char-to-string (read-char "insert pair open: ")))
                      (close (char-to-string (read-char "insert pair close: "))))
@@ -411,7 +568,7 @@
 
 (defun modal-squeeze-selection()
   (interactive)
-  (when (region-active-p)               
+  (when (region-active-p)
     (let ((beginning (region-beginning))
           (end (region-end)))
       (save-excursion (goto-char end)

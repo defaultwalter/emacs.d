@@ -98,7 +98,11 @@
                                                                                     " [••••••] ")))
 
 ;; 显示当前所在的括号
+;; (setq show-paren-when-point-in-periphery t)
+(setq show-paren-when-point-inside-paren t)
 (show-paren-mode 1)
+
+
 (setq-default electric-pair-inhibit-predicate 'electric-pair-default-inhibit) ; 抑制策略
 (electric-pair-mode 1)
 ;; 显示空白字符
@@ -144,7 +148,7 @@
                           ((member "Apple Color Emoji" (font-family-list)) "Apple Color Emoji"))))
 (update-font)
 ;; C/S 模式需要再次设置字体
-(add-hook 'server-after-make-frame-hook 'update-font)
+(add-hook 'server-after-make-frame-hook #'update-font)
 
 ;; 主题样式
 (defun update-gui()
@@ -153,13 +157,11 @@
            (display-graphic-p))
       (menu-bar-mode 1)
     (menu-bar-mode -1))
-  (if (display-graphic-p)
-      (set-face-foreground 'vertical-border (face-background 'default))
-    (set-face-background 'vertical-border (face-background 'default))
-    (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?┊)))
-  ;; Modeline
-  (set-face-background 'mode-line-inactive (face-background 'default))
-  (set-face-background 'mode-line (face-background 'default)))
+  (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ? ))
+  ;; (if (display-graphic-p)
+  ;;     (set-face-foreground 'vertical-border (face-background 'default))
+  ;;   )
+  )
 
 (add-hook 'after-init-hook 'update-gui)
 (add-hook 'server-after-make-frame-hook 'update-gui)
@@ -182,7 +184,7 @@
 (setq-default select-enable-clipboard t) ; 启用系统剪切板
 
 (setq display-line-numbers-type t)                    ; 行号类型
-(setq-default display-line-numbers-width 5)           ; 行号宽度
+(setq-default display-line-numbers-width 4)           ; 行号宽度
 (add-hook 'prog-mode-hook 'display-line-numbers-mode) ; 显示行号
 (add-hook 'text-mode-hook 'display-line-numbers-mode) ; 显示行号
 (add-hook 'conf-mode-hook 'display-line-numbers-mode) ; 显示行号
@@ -190,6 +192,7 @@
 (add-hook 'text-mode-hook 'hl-line-mode)              ; 高亮当前行
 (add-hook 'conf-mode-hook 'hl-line-mode) ; 高亮当前行
 (delete-selection-mode 1)               ; 插入时替换选区
+(column-number-mode 1); 显示光标列位置
 
 (setq-default truncate-lines nil)
 
