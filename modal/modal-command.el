@@ -65,12 +65,12 @@
   (interactive)
   (goto-char (line-beginning-position))
   (skip-syntax-forward " " (line-end-position))
-  (modal--switch-state 'insert))
+  (modal-switch-to-insert-state))
 
 (defun modal-line-append()
   (interactive)
   (goto-char (line-end-position))
-  (modal--switch-state 'insert))
+  (modal-switch-to-insert-state))
 
 (defun modal--temporary-insert-callback()
   (unless (eq this-command #'modal-temporary-insert)
@@ -79,7 +79,7 @@
 
 (defun modal-temporary-insert()
   (interactive)
-  (modal--switch-state 'insert)
+  (modal-switch-to-insert-state)
   (add-hook 'post-command-hook #'modal--temporary-insert-callback 0 t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -92,7 +92,7 @@
                (line-end-position)))
       (move-end-of-line 1)
     (move-beginning-of-line 1)
-    ;; (skip-syntax-forward " " (line-end-position))       
+    ;; (skip-syntax-forward " " (line-end-position))
     ))
 
 (defun modal-previous-line (arg)
@@ -196,6 +196,11 @@
       (push-mark secondary-selection-start  t t)
       (goto-char secondary-selection-end))))
 
+(defun modal-release-secondary-selection ()
+  (interactive)
+  (when (secondary-selection-exist-p)
+    (delete-overlay mouse-secondary-overlay)))
+
 (defun modal-repleace-secondary-selection()
   (interactive)
   (when (region-active-p)
@@ -221,39 +226,35 @@
 
 (defun modal-select-forward-word(arg)
   (interactive "p")
-  (let ((from (point))
-        (to (save-excursion
-              (forward-thing 'word arg)
-              (cdr (bounds-of-thing-at-point 'word)))))
-    (push-mark from t t )
-    (goto-char to)))
+  (let ((position (save-excursion
+                    (forward-thing 'word arg)
+                    (bounds-of-thing-at-point 'word))))
+    (push-mark (car position) t t )
+    (goto-char (cdr position))))
 
 (defun modal-select-backward-word(arg)
   (interactive "p")
-  (let ((from (point))
-        (to (save-excursion
-              (forward-thing 'word (- arg))
-              (car (bounds-of-thing-at-point 'word)))))
-    (push-mark from t t )
-    (goto-char to)))
+  (let ((position (save-excursion
+                    (forward-thing 'word (- arg))
+                    (bounds-of-thing-at-point 'word))))
+    (push-mark (cdr position) t t )
+    (goto-char (car position))))
 
 (defun modal-select-forward-symbol(arg)
   (interactive "p")
-  (let ((from (point))
-        (to (save-excursion
-              (forward-thing 'symbol arg)
-              (cdr (bounds-of-thing-at-point 'symbol)))))
-    (push-mark from t t )
-    (goto-char to)))
+  (let ((position (save-excursion
+                    (forward-thing 'symbol arg)
+                    (bounds-of-thing-at-point 'symbol))))
+    (push-mark (car position) t t )
+    (goto-char (cdr position))))
 
 (defun modal-select-backward-symbol(arg)
   (interactive "p")
-  (let ((from (point))
-        (to (save-excursion
-              (forward-thing 'symbol (- arg))
-              (car (bounds-of-thing-at-point 'symbol)))))
-    (push-mark from t t )
-    (goto-char to)))
+  (let ((position (save-excursion
+                    (forward-thing 'symbol (- arg))
+                    (bounds-of-thing-at-point 'symbol))))
+    (push-mark (cdr position) t t )
+    (goto-char (car position))))
 
 (defun modal-select-inner-line()
   (interactive )

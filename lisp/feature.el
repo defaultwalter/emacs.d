@@ -590,10 +590,8 @@
   :hook (server-after-make-frame . (lambda()
                                      (load-theme 'doom-one t)))
   :init;
-  (message "doom-themes init")
   :config                               ;
-  (message "doom-themes config")
-  (load-theme 'doom-one t)
+  (load-theme 'doom-one-light t)
   ;; (doom-themes-visual-bell-config)
   (doom-themes-treemacs-config)
   (doom-themes-neotree-config)
@@ -604,9 +602,8 @@
   :ensure t
   :after (doom-themes)
   :custom-face;
-  (vertical-border  ((t (:foreground ,(face-background 'solaire-default-face) :background ,(face-background 'solaire-default-face)))))
+  (vertical-border  ((t (:background unspecified :foreground ,(face-background 'solaire-default-face) :inherit solaire-default-face))))
   :init ;
-  (message "solaire-mode init")
   (setq solaire-mode-remap-alist
         '((default . solaire-default-face)
           (hl-line . solaire-hl-line-face)
@@ -620,9 +617,10 @@
           (mode-line-active . solaire-default-face)
           (mode-line-inactive . solaire-default-face)
           (highlight-indentation-face . solaire-hl-line-face)
-          (fringe . solaire-fringe-face)))
+          (fringe . solaire-fringe-face)
+          (vertical-border . solaire-default-face)
+          ))
   :config;
-  (message "solaire-mode config")
   (solaire-global-mode +1))
 
 
@@ -712,5 +710,18 @@
   :disabled
   :config ;
   (paradox-enable))
+
+(use-package
+  rebinder
+  :straight (:host github
+                   :repo "darkstego/rebinder.el"
+                   :branch "master")
+  :config ;
+  ;; (define-key global-map (kbd "C-f") (rebinder-dynamic-binding "C-x"))
+  ;; (define-key rebinder-mode-map (kbd "C-x") 'backward-char)
+  ;; (define-key global-map (kbd "C-d") (rebinder-dynamic-binding "C-c"))
+  ;; (define-key rebinder-mode-map (kbd "C-c") 'backward-char)
+  ;; (rebinder-hook-to-mode 't 'after-change-major-mode-hook)
+  )
 
 (provide 'feature)

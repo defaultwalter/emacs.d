@@ -56,11 +56,15 @@
   (modal-motion-set-key "k" #'modal-previous-line)
   (modal-motion-set-key "h" #'modal-left-char)
   (modal-motion-set-key "l" #'modal-right-char)
-
-  (modal-motion-set-key "J" #'modal-goto-next-char)
-  (modal-motion-set-key "K" #'modal-goto-preview-char)
-  (modal-motion-set-key "H" #'beginning-of-line)
-  (modal-motion-set-key "L" #'end-of-line)
+  (modal-motion-set-key "J" #'modal-select-to-next-line)
+  (modal-motion-set-key "K" #'modal-select-to-previous-line)
+  (modal-motion-set-key "H" #'modal-select-to-left-char)
+  (modal-motion-set-key "L" #'modal-select-to-right-char)
+  
+  ;; (modal-motion-set-key "J" #'modal-goto-next-char)
+  ;; (modal-motion-set-key "K" #'modal-goto-preview-char)
+  ;; (modal-motion-set-key "H" #'beginning-of-line)
+  ;; (modal-motion-set-key "L" #'end-of-line)
 
   (modal-motion-set-key "\\" #'modal-move-between-line-head-and-tail)
 
@@ -69,10 +73,6 @@
   (modal-motion-set-key "F" #'modal-forward-symbol)
   (modal-motion-set-key "B" #'modal-backward-symbol)
 
-  ;; (modal-motion-set-key "J" #'modal-select-to-next-line)
-  ;; (modal-motion-set-key "K" #'modal-select-to-previous-line)
-  ;; (modal-motion-set-key "H" #'modal-select-to-backward-char)
-  ;; (modal-motion-set-key "L" #'modal-select-to-forward-char)
   (modal-motion-set-key "w" #'modal-select-word)
   (modal-motion-set-key "W" #'modal-select-symbol)
   (modal-motion-set-key "r" #'modal-replace)
@@ -85,9 +85,9 @@
   (modal-motion-set-key "s]" #'modal-select-whole-square-brackets)
   (modal-motion-set-key "s'" #'modal-select-inner-string)
   (modal-motion-set-key "s\"" #'modal-select-whole-string)
-  (modal-motion-set-key "ss" #'modal-select-inner-line)
-  (modal-motion-set-key "sS" #'modal-select-whole-line)
-  (modal-motion-set-key "S" #'modal-goto-secondary-selection)
+  (modal-motion-set-key "ss" #'modal-secondary-selection)
+
+  (modal-motion-set-key "S" #'modal-select-lines)
 
   (modal-motion-set-key "i" #'modal-insert)
   (modal-motion-set-key "a" #'modal-append)
@@ -130,9 +130,6 @@
   (modal-motion-set-key "n" #'isearch-repeat-forward)
   (modal-motion-set-key "N" #'isearch-repeat-backward)
 
-  (modal-motion-set-key "v" #'modal-switch-to-visual-state)
-  (modal-motion-set-key "V" #'modal-select-lines)
-
   (modal-motion-set-key "<escape>" #'modal-temporary-insert)
 ;;;; Normal state
   ;; (modal-normal-set-key-for-mode 'text-mode "DEL" #'backward-char)
@@ -142,10 +139,8 @@
   (modal-visual-set-key "<escape>" #'modal-switch-to-default-state)
   (modal-visual-set-key "d" #'modal-delete)
   (modal-visual-set-key "D" #'modal-save-and-delete)
-  (modal-visual-set-key "e" #'exchange-point-and-mark)
-  (modal-visual-set-key "E" #'modal-exchange-selection)
-
-  (modal-visual-set-key "S" #'modal-secondary-selection)
+  (modal-visual-set-key "e" #'modal-exchange-selection)
+  (modal-visual-set-key "o" #'exchange-point-and-mark)
 
   (modal-visual-set-key ";(" #'modal-insert-parentheses-with-space)
   (modal-visual-set-key ";)" #'modal-insert-parentheses)

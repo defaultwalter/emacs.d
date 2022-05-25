@@ -157,11 +157,8 @@
            (display-graphic-p))
       (menu-bar-mode 1)
     (menu-bar-mode -1))
-  (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ? ))
-  ;; (if (display-graphic-p)
-  ;;     (set-face-foreground 'vertical-border (face-background 'default))
-  ;;   )
-  )
+  (set-display-table-slot standard-display-table 'vertical-border (make-glyph-code ?│))
+  (set-face-background 'vertical-border 'unspecified))
 
 (add-hook 'after-init-hook 'update-gui)
 (add-hook 'server-after-make-frame-hook 'update-gui)
