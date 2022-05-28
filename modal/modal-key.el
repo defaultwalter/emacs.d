@@ -74,44 +74,46 @@
 
 (add-hook 'after-change-major-mode-hook #'modal--apply-mode-maps)
 
-(defun modal--define-key(map key def)
+(defun modal--define-key(map key binding)
   "define key."
-  (let* ((def (if (listp def)
-                  (if (keywordp (car def)) def (cons :command def))
-                (list :command def)))
-         (ignore (plist-get def
+  (let* ((binding (if (listp binding)
+                      (if (keywordp (car binding))
+                          binding
+                        (cons :command binding))
+                    (list :command binding)))
+         (ignore (plist-get binding
                             :ignore))
-         (command (plist-get def
+         (command (plist-get binding
                              :command))
-         (name (plist-get def
+         (name (plist-get binding
                           :which-key)))
     (unless ignore (define-key map (read-kbd-macro key) command))
     (when name                          ;
       (with-eval-after-load 'which-key  (which-key-add-keymap-based-replacements map key name)))))
 
-(defun modal-set-key(state key def)
+(defun modal-set-key(state key binding)
   "Set state key."
   (let ((map (cond ((eq state 'normal) modal-normal-state-map)
                    ((eq state 'motion) modal-motion-state-map)
                    ((eq state 'visual) modal-visual-state-map)
                    ((eq state 'insert) modal-insert-state-map))))
-    (modal--define-key map key def)))
+    (modal--define-key map key binding)))
 
 
-(defun modal-normal-set-key(key def)
+(defun modal-normal-set-key(key binding)
   "Set normal state state key."
-  (modal-set-key 'normal key def))
-(defun modal-motion-set-key(key def)
+  (modal-set-key 'normal key binding))
+(defun modal-motion-set-key(key binding)
   "Set motion state state key."
-  (modal-set-key 'motion key def))
-(defun modal-visual-set-key(key def)
+  (modal-set-key 'motion key binding))
+(defun modal-visual-set-key(key binding)
   "Set visual state key."
-  (modal-set-key 'visual key def))
-(defun modal-insert-set-key(key def)
+  (modal-set-key 'visual key binding))
+(defun modal-insert-set-key(key binding)
   "Set insert state key."
-  (modal-set-key 'insert key def))
+  (modal-set-key 'insert key binding))
 
-(defun modal-set-key-for-mode (mode state key def)
+(defun modal-set-key-for-mode (mode state key binding)
   "Set state key for major mode."
   (let* ((normal-state-map (cdr (assoc mode modal--normal-state-maps)))
          (motion-state-map (cdr (assoc mode modal--motion-state-maps)))
@@ -137,20 +139,20 @@
                      ((eq state 'motion) motion-state-map)
                      ((eq state 'visual) visual-state-map)
                      ((eq state 'insert) insert-state-map))))
-      (modal--define-key map key def))))
+      (modal--define-key map key binding))))
 
-(defun modal-normal-set-key-for-mode(mode key def)
+(defun modal-normal-set-key-for-mode(mode key binding)
   "Set normal state key for major mode."
-  (modal-set-key-for-mode mode 'normal key def))
-(defun modal-motion-set-key-for-mode(mode key def)
+  (modal-set-key-for-mode mode 'normal key binding))
+(defun modal-motion-set-key-for-mode(mode key binding)
   "Set motion state key for major mode."
-  (modal-set-key-for-mode mode 'motion key def))
-(defun modal-visual-set-key-for-mode(mode key def)
+  (modal-set-key-for-mode mode 'motion key binding))
+(defun modal-visual-set-key-for-mode(mode key binding)
   "Set visual state key for major mode."
-  (modal-set-key-for-mode mode 'visual key def))
-(defun modal-insert-set-key-for-mode(mode key def)
+  (modal-set-key-for-mode mode 'visual key binding))
+(defun modal-insert-set-key-for-mode(mode key binding)
   "Set insert state key for major mode."
-  (modal-set-key-for-mode mode 'insert key def))
+  (modal-set-key-for-mode mode 'insert key binding))
 
 (provide 'modal-key)
 ;;; modal-key.el ends here

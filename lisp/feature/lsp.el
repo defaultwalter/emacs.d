@@ -28,8 +28,8 @@
   :ensure t
   :defer t
   :custom                               ;
-  (lsp-headerline-breadcrumb-enable nil)
   (lsp-auto-configure t)
+  (lsp-headerline-breadcrumb-enable nil)
   (lsp-log-io nil)
   (lsp-print-performance t)
   (lsp-file-watch-threshold 2000)
@@ -58,7 +58,7 @@
   (lsp-ui-doc-position 'at-point)
   (lsp-ui-doc-use-webkit nil)
   (lsp-ui-sideline-delay 0.5)
-  (lsp-ui-sideline-enable t)
+  (lsp-ui-sideline-enable nil)
   (lsp-ui-doc-enable t)
   (lsp-ui-doc-border "#777777")
   :hook (lsp-mode . lsp-ui-mode))

@@ -88,6 +88,7 @@
   (modal-setup)
   (modal-global-mode 1))
 
+
 (use-package
   ivy
   :ensure t
@@ -231,6 +232,20 @@
   :custom (magit-display-buffer-function #'magit-display-buffer-same-window-except-diff-v1)
   :init                                 ;
   (modal-leader-set-key "pg" '(magit-status :which-key "git")))
+
+(use-package blamer
+  :ensure t
+  :disabled
+  :defer 10
+  :custom;
+  (blamer-idle-time 0.1)
+  (blamer-min-offset 70)
+  :init;
+  (setq blamer-smart-background-p t)
+  (setq blamer-type 'both)
+  :config;
+  (global-blamer-mode 1))
+
 (use-package
   neotree
   :ensure t
@@ -331,24 +346,38 @@
                          `(:foreground ,color)))))
 
 (use-package
-  highlight-indent-guides               ;高亮缩进
+  indent-guide               ;高亮缩进
   :ensure t
   :defer t
   :custom                               ;
-  (highlight-indent-guides-suppress-auto-error t)
-  (highlight-indent-guides-method 'character)
-  (highlight-indent-guides-responsive nil)
-  (highlight-indent-guides-character ?╎)
-  :hook ((prog-mode conf-mode) . highlight-indent-guides-mode)
+  (indent-guide-char "╎")
+  :custom-face;
+  (indent-guide-face ((t (:inherit 'font-lock-comment-face))))
+  :hook ((prog-mode conf-mode) . indent-guide-mode)
   :config                               ;
-  (unless (display-graphic-p)
-    (set-face-foreground 'highlight-indent-guides-character-face "black")))
+  (indent-guide-global-mode))
+
+;; (use-package
+;;   highlight-indent-guides               ;高亮缩进
+;;   :ensure t
+;;   :defer t
+;;   :custom                               ;
+;;   (highlight-indent-guides-suppress-auto-error t)
+;;   (highlight-indent-guides-method 'character)
+;;   (highlight-indent-guides-responsive nil)
+;;   (highlight-indent-guides-character ?╎)
+;;   :hook ((prog-mode conf-mode) . highlight-indent-guides-mode)
+;;   :config                               ;
+;;   (unless (display-graphic-p)
+;;     (set-face-foreground 'highlight-indent-guides-character-face "black")))
 
 ;; (use-package
 ;;   highlight-indentation
 ;;   :ensure t                             ;高亮缩进
 ;;   :custom                               ;
-;;   (highlight-indentation-blank-lines t)
+;;   ;; (highlight-indentation-blank-lines t)
+;;   (highlight-indentation-overlay-priority -1)
+;;   (highlight-indentation-current-column-overlay-priority -1)
 ;;   :hook ((prog-mode conf-mode) . highlight-indentation-mode))
 
 (use-package
@@ -370,8 +399,9 @@
              (sis-ism-lazyman-config "com.apple.keylayout.ABC" "com.apple.inputmethod.SCIM.ITABC")
            (message
             "SIS need to install macism. use ‘brew tap laishulu/macism;brew install macism’ to install it.")))
+
         ((eq system-type 'gnu/linux)
-         (sis-ism-lazyman-config "1" "2" 'fcitx)))
+         (sis-ism-lazyman-config "xkb:us::eng" "rime" 'ibus)))
   (sis-global-respect-mode t)
   (add-hook 'modal-normal-state-mode-hook #'sis-set-english)
   (add-hook 'modal-motion-state-mode-hook #'sis-set-english))
@@ -379,12 +409,15 @@
 (use-package
   tree-sitter
   :ensure t
+  :disabled
   :config;
   (global-tree-sitter-mode)
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
 (use-package
   tree-sitter-langs
-  :ensure t)
+  :ensure t
+  :disabled)
 
 ;; ;;;; ==============================================
 ;; ;;;; 编辑增强

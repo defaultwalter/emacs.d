@@ -64,10 +64,10 @@
   (company-show-numbers t)
   :config                               ;
   (setq company-selection-default 0)
-  (setq company-backends '(;; (:separate company-yasnippet
-                           ;;            company-capf)
-                           (company-capf company-dabbrev-code company-keywords company-files)
-                           (company-dabbrev)))
+  ;; (setq company-backends '(;; (:separate company-yasnippet
+  ;;                          ;;            company-capf)
+  ;;                          (company-capf company-dabbrev-code company-keywords company-files)
+  ;;                          (company-dabbrev)))
   (setq company-frontends '(company-pseudo-tooltip-frontend company-echo-metadata-frontend)))
 
 

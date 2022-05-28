@@ -397,15 +397,13 @@
   (interactive "p")
   (dotimes (i arg)
     (if (not (region-active-p))
-        (modal-select-inner-line)
+        (modal-select-whole-line)
       (cond ((= (point) (region-end)); 向后选择
-             (when (and (> (region-beginning) (line-end-position)) (< (region-beginning) (line-beginning-position)))
+             (when (and (> (region-beginning) (line-end-position))
+                        (< (region-beginning) (line-beginning-position)))
                (push-mark (line-beginning-position) t t))
-             (if (/= (point) (line-end-position))
-                 ;; 移动到当前行结尾
-                 (goto-char (line-end-position))
-               ;; 移动到下一行结尾
-               (goto-char (save-excursion (next-line)(line-end-position)))))
+             (end-of-line)
+             (forward-char))
             ((= (point) (region-beginning))
              (when (and (< (region-end) (line-beginning-position)) (> (region-end) (line-end-position)))
                (push-mark (line-end-position) t t))
@@ -414,9 +412,6 @@
                  (goto-char (line-beginning-position))
                ;; 移动到上一行开始
                (goto-char (save-excursion (previous-line)(line-beginning-position)))))))))
-
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;; modify

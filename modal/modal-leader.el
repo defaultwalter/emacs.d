@@ -37,11 +37,11 @@
 (define-key modal-motion-state-map (read-kbd-macro modal-leader-key) modal-leader--default-map)
 (define-key modal-visual-state-map (read-kbd-macro modal-leader-key) modal-leader--default-map)
 
-(defun modal-leader-set-key(key def)
+(defun modal-leader-set-key(key binding)
   "Set key for leader."
-  (modal--define-key modal-leader--default-map key def))
+  (modal--define-key modal-leader--default-map key binding))
 
-(defun modal-leader-set-key-for-mode (mode key def)
+(defun modal-leader-set-key-for-mode (mode key binding)
   "Set key for leader."
   (let* ((normal-state-map (cdr (assoc mode modal--normal-state-maps)))
          (motion-state-map (cdr (assoc mode modal--motion-state-maps)))
@@ -66,7 +66,7 @@
       (define-key normal-state-map (read-kbd-macro modal-leader-key) leader-map)
       (define-key motion-state-map (read-kbd-macro modal-leader-key) leader-map)
       (define-key visual-state-map (read-kbd-macro modal-leader-key) leader-map))
-    (modal--define-key leader-map key def)))
+    (modal--define-key leader-map key binding)))
 
 (provide 'modal-leader)
 ;;; modal-leader.el ends here

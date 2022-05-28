@@ -29,6 +29,7 @@
 (require 'modal-command)
 (require 'modal-default)
 (require 'modal-esc)
+(require 'modal-modern)
 
 (provide 'modal)
 ;;; modal.el ends here
